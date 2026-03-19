@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { motion } from 'motion/react';
+import React, { useState, useRef } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { 
   CheckCircle2, 
   Zap, 
@@ -12,7 +12,9 @@ import {
   ShieldCheck,
   FileSearch,
   Mail,
-  AlertCircle
+  AlertCircle,
+  X,
+  FileIcon
 } from 'lucide-react';
 
 const RequestBOQ = () => {
@@ -20,6 +22,8 @@ const RequestBOQ = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [dragActive, setDragActive] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [files, setFiles] = useState<File[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -27,19 +31,19 @@ const RequestBOQ = () => {
     setError(null);
 
     const formData = new FormData(e.currentTarget);
-    const data = {
-      fullName: formData.get('fullName'),
-      companyName: formData.get('companyName'),
-      address: formData.get('address'),
-      notes: formData.get('notes'),
-      isUrgent: formData.get('urgent') === 'on'
-    };
+    // Add files to formData
+    files.forEach(file => {
+      formData.append('files', file);
+    });
+    
+    // Explicitly set isUrgent as a string for the server
+    const urgentCheckbox = e.currentTarget.elements.namedItem('urgent') as HTMLInputElement;
+    formData.set('isUrgent', urgentCheckbox.checked.toString());
 
     try {
       const response = await fetch('/api/send-boq', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+        body: formData, // Sending as FormData
       });
 
       if (!response.ok) {
@@ -48,6 +52,7 @@ const RequestBOQ = () => {
       }
 
       setIsSubmitted(true);
+      setFiles([]);
     } catch (err) {
       console.error('Submission error:', err);
       setError(err instanceof Error ? err.message : 'An unexpected error occurred. Please try again.');
@@ -64,6 +69,27 @@ const RequestBOQ = () => {
     } else if (e.type === "dragleave") {
       setDragActive(false);
     }
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      const newFiles = Array.from(e.dataTransfer.files);
+      setFiles(prev => [...prev, ...newFiles]);
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const newFiles = Array.from(e.target.files);
+      setFiles(prev => [...prev, ...newFiles]);
+    }
+  };
+
+  const removeFile = (index: number) => {
+    setFiles(prev => prev.filter((_, i) => i !== index));
   };
 
   return (
@@ -223,13 +249,73 @@ const RequestBOQ = () => {
                       onDragEnter={handleDrag}
                       onDragLeave={handleDrag}
                       onDragOver={handleDrag}
+                      onDrop={handleDrop}
+                      onClick={() => fileInputRef.current?.click()}
                       className={`border-2 border-dashed rounded-xl p-10 flex flex-col items-center justify-center transition-colors cursor-pointer ${dragActive ? 'border-surface-tint bg-surface-container-high' : 'border-slate-300 bg-surface-container-low hover:bg-surface-container-high'}`}
                     >
+                      <input 
+                        type="file" 
+                        multiple 
+                        className="hidden" 
+                        ref={fileInputRef}
+                        onChange={handleFileChange}
+                        accept=".pdf,.dwg,.doc,.docx,.xls,.xlsx,.jpg,.png"
+                      />
                       <Upload className="text-4xl text-surface-tint mb-4" size={40} />
                       <p className="text-sm font-semibold text-primary">Drag and drop technical files here</p>
                       <p className="text-xs text-on-surface-variant mt-2">Maximum file size 50MB per upload</p>
-                      <button className="mt-6 px-6 py-2 bg-surface-container-lowest text-primary text-xs font-bold rounded-md border border-slate-300 hover:bg-white transition-all" type="button">Browse Files</button>
+                      <button 
+                        className="mt-6 px-6 py-2 bg-surface-container-lowest text-primary text-xs font-bold rounded-md border border-slate-300 hover:bg-white transition-all" 
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          fileInputRef.current?.click();
+                        }}
+                      >
+                        Browse Files
+                      </button>
                     </div>
+
+                    {/* File List */}
+                    <AnimatePresence>
+                      {files.length > 0 && (
+                        <motion.div 
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: 'auto' }}
+                          exit={{ opacity: 0, height: 0 }}
+                          className="mt-4 space-y-2"
+                        >
+                          <p className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-2">Selected Files ({files.length})</p>
+                          <div className="grid grid-cols-1 gap-2">
+                            {files.map((file, index) => (
+                              <motion.div 
+                                key={`${file.name}-${index}`}
+                                initial={{ opacity: 0, x: -10 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: 10 }}
+                                className="flex items-center justify-between p-3 bg-surface-container-low border border-slate-200 rounded-lg group"
+                              >
+                                <div className="flex items-center gap-3 overflow-hidden">
+                                  <FileIcon className="w-5 h-5 text-surface-tint flex-shrink-0" />
+                                  <span className="text-sm text-primary truncate font-medium">{file.name}</span>
+                                  <span className="text-[10px] text-on-surface-variant">({(file.size / 1024 / 1024).toFixed(2)} MB)</span>
+                                </div>
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    removeFile(index);
+                                  }}
+                                  className="p-1 text-on-surface-variant hover:text-red-500 transition-colors"
+                                >
+                                  <X className="w-4 h-4" />
+                                </button>
+                              </motion.div>
+                            ))}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
 
                   <div className="flex flex-col space-y-2">
