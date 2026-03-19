@@ -15,17 +15,22 @@ export const Header = () => {
     <nav className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md shadow-sm">
       <div className="flex justify-between items-center px-8 py-4 max-w-7xl mx-auto h-20">
         <Link to="/" className="flex items-center gap-3 group">
-          <div className="w-10 h-10 bg-primary rounded flex items-center justify-center text-white font-black text-xs overflow-hidden">
+          <div className="h-14 flex items-center justify-center overflow-hidden min-w-[120px]">
             <img 
-              src="https://picsum.photos/seed/wselogo/200/200" 
-              alt="WSE" 
-              className="w-full h-full object-cover"
+              src="/logo.png" 
+              alt="WSE Sydney" 
+              className="h-full w-auto object-contain"
               referrerPolicy="no-referrer"
+              onError={(e) => {
+                e.currentTarget.style.display = 'none';
+                const fallback = e.currentTarget.parentElement?.querySelector('.fallback-text');
+                if (fallback) (fallback as HTMLElement).style.display = 'flex';
+              }}
             />
-          </div>
-          <div className="flex flex-col">
-            <span className="text-xl font-bold tracking-tight text-primary font-headline leading-none">WSE SYDNEY</span>
-            <span className="text-[8px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-1">Precision Estimating</span>
+            <div className="fallback-text hidden flex-col">
+              <span className="text-xl font-bold tracking-tight text-primary font-headline leading-none">WSE SYDNEY</span>
+              <span className="text-[8px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-1">Precision Estimating</span>
+            </div>
           </div>
         </Link>
         <div className="hidden md:flex items-center space-x-8">
@@ -64,15 +69,20 @@ export const Footer = () => {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-12 px-8 py-16 max-w-7xl mx-auto">
         <div className="col-span-1">
           <div className="flex items-center gap-2 mb-6 group">
-            <div className="w-8 h-8 bg-primary rounded flex items-center justify-center text-white font-black text-[10px] overflow-hidden">
+            <div className="h-12 flex items-center justify-center overflow-hidden min-w-[100px]">
               <img 
-                src="https://picsum.photos/seed/wselogo/200/200" 
-                alt="WSE" 
-                className="w-full h-full object-cover"
+                src="/logo.png" 
+                alt="WSE Sydney" 
+                className="h-full w-auto object-contain"
                 referrerPolicy="no-referrer"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                  const fallback = e.currentTarget.parentElement?.querySelector('.fallback-text');
+                  if (fallback) (fallback as HTMLElement).style.display = 'block';
+                }}
               />
+              <div className="fallback-text hidden text-lg font-black text-primary font-headline">WSE SYDNEY</div>
             </div>
-            <div className="text-lg font-black text-primary font-headline">WSE SYDNEY</div>
           </div>
           <p className="text-slate-500 text-xs leading-relaxed font-body">
             Professional water and sewer estimating solutions for civil engineering firms, developers, and government bodies.
