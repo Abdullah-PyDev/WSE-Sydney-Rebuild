@@ -169,16 +169,36 @@ const Services = () => {
         </motion.div>
       </section>
 
-      <section className="py-12 bg-slate-50 border-y border-slate-200">
-        <div className="max-w-7xl mx-auto px-8">
-          <p className="text-center text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 mb-8 font-body">Trusted by Tier 1 Engineering Firms & Developers</p>
-          <div className="flex flex-wrap justify-center items-center gap-12 md:gap-24 opacity-40 grayscale font-headline">
-            <div className="text-2xl font-black text-primary">CIVILNET</div>
-            <div className="text-2xl font-black text-primary">HYDRAFLOW</div>
-            <div className="text-2xl font-black text-primary">SYD_WATER_A</div>
-            <div className="text-2xl font-black text-primary">PRECISE_CON</div>
-            <div className="text-2xl font-black text-primary">AUST_INFRA</div>
-          </div>
+      <section className="py-12 bg-slate-50 border-y border-slate-200 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-8 mb-8">
+          <p className="text-center text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 font-body">Trusted by Tier 1 Engineering Firms & Developers</p>
+        </div>
+        <div className="relative flex overflow-x-hidden">
+          <motion.div 
+            animate={{ x: ["0%", "-50%"] }}
+            transition={{ 
+              repeat: Infinity, 
+              duration: 30, 
+              ease: "linear" 
+            }}
+            className="flex items-center gap-24 whitespace-nowrap opacity-40 grayscale font-headline pr-24"
+          >
+            {[
+              "CIVILNET", "HYDRAFLOW", "SYD_WATER_A", "PRECISE_CON", "AUST_INFRA", "URBAN_FLOW", "INFRA_CORE", "WATER_TECH"
+            ].map((partner, i) => (
+              <div key={i} className="text-2xl font-black text-primary tracking-tighter">{partner}</div>
+            ))}
+            {/* Duplicate for infinite loop */}
+            {[
+              "CIVILNET", "HYDRAFLOW", "SYD_WATER_A", "PRECISE_CON", "AUST_INFRA", "URBAN_FLOW", "INFRA_CORE", "WATER_TECH"
+            ].map((partner, i) => (
+              <div key={`dup-${i}`} className="text-2xl font-black text-primary tracking-tighter">{partner}</div>
+            ))}
+          </motion.div>
+          
+          {/* Gradient masks for smooth fade edges */}
+          <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-slate-50 to-transparent z-10"></div>
+          <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-slate-50 to-transparent z-10"></div>
         </div>
       </section>
 
