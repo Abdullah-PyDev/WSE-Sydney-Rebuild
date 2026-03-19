@@ -11,6 +11,7 @@ import ServicesDetail from './pages/ServicesDetail';
 import Locations from './pages/Locations';
 import About from './pages/About';
 import RequestBOQ from './pages/RequestBOQ';
+import ProjectDetail from './pages/ProjectDetail';
 
 export default function App() {
   return (
@@ -25,6 +26,7 @@ export default function App() {
             <Route path="/locations" element={<Locations />} />
             <Route path="/about" element={<About />} />
             <Route path="/request" element={<RequestBOQ />} />
+            <Route path="/projects/:id" element={<ProjectDetail />} />
           </Routes>
         </div>
         <Footer />

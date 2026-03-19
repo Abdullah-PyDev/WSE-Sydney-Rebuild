@@ -1,50 +1,141 @@
-import React from 'react';
-import { motion } from 'motion/react';
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, useScroll, useTransform } from 'motion/react';
 import { Link } from 'react-router-dom';
 import { Droplets, Settings, Waves, ArrowRight, History, ShieldCheck, Globe } from 'lucide-react';
 import TestimonialCarousel from '../components/TestimonialCarousel';
 
+const Typewriter = ({ phrases, delay = 0, speed = 100, deleteSpeed = 50, pause = 2000 }: { 
+  phrases: string[]; 
+  delay?: number; 
+  speed?: number; 
+  deleteSpeed?: number;
+  pause?: number;
+}) => {
+  const [text, setText] = useState('');
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [loopNum, setLoopNum] = useState(0);
+  const [typingSpeed, setTypingSpeed] = useState(speed);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      const i = loopNum % phrases.length;
+      const fullText = phrases[i];
+
+      if (isDeleting) {
+        setText(fullText.substring(0, text.length - 1));
+        setTypingSpeed(deleteSpeed);
+      } else {
+        setText(fullText.substring(0, text.length + 1));
+        setTypingSpeed(speed);
+      }
+
+      if (!isDeleting && text === fullText) {
+        setTimeout(() => setIsDeleting(true), pause);
+      } else if (isDeleting && text === '') {
+        setIsDeleting(false);
+        setLoopNum(loopNum + 1);
+      }
+    }, typingSpeed);
+
+    return () => clearTimeout(timeout);
+  }, [text, isDeleting, loopNum, phrases, speed, deleteSpeed, pause, typingSpeed]);
+
+  return (
+    <span className="relative">
+      {text}
+      <span className="inline-block w-[3px] h-[0.8em] bg-blue-400 ml-1 align-middle animate-pulse" />
+    </span>
+  );
+};
+
 const Services = () => {
+  const heroRef = useRef(null);
+  const phrases = [
+    "Guaranteed Accuracy.",
+    "Sydney Water Accredited.",
+    "24-Hour Turnaround.",
+    "Data-Driven Clarity.",
+    "Technical Excellence."
+  ];
+  
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"]
+  });
+  
+  const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "25%"]);
+  const contentY = useTransform(scrollYProgress, [0, 1], ["0%", "10%"]);
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2,
+        delayChildren: 0.3
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: { duration: 0.6, ease: "easeOut" }
+    }
+  };
+
   return (
     <main className="pt-20">
-      <section className="relative min-h-[800px] flex items-center overflow-hidden bg-primary px-8">
-        <div className="absolute inset-0 z-0">
+      <section ref={heroRef} className="relative min-h-[800px] flex items-center overflow-hidden bg-primary px-8">
+        <motion.div 
+          style={{ y: backgroundY }}
+          className="absolute inset-0 z-0"
+        >
           <div className="absolute inset-0 bg-gradient-to-r from-primary via-primary/90 to-transparent z-10"></div>
           <img 
             alt="Blueprint" 
             className="w-full h-full object-cover opacity-30" 
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuDj5O6tpaDcBtbszy1Y_0WojtLKOT6JkjF5AHKiglzJkMNNOkop7NFdpcG2ERyzsjetCHxmkGUSU5piqYJ9_2wsVfKo-rtrZZSsu_hRpuVkgFye9yDutAYjdidr1WvrziutdFo7QYt7rCvZvfj4ETcpCOIDpm0c9yIF91IOF3xOL1-1nfHb4dpLwx7WVNfaGnkdaBtR6XHSvbDo38Ce3n4Bji24T0uyl_IAyzOYW4fiMMfMlTnYpLX8qv0W6SXG-to7DvzvKgBlZ8I" 
           />
-        </div>
-        <div className="relative z-20 max-w-7xl mx-auto w-full grid md:grid-cols-2 gap-12 items-center">
+        </motion.div>
+        <motion.div 
+          style={{ y: contentY }}
+          className="relative z-20 max-w-7xl mx-auto w-full grid md:grid-cols-2 gap-12 items-center"
+        >
           <motion.div 
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
             className="space-y-8"
           >
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-primary-container text-blue-200 text-xs font-bold tracking-widest uppercase font-body">
+            <motion.div variants={itemVariants} className="inline-flex items-center gap-2 px-3 py-1 rounded bg-primary-container text-blue-200 text-xs font-bold tracking-widest uppercase font-body">
               <ShieldCheck size={14} />
               Industry Certified Accuracy
-            </div>
-            <h1 className="text-white font-headline text-5xl md:text-7xl font-extrabold leading-[1.1] tracking-tight">
-              Precision Engineering. <br/><span className="text-blue-400">Guaranteed Accuracy.</span>
-            </h1>
-            <p className="text-blue-100 text-lg md:text-xl max-w-lg leading-relaxed opacity-90 font-body">
+            </motion.div>
+            <motion.h1 variants={itemVariants} className="text-white font-headline text-5xl md:text-7xl font-extrabold leading-[1.1] tracking-tight min-h-[2.2em] md:min-h-[2.2em]">
+              Precision Engineering. <br/>
+              <span className="text-blue-400">
+                <Typewriter phrases={phrases} />
+              </span>
+            </motion.h1>
+            <motion.p variants={itemVariants} className="text-blue-100 text-lg md:text-xl max-w-lg leading-relaxed opacity-90 font-body">
               Australia's leading experts in Water & Sewer Estimating with a 24-48h turnaround. Reducing risk and ensuring compliance for Sydney's most complex projects.
-            </p>
-            <div className="flex flex-wrap gap-4 pt-4">
+            </motion.p>
+            <motion.div variants={itemVariants} className="flex flex-wrap gap-4 pt-4">
               <Link to="/request" className="bg-blue-400 text-primary px-8 py-4 rounded-md font-bold text-base hover:bg-blue-300 transition-all shadow-xl shadow-black/20 font-body">
                 Request a BOQ
               </Link>
               <Link to="/services/detail" className="border border-blue-400/30 bg-white/5 backdrop-blur-sm text-white px-8 py-4 rounded-md font-bold text-base hover:bg-white/10 transition-all font-body">
                 Our Services
               </Link>
-            </div>
+            </motion.div>
           </motion.div>
           <motion.div 
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.3 }}
+            initial={{ opacity: 0, scale: 0.9, x: 30 }}
+            animate={{ opacity: 1, scale: 1, x: 0 }}
+            transition={{ delay: 0.8, duration: 0.8 }}
             className="hidden md:block relative"
           >
             <div className="absolute -inset-4 bg-blue-500/20 blur-3xl rounded-full"></div>
@@ -55,7 +146,12 @@ const Services = () => {
               </div>
               <div className="space-y-6">
                 <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
-                  <div className="h-full w-3/4 bg-gradient-to-r from-primary to-blue-400"></div>
+                  <motion.div 
+                    initial={{ width: 0 }}
+                    animate={{ width: "75%" }}
+                    transition={{ delay: 1.5, duration: 1.5, ease: "easeInOut" }}
+                    className="h-full bg-gradient-to-r from-primary to-blue-400"
+                  ></motion.div>
                 </div>
                 <div className="grid grid-cols-2 gap-4 font-body">
                   <div className="p-4 bg-slate-50 rounded-md">
@@ -70,7 +166,7 @@ const Services = () => {
               </div>
             </div>
           </motion.div>
-        </div>
+        </motion.div>
       </section>
 
       <section className="py-12 bg-slate-50 border-y border-slate-200">
@@ -174,6 +270,98 @@ const Services = () => {
               <p className="text-sm font-medium mb-4 italic opacity-80">"The fastest turnaround in the sector without compromising on technical detail."</p>
               <p className="text-[10px] uppercase font-bold tracking-widest text-emerald-400">Project Director, AustInfra</p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-24 px-8 bg-white">
+        <div className="max-w-7xl mx-auto">
+          <div className="mb-16 text-center">
+            <h2 className="font-headline text-3xl md:text-4xl font-extrabold text-primary mb-4">Project Gallery</h2>
+            <p className="text-slate-500 max-w-2xl mx-auto font-body">A showcase of our precision estimating work across major water and sewer infrastructure projects in Australia.</p>
+            <div className="h-1.5 w-24 bg-primary mx-auto mt-6"></div>
+          </div>
+          
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[
+              {
+                id: "sewer-trunk-renewal",
+                title: "Sewer Trunk Renewal",
+                location: "Parramatta, NSW",
+                description: "Comprehensive BOQ for a 2.4km major sewer trunk renewal involving complex micro-tunnelling sections.",
+                image: "https://picsum.photos/seed/sewer1/800/600"
+              },
+              {
+                id: "potable-water-network",
+                title: "Potable Water Network",
+                location: "Western Sydney, NSW",
+                description: "Detailed hydraulic valuation and estimation for a new residential precinct's potable water network.",
+                image: "https://picsum.photos/seed/water1/800/600"
+              },
+              {
+                id: "stormwater-detention-basin",
+                title: "Stormwater Detention Basin",
+                location: "Liverpool, NSW",
+                description: "Precision estimating for a large-scale OSD basin with integrated water quality treatment systems.",
+                image: "https://picsum.photos/seed/storm1/800/600"
+              },
+              {
+                id: "sewer-pump-station",
+                title: "Sewer Pump Station",
+                location: "Blacktown, NSW",
+                description: "Full mechanical and civil component estimation for a Type 60 Sydney Water accredited pump station.",
+                image: "https://picsum.photos/seed/pump1/800/600"
+              },
+              {
+                id: "recycled-water-mains",
+                title: "Recycled Water Mains",
+                location: "Penrith, NSW",
+                description: "Detailed BOQ for 5km of recycled water mains serving industrial and residential developments.",
+                image: "https://picsum.photos/seed/recycled1/800/600"
+              },
+              {
+                id: "trunk-water-renewal",
+                title: "Trunk Water Renewal",
+                location: "Bankstown, NSW",
+                description: "Strategic estimation for a critical trunk water main renewal under major arterial roads.",
+                image: "https://picsum.photos/seed/trunk1/800/600"
+              }
+            ].map((project, index) => (
+              <motion.div 
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="group relative overflow-hidden rounded-xl shadow-lg bg-slate-50"
+              >
+                <div className="aspect-[4/3] overflow-hidden">
+                  <img 
+                    src={project.image} 
+                    alt={project.title}
+                    referrerPolicy="no-referrer"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  />
+                </div>
+                <div className="p-6">
+                  <div className="flex justify-between items-start mb-2">
+                    <h3 className="font-headline font-bold text-primary text-lg">{project.title}</h3>
+                    <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded uppercase tracking-wider">{project.location}</span>
+                  </div>
+                  <p className="text-slate-600 text-sm leading-relaxed font-body">
+                    {project.description}
+                  </p>
+                </div>
+                <div className="absolute inset-0 bg-primary/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center p-8">
+                  <div className="text-center">
+                    <p className="text-white font-body text-sm mb-4">Precision estimating delivered with 99.8% accuracy for this project.</p>
+                    <Link to={`/projects/${project.id}`} className="inline-flex items-center gap-2 text-blue-300 font-bold text-xs uppercase tracking-widest hover:text-white transition-colors">
+                      View Project Details <ArrowRight size={14} />
+                    </Link>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
