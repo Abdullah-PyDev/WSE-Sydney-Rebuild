@@ -76,18 +76,14 @@ const ChatBot = () => {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            drag
-            dragConstraints={{ top: -600, left: -800, right: 50, bottom: 50 }}
-            dragElastic={0.1}
-            dragMomentum={false}
-            initial={{ opacity: 0, scale: 0.8, y: 40 }}
+            initial={{ opacity: 0, scale: 0.8, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.8, y: 40 }}
-            className="mb-4 w-[calc(100vw-48px)] sm:w-[400px] h-[500px] max-h-[calc(100vh-120px)] bg-surface rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-outline cursor-default origin-bottom-right"
+            exit={{ opacity: 0, scale: 0.8, y: 20 }}
+            className="mb-4 w-[350px] sm:w-[400px] h-[500px] bg-surface-container-high rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-outline-variant"
           >
             {/* Header */}
-            <div className="bg-surface-tint p-4 flex items-center justify-between text-white cursor-move shadow-sm">
-              <div className="flex items-center space-x-2 pointer-events-none">
+            <div className="bg-primary p-4 flex items-center justify-between text-on-primary">
+              <div className="flex items-center space-x-2">
                 <Bot size={24} />
                 <div>
                   <h3 className="font-bold text-sm">WSE Sydney Assistant</h3>
@@ -96,7 +92,7 @@ const ChatBot = () => {
               </div>
               <button 
                 onClick={() => setIsOpen(false)}
-                className="hover:bg-white/10 p-1 rounded-full transition-colors cursor-pointer"
+                className="hover:bg-white/10 p-1 rounded-full transition-colors"
               >
                 <X size={20} />
               </button>
@@ -116,7 +112,7 @@ const ChatBot = () => {
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${msg.role === 'user' ? 'bg-secondary text-on-secondary' : 'bg-primary-container text-on-primary-container'}`}>
                       {msg.role === 'user' ? <User size={16} /> : <Bot size={16} />}
                     </div>
-                    <div className={`p-3 rounded-2xl text-sm shadow-sm ${
+                    <div className={`p-3 rounded-2xl text-sm ${
                       msg.role === 'user' 
                         ? 'bg-secondary-container text-on-secondary-container rounded-tr-none' 
                         : 'bg-surface-container-low text-on-surface rounded-tl-none border border-outline-variant'
@@ -168,7 +164,7 @@ const ChatBot = () => {
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         onClick={() => setIsOpen(!isOpen)}
-        className="bg-surface-tint text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center hover:bg-surface-tint/90 transition-all"
+        className="bg-primary text-on-primary w-14 h-14 rounded-full shadow-lg flex items-center justify-center hover:bg-primary/90 transition-all"
       >
         {isOpen ? <X size={28} /> : <WSEIcon size={28} />}
       </motion.button>

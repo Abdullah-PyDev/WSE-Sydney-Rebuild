@@ -25,14 +25,14 @@ const About = () => {
             animate={{ opacity: 1, y: 0 }}
             className="lg:col-span-8"
           >
-            <div className="mb-6 inline-flex items-center gap-2 text-slate-900 font-bold uppercase tracking-widest text-xs">
-              <span className="h-px w-8 bg-slate-900"></span>
+            <div className="mb-6 inline-flex items-center gap-2 text-primary font-headline font-bold uppercase tracking-widest text-xs">
+              <span className="h-px w-8 bg-primary"></span>
               Our Pedigree
             </div>
-            <h1 className="font-extrabold text-5xl md:text-7xl text-slate-900 leading-tight tracking-tighter mb-8">
-              Bridging the gap between <span className="text-blue-600">technical drawings</span> and cost reality.
+            <h1 className="font-headline font-extrabold text-5xl md:text-7xl text-primary leading-tight tracking-tighter mb-8">
+              Bridging the gap between <span className="text-surface-tint">technical drawings</span> and cost reality.
             </h1>
-            <p className="text-xl text-slate-600 max-w-2xl leading-relaxed">
+            <p className="text-xl text-on-surface-variant max-w-2xl leading-relaxed font-body">
               At WSE Sydney, we don't just estimate; we engineer financial certainty into the fluid complexity of water and sewer infrastructure.
             </p>
           </motion.div>
@@ -42,15 +42,15 @@ const About = () => {
             transition={{ delay: 0.2 }}
             className="lg:col-span-4 flex justify-start lg:justify-end pb-4"
           >
-            <div className="bg-slate-50 p-8 rounded-xl border-l-4 border-slate-900">
-              <div className="text-4xl font-extrabold text-slate-900 mb-1">15+</div>
-              <div className="text-sm uppercase tracking-wider text-slate-600">Years Industry Expertise</div>
+            <div className="bg-surface-container-low p-8 rounded-xl border-l-4 border-primary">
+              <div className="text-4xl font-headline font-extrabold text-primary mb-1">15+</div>
+              <div className="text-sm font-body uppercase tracking-wider text-on-surface-variant">Years Industry Expertise</div>
             </div>
           </motion.div>
         </div>
       </header>
 
-      <section className="bg-slate-50 py-24 px-8 overflow-hidden">
+      <section className="bg-surface-container py-24 px-8 overflow-hidden">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <motion.div 
@@ -58,7 +58,7 @@ const About = () => {
               animate={{ opacity: 1, x: 0 }}
               className="relative group"
             >
-              <div className="absolute -top-4 -left-4 w-24 h-24 bg-blue-600/10 rounded-xl"></div>
+              <div className="absolute -top-4 -left-4 w-24 h-24 bg-surface-tint/20 rounded-xl"></div>
               <div className="relative z-10 overflow-hidden rounded-xl bg-white shadow-xl aspect-[4/5]">
                 <img 
                   alt="Shoaib Saeed" 
@@ -66,7 +66,7 @@ const About = () => {
                   src="https://lh3.googleusercontent.com/aida-public/AB6AXuDotnxBm3KUiIGpk5CLXJbWBaIA1l2Di8miHieAk1u8qDN3LPvCOjvWc19sZZK5Ih6fL9SIqZPStZJkASkmiaIn5UINMeus_T8V92RRc-6Kv7H3mUcVbzmbW5n63hxa0Ef9RpBzRJlXFu-Zzk0Hd72g9spNODXLZpfeCVkqGwk9UHwsYt16nZ6eijDKjd957Kdx8VnSzpgPxP3SI4qtwiovIX_VZlJUNusmi7btcnv4n0LGeLCp260-eQdTdX6KsFHC9O43oJ0m-iU" 
                 />
               </div>
-              <div className="absolute -bottom-6 -right-6 w-48 h-48 bg-slate-900 opacity-5 rounded-full blur-3xl"></div>
+              <div className="absolute -bottom-6 -right-6 w-48 h-48 bg-primary opacity-5 rounded-full blur-3xl"></div>
             </motion.div>
             <motion.div 
               initial={{ opacity: 0, x: 20 }}
@@ -76,10 +76,10 @@ const About = () => {
             >
               <div className="flex items-center gap-6 relative z-10">
                 <div>
-                  <h2 className="font-bold text-4xl text-slate-900 mb-2">Shoaib Saeed</h2>
-                  <div className="text-blue-600 font-semibold tracking-wide uppercase text-sm">Founder & Principal Estimator</div>
+                  <h2 className="font-headline font-bold text-4xl text-primary mb-2">Shoaib Saeed</h2>
+                  <div className="text-surface-tint font-body font-semibold tracking-wide uppercase text-sm">Founder & Principal Estimator</div>
                 </div>
-                <div className="w-14 h-14 rounded-full bg-white shadow-sm border border-slate-200 p-2 flex items-center justify-center shrink-0">
+                <div className="w-14 h-14 rounded-full bg-white shadow-sm border border-slate-100 p-2 flex items-center justify-center shrink-0">
                   <img 
                     src="/logo.png" 
                     alt="WSE Sydney" 
@@ -88,7 +88,7 @@ const About = () => {
                   />
                 </div>
               </div>
-              <div className="space-y-6 text-slate-600 leading-relaxed text-lg">
+              <div className="space-y-6 text-on-surface-variant leading-relaxed text-lg font-body">
                 <p>
                   Shoaib Saeed founded WSE Sydney with a singular vision: to eliminate the ambiguity that often exists between civil engineering design and the actual cost of execution. 
                 </p>
@@ -97,19 +97,19 @@ const About = () => {
                 </p>
               </div>
               <div className="grid grid-cols-2 gap-4">
-                <div className="bg-white p-6 rounded-md shadow-sm">
-                  <div className="text-blue-600 mb-4">
+                <div className="bg-surface-container-lowest p-6 rounded-md">
+                  <div className="text-surface-tint mb-4">
                     <Architecture size={24} />
                   </div>
-                  <div className="font-bold text-slate-900">Technical Depth</div>
-                  <div className="text-xs text-slate-500 mt-1">Specializing in Sydney Water standards and compliance.</div>
+                  <div className="font-headline font-bold text-primary">Technical Depth</div>
+                  <div className="text-xs text-on-surface-variant mt-1 font-body">Specializing in Sydney Water standards and compliance.</div>
                 </div>
-                <div className="bg-white p-6 rounded-md shadow-sm">
-                  <div className="text-blue-600 mb-4">
+                <div className="bg-surface-container-lowest p-6 rounded-md">
+                  <div className="text-surface-tint mb-4">
                     <AccountBalance size={24} />
                   </div>
-                  <div className="font-bold text-slate-900">Fiscal Integrity</div>
-                  <div className="text-xs text-slate-500 mt-1">Transparent cost modeling for Tier 1 contractors.</div>
+                  <div className="font-headline font-bold text-primary">Fiscal Integrity</div>
+                  <div className="text-xs text-on-surface-variant mt-1 font-body">Transparent cost modeling for Tier 1 contractors.</div>
                 </div>
               </div>
             </motion.div>
@@ -120,8 +120,8 @@ const About = () => {
       <section className="py-24 px-8 bg-white overflow-hidden">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 mb-4">Client Testimonials</h2>
-            <p className="text-slate-600 max-w-2xl mx-auto">Hear from the industry leaders who trust WSE Sydney for their infrastructure estimating needs.</p>
+            <h2 className="font-headline text-3xl md:text-4xl font-extrabold text-primary mb-4">Client Testimonials</h2>
+            <p className="text-slate-500 max-w-2xl mx-auto font-body">Hear from the industry leaders who trust WSE Sydney for their infrastructure estimating needs.</p>
           </div>
           
           <TestimonialCarousel />
@@ -130,43 +130,43 @@ const About = () => {
 
       <section className="py-24 px-8 max-w-7xl mx-auto">
         <div className="mb-16">
-          <h2 className="font-bold text-3xl text-slate-900 mb-4">Our Engineering Core</h2>
-          <div className="h-1 w-20 bg-slate-900"></div>
+          <h2 className="font-headline font-bold text-3xl text-primary mb-4">Our Engineering Core</h2>
+          <div className="h-1 w-20 bg-primary"></div>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 font-body">
           <motion.div 
             whileHover={{ y: -5 }}
-            className="md:col-span-2 bg-slate-50 text-slate-900 p-12 rounded-xl flex flex-col justify-between border border-slate-200"
+            className="md:col-span-2 bg-primary text-white p-12 rounded-xl flex flex-col justify-between bg-gradient-to-br from-primary to-primary-container"
           >
-            <PrecisionManufacturing className="text-slate-300 mb-12" size={48} />
+            <PrecisionManufacturing className="text-4xl mb-12" size={48} />
             <div>
-              <h3 className="font-bold text-3xl mb-4">Precision First</h3>
-              <p className="text-slate-600 max-w-md">We reject the 'rough estimate' culture. Our data is derived from granular analysis of pipe diameter, soil variance, and hydraulic load factors.</p>
+              <h3 className="font-headline font-bold text-3xl mb-4">Precision First</h3>
+              <p className="text-white/70 max-w-md">We reject the 'rough estimate' culture. Our data is derived from granular analysis of pipe diameter, soil variance, and hydraulic load factors.</p>
             </div>
           </motion.div>
           <motion.div 
             whileHover={{ y: -5 }}
-            className="bg-slate-50 p-8 rounded-xl flex flex-col justify-between"
+            className="bg-surface-container-low p-8 rounded-xl flex flex-col justify-between"
           >
-            <Verified className="text-slate-900 mb-8" size={32} />
+            <Verified className="text-primary mb-8" size={32} />
             <div>
-              <h4 className="font-bold text-xl text-slate-900 mb-2">Compliance</h4>
-              <p className="text-sm text-slate-600">100% adherence to Australian Standards and local council water regulations.</p>
+              <h4 className="font-headline font-bold text-xl text-primary mb-2">Compliance</h4>
+              <p className="text-sm text-on-surface-variant">100% adherence to Australian Standards and local council water regulations.</p>
             </div>
           </motion.div>
           <motion.div 
             whileHover={{ y: -5 }}
-            className="bg-slate-900 p-8 rounded-xl flex flex-col justify-between text-white"
+            className="bg-surface-container-highest p-8 rounded-xl flex flex-col justify-between"
           >
-            <WaterDrop className="text-white mb-8" size={32} />
+            <WaterDrop className="text-primary mb-8" size={32} />
             <div>
-              <h4 className="font-bold text-xl mb-2">Fluidity</h4>
-              <p className="text-sm text-slate-300">Agile response times to design changes, ensuring project timelines remain intact.</p>
+              <h4 className="font-headline font-bold text-xl text-primary mb-2">Fluidity</h4>
+              <p className="text-sm text-on-surface-variant">Agile response times to design changes, ensuring project timelines remain intact.</p>
             </div>
           </motion.div>
           <motion.div 
             whileHover={{ y: -5 }}
-            className="md:col-span-2 bg-slate-50 p-12 rounded-xl flex items-center gap-12"
+            className="md:col-span-2 bg-surface-container-low p-12 rounded-xl flex items-center gap-12"
           >
             <div className="hidden md:block w-48 h-32 rounded-lg overflow-hidden shrink-0">
               <img 
@@ -176,8 +176,8 @@ const About = () => {
               />
             </div>
             <div>
-              <h3 className="font-bold text-2xl text-slate-900 mb-3">Sydney Local. Global Standards.</h3>
-              <p className="text-slate-600">Based in Bankstown, we serve the entire Sydney basin with international-grade estimating methodologies used by global civil firms.</p>
+              <h3 className="font-headline font-bold text-2xl text-primary mb-3">Sydney Local. Global Standards.</h3>
+              <p className="text-on-surface-variant">Based in Bankstown, we serve the entire Sydney basin with international-grade estimating methodologies used by global civil firms.</p>
             </div>
           </motion.div>
         </div>

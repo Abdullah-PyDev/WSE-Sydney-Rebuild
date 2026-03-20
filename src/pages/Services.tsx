@@ -43,7 +43,7 @@ const Typewriter = ({ phrases, delay = 0, speed = 100, deleteSpeed = 50, pause =
   return (
     <span className="relative">
       {text}
-      <span className="inline-block w-[3px] h-[0.8em] bg-secondary ml-1 align-middle animate-pulse" />
+      <span className="inline-block w-[3px] h-[0.8em] bg-blue-400 ml-1 align-middle animate-pulse" />
     </span>
   );
 };
@@ -88,15 +88,15 @@ const Services = () => {
 
   return (
     <main className="pt-20">
-      <section ref={heroRef} className="relative min-h-[800px] flex items-center overflow-hidden bg-surface-container-low px-8">
+      <section ref={heroRef} className="relative min-h-[800px] flex items-center overflow-hidden bg-primary px-8">
         <motion.div 
           style={{ y: backgroundY }}
           className="absolute inset-0 z-0"
         >
-          <div className="absolute inset-0 bg-gradient-to-r from-white via-white/95 to-transparent z-10"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-primary via-primary/90 to-transparent z-10"></div>
           <img 
             alt="Blueprint" 
-            className="w-full h-full object-cover opacity-10" 
+            className="w-full h-full object-cover opacity-30" 
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuDj5O6tpaDcBtbszy1Y_0WojtLKOT6JkjF5AHKiglzJkMNNOkop7NFdpcG2ERyzsjetCHxmkGUSU5piqYJ9_2wsVfKo-rtrZZSsu_hRpuVkgFye9yDutAYjdidr1WvrziutdFo7QYt7rCvZvfj4ETcpCOIDpm0c9yIF91IOF3xOL1-1nfHb4dpLwx7WVNfaGnkdaBtR6XHSvbDo38Ce3n4Bji24T0uyl_IAyzOYW4fiMMfMlTnYpLX8qv0W6SXG-to7DvzvKgBlZ8I" 
           />
         </motion.div>
@@ -110,24 +110,24 @@ const Services = () => {
             animate="visible"
             className="space-y-8"
           >
-            <motion.div variants={itemVariants} className="inline-flex items-center gap-2 px-3 py-1 rounded bg-secondary-container text-primary text-xs font-bold tracking-widest uppercase font-body border border-outline-variant">
+            <motion.div variants={itemVariants} className="inline-flex items-center gap-2 px-3 py-1 rounded bg-primary-container text-blue-200 text-xs font-bold tracking-widest uppercase font-body">
               <ShieldCheck size={14} />
               Industry Certified Accuracy
             </motion.div>
-            <motion.h1 variants={itemVariants} className="text-on-surface font-headline text-5xl md:text-7xl font-extrabold leading-[1.1] tracking-tight min-h-[2.2em] md:min-h-[2.2em]">
+            <motion.h1 variants={itemVariants} className="text-white font-headline text-5xl md:text-7xl font-extrabold leading-[1.1] tracking-tight min-h-[2.2em] md:min-h-[2.2em]">
               Precision Engineering. <br/>
-              <span className="text-primary">
+              <span className="text-blue-400">
                 <Typewriter phrases={phrases} />
               </span>
             </motion.h1>
-            <motion.p variants={itemVariants} className="text-on-surface-variant text-lg md:text-xl max-w-lg leading-relaxed font-body">
+            <motion.p variants={itemVariants} className="text-blue-100 text-lg md:text-xl max-w-lg leading-relaxed opacity-90 font-body">
               Australia's leading experts in Water & Sewer Estimating with a 24-48h turnaround. Reducing risk and ensuring compliance for Sydney's most complex projects.
             </motion.p>
             <motion.div variants={itemVariants} className="flex flex-wrap gap-4 pt-4">
-              <Link to="/request" className="bg-primary text-on-primary px-8 py-4 rounded-md font-bold text-base hover:bg-primary-container transition-all shadow-xl shadow-primary/20 font-body">
+              <Link to="/request" className="bg-blue-400 text-primary px-8 py-4 rounded-md font-bold text-base hover:bg-blue-300 transition-all shadow-xl shadow-black/20 font-body">
                 Request a BOQ
               </Link>
-              <Link to="/services/detail" className="border border-outline-variant bg-surface-container-lowest text-on-surface-variant px-8 py-4 rounded-md font-bold text-base hover:bg-surface-container-low transition-all font-body">
+              <Link to="/services/detail" className="border border-blue-400/30 bg-white/5 backdrop-blur-sm text-white px-8 py-4 rounded-md font-bold text-base hover:bg-white/10 transition-all font-body">
                 Our Services
               </Link>
             </motion.div>
@@ -139,27 +139,27 @@ const Services = () => {
             className="hidden md:block relative"
           >
             <div className="absolute -inset-4 bg-blue-500/20 blur-3xl rounded-full"></div>
-            <div className="relative bg-surface-container-lowest p-8 rounded-xl shadow-2xl border-l-4 border-primary">
+            <div className="relative bg-white p-8 rounded-xl shadow-2xl border-l-4 border-primary">
               <div className="flex items-center justify-between mb-8">
                 <span className="font-headline font-bold text-primary">Live Estimate Dashboard</span>
-                <span className="text-xs font-bold text-outline uppercase tracking-widest font-body">Active Status</span>
+                <span className="text-xs font-bold text-slate-400 uppercase tracking-widest font-body">Active Status</span>
               </div>
               <div className="space-y-6">
-                <div className="h-2 w-full bg-surface-container rounded-full overflow-hidden">
+                <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
                   <motion.div 
                     initial={{ width: 0 }}
                     animate={{ width: "75%" }}
                     transition={{ delay: 1.5, duration: 1.5, ease: "easeInOut" }}
-                    className="h-full bg-gradient-to-r from-primary to-secondary"
+                    className="h-full bg-gradient-to-r from-primary to-blue-400"
                   ></motion.div>
                 </div>
                 <div className="grid grid-cols-2 gap-4 font-body">
-                  <div className="p-4 bg-surface-container-low rounded-md">
-                    <p className="text-[10px] uppercase tracking-wider text-outline mb-1">Response Time</p>
+                  <div className="p-4 bg-slate-50 rounded-md">
+                    <p className="text-[10px] uppercase tracking-wider text-slate-400 mb-1">Response Time</p>
                     <p className="text-2xl font-headline font-extrabold text-primary">24h</p>
                   </div>
-                  <div className="p-4 bg-surface-container-low rounded-md">
-                    <p className="text-[10px] uppercase tracking-wider text-outline mb-1">Accuracy Rate</p>
+                  <div className="p-4 bg-slate-50 rounded-md">
+                    <p className="text-[10px] uppercase tracking-wider text-slate-400 mb-1">Accuracy Rate</p>
                     <p className="text-2xl font-headline font-extrabold text-primary">99.8%</p>
                   </div>
                 </div>
@@ -169,9 +169,9 @@ const Services = () => {
         </motion.div>
       </section>
 
-      <section className="py-12 bg-surface-container-low border-y border-outline-variant overflow-hidden">
+      <section className="py-12 bg-slate-50 border-y border-slate-200 overflow-hidden">
         <div className="max-w-7xl mx-auto px-8 mb-8">
-          <p className="text-center text-[10px] font-bold uppercase tracking-[0.2em] text-outline font-body">Trusted by Tier 1 Engineering Firms & Developers</p>
+          <p className="text-center text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 font-body">Trusted by Tier 1 Engineering Firms & Developers</p>
         </div>
         <div className="relative flex overflow-x-hidden">
           <motion.div 
@@ -197,48 +197,48 @@ const Services = () => {
           </motion.div>
           
           {/* Gradient masks for smooth fade edges */}
-          <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-surface-container-low to-transparent z-10"></div>
-          <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-surface-container-low to-transparent z-10"></div>
+          <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-slate-50 to-transparent z-10"></div>
+          <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-slate-50 to-transparent z-10"></div>
         </div>
       </section>
 
-      <section className="py-24 px-8 bg-surface-container-lowest">
+      <section className="py-24 px-8 bg-white">
         <div className="max-w-7xl mx-auto">
           <div className="mb-16">
             <h2 className="font-headline text-3xl font-extrabold text-primary mb-4">Specialist Engineering Services</h2>
             <div className="h-1.5 w-24 bg-primary"></div>
           </div>
           <div className="grid md:grid-cols-3 gap-8 font-body">
-            <motion.div whileHover={{ y: -10 }} className="group p-8 bg-surface-container-lowest border-l-4 border-primary shadow-sm hover:shadow-xl transition-all duration-300">
-              <div className="w-12 h-12 flex items-center justify-center bg-surface-container-low rounded-md text-primary mb-6 group-hover:bg-primary group-hover:text-on-primary transition-colors">
+            <motion.div whileHover={{ y: -10 }} className="group p-8 bg-white border-l-4 border-primary shadow-sm hover:shadow-xl transition-all duration-300">
+              <div className="w-12 h-12 flex items-center justify-center bg-slate-50 rounded-md text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-colors">
                 <Droplets size={24} />
               </div>
               <h3 className="font-headline text-xl font-bold text-primary mb-4">Water Reticulation & Renewals</h3>
-              <p className="text-on-surface-variant text-sm leading-relaxed mb-6">
+              <p className="text-slate-600 text-sm leading-relaxed mb-6">
                 Detailed estimation for potable water networks, recycled water infrastructure, and major trunk renewals with strict adherence to Sydney Water standards.
               </p>
               <Link to="/services/detail" className="text-primary font-bold text-xs uppercase tracking-widest flex items-center gap-2 group-hover:underline">
                 View Capability <ArrowRight size={14} />
               </Link>
             </motion.div>
-            <motion.div whileHover={{ y: -10 }} className="group p-8 bg-surface-container-lowest border-l-4 border-secondary shadow-sm hover:shadow-xl transition-all duration-300">
-              <div className="w-12 h-12 flex items-center justify-center bg-surface-container-low rounded-md text-secondary mb-6 group-hover:bg-secondary group-hover:text-on-secondary transition-colors">
+            <motion.div whileHover={{ y: -10 }} className="group p-8 bg-white border-l-4 border-blue-500 shadow-sm hover:shadow-xl transition-all duration-300">
+              <div className="w-12 h-12 flex items-center justify-center bg-slate-50 rounded-md text-blue-500 mb-6 group-hover:bg-blue-500 group-hover:text-white transition-colors">
                 <Settings size={24} />
               </div>
               <h3 className="font-headline text-xl font-bold text-primary mb-4">Sewer Reticulation & Pump Stations</h3>
-              <p className="text-on-surface-variant text-sm leading-relaxed mb-6">
+              <p className="text-slate-600 text-sm leading-relaxed mb-6">
                 Expert analysis of gravity sewer systems, rising mains, and pumping station components with integrated risk assessments and BOQ precision.
               </p>
               <Link to="/services/detail" className="text-primary font-bold text-xs uppercase tracking-widest flex items-center gap-2 group-hover:underline">
                 View Capability <ArrowRight size={14} />
               </Link>
             </motion.div>
-            <motion.div whileHover={{ y: -10 }} className="group p-8 bg-surface-container-lowest border-l-4 border-tertiary shadow-sm hover:shadow-xl transition-all duration-300">
-              <div className="w-12 h-12 flex items-center justify-center bg-surface-container-low rounded-md text-tertiary mb-6 group-hover:bg-tertiary group-hover:text-on-tertiary transition-colors">
+            <motion.div whileHover={{ y: -10 }} className="group p-8 bg-white border-l-4 border-emerald-500 shadow-sm hover:shadow-xl transition-all duration-300">
+              <div className="w-12 h-12 flex items-center justify-center bg-slate-50 rounded-md text-emerald-500 mb-6 group-hover:bg-emerald-500 group-hover:text-white transition-colors">
                 <Waves size={24} />
               </div>
               <h3 className="font-headline text-xl font-bold text-primary mb-4">Stormwater & OSD Systems</h3>
-              <p className="text-on-surface-variant text-sm leading-relaxed mb-6">
+              <p className="text-slate-600 text-sm leading-relaxed mb-6">
                 From minor pit and pipe works to complex On-site Stormwater Detention (OSD) basins and quality treatment systems for large-scale developments.
               </p>
               <Link to="/services/detail" className="text-primary font-bold text-xs uppercase tracking-widest flex items-center gap-2 group-hover:underline">
@@ -249,56 +249,56 @@ const Services = () => {
         </div>
       </section>
 
-      <section className="py-24 px-8 bg-surface-container-low">
+      <section className="py-24 px-8 bg-slate-50">
         <div className="max-w-7xl mx-auto">
           <div className="grid md:grid-cols-12 gap-6">
             <div className="md:col-span-4 flex flex-col justify-center">
               <h2 className="font-headline text-4xl font-extrabold text-primary mb-6">Why Civil Engineers Choose WSE.</h2>
-              <p className="text-on-surface-variant leading-relaxed font-body">
+              <p className="text-slate-600 leading-relaxed font-body">
                 Our estimating methodology is rooted in structural accuracy and regional compliance, ensuring your tenders are competitive and technically sound.
               </p>
             </div>
-            <div className="md:col-span-4 bg-surface-container-lowest p-10 rounded-xl shadow-sm flex flex-col items-start gap-4 font-body">
-              <span className="text-4xl font-headline font-black text-surface-container">01</span>
-              <div className="w-10 h-10 bg-surface-container-low rounded flex items-center justify-center text-primary">
+            <div className="md:col-span-4 bg-white p-10 rounded-xl shadow-sm flex flex-col items-start gap-4 font-body">
+              <span className="text-4xl font-headline font-black text-slate-100">01</span>
+              <div className="w-10 h-10 bg-slate-50 rounded flex items-center justify-center text-primary">
                 <History size={20} />
               </div>
               <h4 className="font-headline font-bold text-lg">15+ Years Experience</h4>
-              <p className="text-xs text-outline uppercase tracking-wider">Proven Industry Track Record</p>
+              <p className="text-xs text-slate-400 uppercase tracking-wider">Proven Industry Track Record</p>
             </div>
-            <div className="md:col-span-4 bg-secondary-container p-10 rounded-xl shadow-sm border border-outline-variant flex flex-col items-start gap-4 text-primary font-body">
-              <span className="text-4xl font-headline font-black text-on-secondary-container opacity-10">02</span>
-              <div className="w-10 h-10 bg-surface-container-lowest rounded flex items-center justify-center text-primary shadow-sm">
+            <div className="md:col-span-4 bg-primary p-10 rounded-xl shadow-xl flex flex-col items-start gap-4 text-white font-body">
+              <span className="text-4xl font-headline font-black text-white/10">02</span>
+              <div className="w-10 h-10 bg-white/10 rounded flex items-center justify-center text-blue-300">
                 <ShieldCheck size={20} />
               </div>
               <h4 className="font-headline font-bold text-lg">Sydney Water Accredited</h4>
-              <p className="text-xs text-secondary uppercase tracking-wider">Certified Compliance Standards</p>
+              <p className="text-xs text-blue-300 uppercase tracking-wider">Certified Compliance Standards</p>
             </div>
-            <div className="md:col-span-8 bg-surface-container-lowest p-10 rounded-xl flex flex-col md:flex-row items-center gap-8 border border-outline-variant font-body">
+            <div className="md:col-span-8 bg-white p-10 rounded-xl flex flex-col md:flex-row items-center gap-8 border border-slate-100 font-body">
               <div className="flex-1">
-                <span className="text-4xl font-headline font-black text-surface-container">03</span>
+                <span className="text-4xl font-headline font-black text-slate-100">03</span>
                 <h4 className="font-headline font-bold text-xl mt-4 mb-2">National Capability</h4>
-                <p className="text-on-surface-variant text-sm">Strategic presence in Sydney (Bankstown HQ), Melbourne, and Brisbane to service infrastructure projects nationwide.</p>
+                <p className="text-slate-600 text-sm">Strategic presence in Sydney (Bankstown HQ), Melbourne, and Brisbane to service infrastructure projects nationwide.</p>
               </div>
               <div className="flex gap-4">
-                <div className="px-4 py-2 bg-surface-container-low rounded-md text-[10px] font-bold text-primary shadow-sm border border-outline-variant uppercase tracking-widest">Bankstown</div>
-                <div className="px-4 py-2 bg-surface-container-low rounded-md text-[10px] font-bold text-primary shadow-sm border border-outline-variant uppercase tracking-widest">Melbourne</div>
-                <div className="px-4 py-2 bg-surface-container-low rounded-md text-[10px] font-bold text-primary shadow-sm border border-outline-variant uppercase tracking-widest">Brisbane</div>
+                <div className="px-4 py-2 bg-slate-50 rounded-md text-[10px] font-bold text-primary shadow-sm border border-slate-200 uppercase tracking-widest">Bankstown</div>
+                <div className="px-4 py-2 bg-slate-50 rounded-md text-[10px] font-bold text-primary shadow-sm border border-slate-200 uppercase tracking-widest">Melbourne</div>
+                <div className="px-4 py-2 bg-slate-50 rounded-md text-[10px] font-bold text-primary shadow-sm border border-slate-200 uppercase tracking-widest">Brisbane</div>
               </div>
             </div>
-            <div className="md:col-span-4 bg-tertiary-container p-10 rounded-xl border border-outline-variant flex flex-col justify-end text-on-tertiary-container font-body">
-              <p className="text-sm font-medium mb-4 italic text-on-tertiary-container opacity-80">"The fastest turnaround in the sector without compromising on technical detail."</p>
-              <p className="text-[10px] uppercase font-bold tracking-widest text-tertiary">Project Director, AustInfra</p>
+            <div className="md:col-span-4 bg-emerald-900 p-10 rounded-xl flex flex-col justify-end text-white font-body">
+              <p className="text-sm font-medium mb-4 italic opacity-80">"The fastest turnaround in the sector without compromising on technical detail."</p>
+              <p className="text-[10px] uppercase font-bold tracking-widest text-emerald-400">Project Director, AustInfra</p>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="py-24 px-8 bg-surface-container-lowest">
+      <section className="py-24 px-8 bg-white">
         <div className="max-w-7xl mx-auto">
           <div className="mb-16 text-center">
             <h2 className="font-headline text-3xl md:text-4xl font-extrabold text-primary mb-4">Project Gallery</h2>
-            <p className="text-on-surface-variant max-w-2xl mx-auto font-body">A showcase of our precision estimating work across major water and sewer infrastructure projects in Australia.</p>
+            <p className="text-slate-500 max-w-2xl mx-auto font-body">A showcase of our precision estimating work across major water and sewer infrastructure projects in Australia.</p>
             <div className="h-1.5 w-24 bg-primary mx-auto mt-6"></div>
           </div>
           
@@ -353,7 +353,7 @@ const Services = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className="group relative overflow-hidden rounded-xl shadow-lg bg-surface-container-low"
+                className="group relative overflow-hidden rounded-xl shadow-lg bg-slate-50"
               >
                 <div className="aspect-[4/3] overflow-hidden relative">
                   <img 
@@ -365,12 +365,12 @@ const Services = () => {
                   {/* Subtle gradient overlay that's always there but faint */}
                   <div className="absolute inset-0 bg-gradient-to-t from-primary/40 to-transparent opacity-60 group-hover:opacity-0 transition-opacity duration-500"></div>
                 </div>
-                <div className="p-6 bg-surface-container-lowest relative z-10">
+                <div className="p-6 bg-white relative z-10">
                   <div className="flex justify-between items-start mb-2">
-                    <h3 className="font-headline font-bold text-primary text-lg group-hover:text-secondary transition-colors duration-300">{project.title}</h3>
-                    <span className="text-[10px] font-bold text-secondary bg-secondary-container px-2 py-1 rounded uppercase tracking-wider">{project.location}</span>
+                    <h3 className="font-headline font-bold text-primary text-lg group-hover:text-blue-600 transition-colors duration-300">{project.title}</h3>
+                    <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded uppercase tracking-wider">{project.location}</span>
                   </div>
-                  <p className="text-on-surface-variant text-sm leading-relaxed font-body line-clamp-2">
+                  <p className="text-slate-600 text-sm leading-relaxed font-body line-clamp-2">
                     {project.description}
                   </p>
                 </div>
@@ -383,17 +383,17 @@ const Services = () => {
                       animate={{ y: 0, opacity: 1 }}
                       className="space-y-4"
                     >
-                      <div className="w-10 h-10 rounded-full bg-secondary/20 flex items-center justify-center text-on-secondary-container mb-2">
+                      <div className="w-10 h-10 rounded-full bg-blue-400/20 flex items-center justify-center text-blue-300 mb-2">
                         <Plus size={20} />
                       </div>
-                      <h4 className="text-on-primary font-headline font-bold text-xl">{project.title}</h4>
-                      <p className="text-on-primary-container/80 font-body text-xs leading-relaxed">
+                      <h4 className="text-white font-headline font-bold text-xl">{project.title}</h4>
+                      <p className="text-blue-100/80 font-body text-xs leading-relaxed">
                         Precision estimating delivered with 99.8% accuracy. Click to view technical specifications and project metrics.
                       </p>
                       <div className="pt-2">
                         <Link 
                           to={`/projects/${project.id}`} 
-                          className="inline-flex items-center gap-2 bg-secondary text-on-secondary px-6 py-2.5 rounded font-bold text-xs uppercase tracking-widest hover:bg-surface-container-lowest hover:text-primary transition-all duration-300"
+                          className="inline-flex items-center gap-2 bg-blue-400 text-primary px-6 py-2.5 rounded font-bold text-xs uppercase tracking-widest hover:bg-white transition-all duration-300"
                         >
                           View Case Study <ArrowRight size={14} />
                         </Link>
@@ -407,11 +407,11 @@ const Services = () => {
         </div>
       </section>
 
-      <section className="py-24 px-8 bg-surface-container-lowest overflow-hidden">
+      <section className="py-24 px-8 bg-white overflow-hidden">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="font-headline text-3xl md:text-4xl font-extrabold text-primary mb-4">Client Testimonials</h2>
-            <p className="text-on-surface-variant max-w-2xl mx-auto font-body">Hear from the industry leaders who trust WSE Sydney for their infrastructure estimating needs.</p>
+            <p className="text-slate-500 max-w-2xl mx-auto font-body">Hear from the industry leaders who trust WSE Sydney for their infrastructure estimating needs.</p>
           </div>
           
           <TestimonialCarousel />
@@ -419,14 +419,14 @@ const Services = () => {
       </section>
 
       <section className="py-24 px-8">
-        <div className="max-w-5xl mx-auto rounded-3xl bg-gradient-to-br from-secondary-container to-surface-container-lowest border border-outline-variant p-12 md:p-20 text-center relative overflow-hidden shadow-xl shadow-secondary/5">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -mr-32 -mt-32 blur-3xl"></div>
+        <div className="max-w-5xl mx-auto rounded-2xl bg-gradient-to-br from-primary to-primary-container p-12 md:p-20 text-center relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-32 -mt-32 blur-3xl"></div>
           <div className="relative z-10">
-            <h2 className="font-headline text-3xl md:text-5xl font-extrabold text-on-surface mb-8">Ready to secure your project's accuracy?</h2>
-            <p className="text-on-surface-variant text-lg mb-12 max-w-2xl mx-auto font-body">Download our rate card or request a Bill of Quantities today for a 48h guaranteed response.</p>
+            <h2 className="font-headline text-3xl md:text-5xl font-extrabold text-white mb-8">Ready to secure your project's accuracy?</h2>
+            <p className="text-blue-100 text-lg mb-12 max-w-2xl mx-auto opacity-80 font-body">Download our rate card or request a Bill of Quantities today for a 48h guaranteed response.</p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center font-body">
-              <Link to="/request" className="bg-primary text-on-primary px-10 py-4 rounded-xl font-bold text-base hover:bg-primary-container transition-all shadow-lg shadow-primary/20">Request a BOQ</Link>
-              <button className="bg-surface-container-lowest border border-outline-variant text-on-surface-variant px-10 py-4 rounded-xl font-bold text-base hover:bg-surface-container-low transition-all">Download Rate Card</button>
+              <Link to="/request" className="bg-white text-primary px-10 py-4 rounded-md font-bold text-base hover:bg-blue-100 transition-all">Request a BOQ</Link>
+              <button className="border border-white/30 text-white px-10 py-4 rounded-md font-bold text-base hover:bg-white/10 transition-all">Download Rate Card</button>
             </div>
           </div>
         </div>

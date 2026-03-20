@@ -55,17 +55,17 @@ const Locations = () => {
                   <div className="w-3 h-3 bg-surface-tint rounded-full ring-4 ring-surface-tint/20"></div>
                 </div>
               </div>
-              <div className="absolute bottom-6 left-6 p-6 bg-surface-container-lowest/90 text-on-surface backdrop-blur-md rounded-lg max-w-xs border border-white/20 shadow-xl">
+              <div className="absolute bottom-6 left-6 p-6 bg-primary/90 text-white backdrop-blur-md rounded-lg max-w-xs">
                 <h4 className="font-headline font-bold text-lg mb-2">Coverage Statistics</h4>
                 <div className="flex justify-between items-end gap-4">
                   <div>
-                    <span className="block text-2xl font-bold font-headline text-primary">98%</span>
-                    <span className="text-[10px] uppercase font-body text-on-surface-variant">NSW Market Coverage</span>
+                    <span className="block text-2xl font-bold font-headline">98%</span>
+                    <span className="text-[10px] uppercase font-body opacity-70">NSW Market Coverage</span>
                   </div>
-                  <div className="w-[1px] h-10 bg-outline-variant"></div>
+                  <div className="w-[1px] h-10 bg-white/20"></div>
                   <div>
-                    <span className="block text-2xl font-bold font-headline text-primary">48h</span>
-                    <span className="text-[10px] uppercase font-body text-on-surface-variant">Average Response</span>
+                    <span className="block text-2xl font-bold font-headline">48h</span>
+                    <span className="text-[10px] uppercase font-body opacity-70">Average Response</span>
                   </div>
                 </div>
               </div>
@@ -139,22 +139,22 @@ const Locations = () => {
       </section>
 
       <section className="max-w-7xl mx-auto px-8 py-20">
-        <div className="bg-surface-container-low border border-outline-variant p-12 rounded-2xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-12">
-          <div className="absolute inset-0 opacity-5 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
+        <div className="bg-primary-container p-12 rounded-2xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-12">
+          <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
           <div className="relative z-10 md:w-2/3">
-            <h2 className="font-headline text-3xl font-bold text-primary mb-4">National Service Capability</h2>
-            <p className="text-on-surface-variant text-lg leading-relaxed font-body">
+            <h2 className="font-headline text-3xl font-bold text-white mb-4">National Service Capability</h2>
+            <p className="text-white/80 text-lg leading-relaxed font-body">
               While our hubs serve as regional command centers, our estimating teams are equipped to handle infrastructure projects in any territory. We utilize advanced geospatial data and local cost indices to ensure precision anywhere in Australia.
             </p>
           </div>
           <div className="relative z-10 flex gap-4">
-            <div className="bg-surface-container-lowest p-6 rounded-lg shadow-sm border border-outline-variant">
-              <span className="block text-primary text-3xl font-black mb-1 font-headline">150+</span>
-              <span className="text-on-surface-variant text-[10px] uppercase tracking-widest font-bold font-body">Projects Annually</span>
+            <div className="bg-white/10 p-6 rounded-lg backdrop-blur-md">
+              <span className="block text-white text-3xl font-black mb-1 font-headline">150+</span>
+              <span className="text-white/60 text-[10px] uppercase tracking-widest font-bold font-body">Projects Annually</span>
             </div>
-            <div className="bg-surface-container-lowest p-6 rounded-lg shadow-sm border border-outline-variant">
-              <span className="block text-primary text-3xl font-black mb-1 font-headline">24h</span>
-              <span className="text-on-surface-variant text-[10px] uppercase tracking-widest font-bold font-body">Local Support</span>
+            <div className="bg-white/10 p-6 rounded-lg backdrop-blur-md">
+              <span className="block text-white text-3xl font-black mb-1 font-headline">24h</span>
+              <span className="text-white/60 text-[10px] uppercase tracking-widest font-bold font-body">Local Support</span>
             </div>
           </div>
         </div>
