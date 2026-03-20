@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, useScroll, useTransform } from 'motion/react';
 import { Link } from 'react-router-dom';
-import { Droplets, Settings, Waves, ArrowRight, History, ShieldCheck, Globe } from 'lucide-react';
+import { Droplets, Settings, Waves, ArrowRight, History, ShieldCheck, Globe, Plus } from 'lucide-react';
 import TestimonialCarousel from '../components/TestimonialCarousel';
 
 const Typewriter = ({ phrases, delay = 0, speed = 100, deleteSpeed = 50, pause = 2000 }: { 
@@ -355,29 +355,50 @@ const Services = () => {
                 transition={{ delay: index * 0.1 }}
                 className="group relative overflow-hidden rounded-xl shadow-lg bg-slate-50"
               >
-                <div className="aspect-[4/3] overflow-hidden">
+                <div className="aspect-[4/3] overflow-hidden relative">
                   <img 
                     src={project.image} 
                     alt={project.title}
                     referrerPolicy="no-referrer"
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                   />
+                  {/* Subtle gradient overlay that's always there but faint */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-primary/40 to-transparent opacity-60 group-hover:opacity-0 transition-opacity duration-500"></div>
                 </div>
-                <div className="p-6">
+                <div className="p-6 bg-white relative z-10">
                   <div className="flex justify-between items-start mb-2">
-                    <h3 className="font-headline font-bold text-primary text-lg">{project.title}</h3>
+                    <h3 className="font-headline font-bold text-primary text-lg group-hover:text-blue-600 transition-colors duration-300">{project.title}</h3>
                     <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded uppercase tracking-wider">{project.location}</span>
                   </div>
-                  <p className="text-slate-600 text-sm leading-relaxed font-body">
+                  <p className="text-slate-600 text-sm leading-relaxed font-body line-clamp-2">
                     {project.description}
                   </p>
                 </div>
-                <div className="absolute inset-0 bg-primary/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center p-8">
-                  <div className="text-center">
-                    <p className="text-white font-body text-sm mb-4">Precision estimating delivered with 99.8% accuracy for this project.</p>
-                    <Link to={`/projects/${project.id}`} className="inline-flex items-center gap-2 text-blue-300 font-bold text-xs uppercase tracking-widest hover:text-white transition-colors">
-                      View Project Details <ArrowRight size={14} />
-                    </Link>
+                
+                {/* Improved Hover Overlay */}
+                <div className="absolute inset-0 z-20 opacity-0 group-hover:opacity-100 transition-all duration-500 pointer-events-none group-hover:pointer-events-auto">
+                  <div className="absolute inset-0 bg-primary/90 backdrop-blur-[2px] flex flex-col justify-end p-8 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500 ease-out">
+                    <motion.div 
+                      initial={false}
+                      animate={{ y: 0, opacity: 1 }}
+                      className="space-y-4"
+                    >
+                      <div className="w-10 h-10 rounded-full bg-blue-400/20 flex items-center justify-center text-blue-300 mb-2">
+                        <Plus size={20} />
+                      </div>
+                      <h4 className="text-white font-headline font-bold text-xl">{project.title}</h4>
+                      <p className="text-blue-100/80 font-body text-xs leading-relaxed">
+                        Precision estimating delivered with 99.8% accuracy. Click to view technical specifications and project metrics.
+                      </p>
+                      <div className="pt-2">
+                        <Link 
+                          to={`/projects/${project.id}`} 
+                          className="inline-flex items-center gap-2 bg-blue-400 text-primary px-6 py-2.5 rounded font-bold text-xs uppercase tracking-widest hover:bg-white transition-all duration-300"
+                        >
+                          View Case Study <ArrowRight size={14} />
+                        </Link>
+                      </div>
+                    </motion.div>
                   </div>
                 </div>
               </motion.div>

@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { motion } from 'motion/react';
-import { ArrowLeft, MapPin, Calendar, ShieldCheck, BarChart3, Clock } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+import { ArrowLeft, MapPin, Calendar, ShieldCheck, BarChart3, Clock, X, ChevronLeft, ChevronRight, ZoomIn } from 'lucide-react';
 
 const projectsData = {
   "sewer-trunk-renewal": {
@@ -105,6 +105,8 @@ const projectsData = {
 const ProjectDetail = () => {
   const { id } = useParams<{ id: string }>();
   const project = projectsData[id as keyof typeof projectsData];
+  
+  const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
 
   if (!project) {
     return (
@@ -174,9 +176,13 @@ const ProjectDetail = () => {
                       initial={{ opacity: 0, y: 20 }}
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true }}
-                      className="rounded-2xl overflow-hidden shadow-lg"
+                      className="rounded-2xl overflow-hidden shadow-lg group cursor-zoom-in relative"
+                      onClick={() => setSelectedImageIndex(idx)}
                     >
-                      <img src={img} alt={`${project.title} ${idx + 1}`} className="w-full h-auto object-cover" referrerPolicy="no-referrer" />
+                      <img src={img} alt={`${project.title} ${idx + 1}`} className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105" referrerPolicy="no-referrer" />
+                      <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/20 transition-colors duration-300 flex items-center justify-center">
+                        <ZoomIn className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={32} />
+                      </div>
                     </motion.div>
                   ))}
                 </div>
@@ -200,6 +206,67 @@ const ProjectDetail = () => {
           </div>
         </div>
       </section>
+
+      {/* Lightbox Gallery */}
+      <AnimatePresence>
+        {selectedImageIndex !== null && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] bg-primary/95 backdrop-blur-xl flex items-center justify-center p-4 md:p-8"
+            onClick={() => setSelectedImageIndex(null)}
+          >
+            <button 
+              className="absolute top-6 right-6 text-white/70 hover:text-white transition-colors z-[110]"
+              onClick={(e) => { e.stopPropagation(); setSelectedImageIndex(null); }}
+            >
+              <X size={32} />
+            </button>
+
+            <div className="relative w-full max-w-5xl aspect-video flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
+              {project.images.length > 1 && (
+                <>
+                  <button 
+                    className="absolute left-0 md:-left-16 text-white/50 hover:text-white transition-colors p-2"
+                    onClick={() => setSelectedImageIndex((prev) => (prev! - 1 + project.images.length) % project.images.length)}
+                  >
+                    <ChevronLeft size={48} />
+                  </button>
+                  <button 
+                    className="absolute right-0 md:-right-16 text-white/50 hover:text-white transition-colors p-2"
+                    onClick={() => setSelectedImageIndex((prev) => (prev! + 1) % project.images.length)}
+                  >
+                    <ChevronRight size={48} />
+                  </button>
+                </>
+              )}
+
+              <motion.div
+                key={selectedImageIndex}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                className="w-full h-full flex items-center justify-center"
+              >
+                <img 
+                  src={project.images[selectedImageIndex]} 
+                  alt={`${project.title} gallery`} 
+                  className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
+                  referrerPolicy="no-referrer"
+                />
+              </motion.div>
+
+              <div className="absolute -bottom-12 left-0 right-0 text-center">
+                <p className="text-white/70 font-body text-sm">
+                  Image {selectedImageIndex + 1} of {project.images.length}
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </main>
   );
 };

@@ -12,10 +12,13 @@ import Locations from './pages/Locations';
 import About from './pages/About';
 import RequestBOQ from './pages/RequestBOQ';
 import ProjectDetail from './pages/ProjectDetail';
+import ChatBot from './components/ChatBot';
+import ScrollToTop from './components/ScrollToTop';
 
 export default function App() {
   return (
     <Router>
+      <ScrollToTop />
       <div className="min-h-screen flex flex-col">
         <Header />
         <div className="flex-grow">
@@ -30,6 +33,7 @@ export default function App() {
           </Routes>
         </div>
         <Footer />
+        <ChatBot />
       </div>
     </Router>
   );

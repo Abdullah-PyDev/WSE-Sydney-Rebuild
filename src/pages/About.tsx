@@ -50,7 +50,7 @@ const About = () => {
         </div>
       </header>
 
-      <section className="bg-surface-container py-24 px-8">
+      <section className="bg-surface-container py-24 px-8 overflow-hidden">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <motion.div 
@@ -72,11 +72,21 @@ const About = () => {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2 }}
-              className="space-y-8"
+              className="space-y-8 relative"
             >
-              <div>
-                <h2 className="font-headline font-bold text-4xl text-primary mb-2">Shoaib Saeed</h2>
-                <div className="text-surface-tint font-body font-semibold tracking-wide uppercase text-sm">Founder & Principal Estimator</div>
+              <div className="flex items-center gap-6 relative z-10">
+                <div>
+                  <h2 className="font-headline font-bold text-4xl text-primary mb-2">Shoaib Saeed</h2>
+                  <div className="text-surface-tint font-body font-semibold tracking-wide uppercase text-sm">Founder & Principal Estimator</div>
+                </div>
+                <div className="w-14 h-14 rounded-full bg-white shadow-sm border border-slate-100 p-2 flex items-center justify-center shrink-0">
+                  <img 
+                    src="/logo.png" 
+                    alt="WSE Sydney" 
+                    className="w-full h-full object-contain"
+                    referrerPolicy="no-referrer"
+                  />
+                </div>
               </div>
               <div className="space-y-6 text-on-surface-variant leading-relaxed text-lg font-body">
                 <p>

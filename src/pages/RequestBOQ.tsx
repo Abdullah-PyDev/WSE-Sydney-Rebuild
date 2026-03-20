@@ -41,14 +41,23 @@ const RequestBOQ = () => {
     formData.set('isUrgent', urgentCheckbox.checked.toString());
 
     try {
+      console.log('Submitting BOQ form data...');
       const response = await fetch('/api/send-boq', {
         method: 'POST',
         body: formData, // Sending as FormData
       });
+      console.log('Response received:', response.status, response.statusText);
 
       if (!response.ok) {
-        const result = await response.json();
-        throw new Error(result.error || 'Failed to send request');
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+          const result = await response.json();
+          throw new Error(result.error || 'Failed to send request');
+        } else {
+          const text = await response.text();
+          console.error('Non-JSON error response:', text);
+          throw new Error(`Server error: ${response.status} ${response.statusText}. Please try again later.`);
+        }
       }
 
       setIsSubmitted(true);
@@ -68,6 +77,27 @@ const RequestBOQ = () => {
       setDragActive(true);
     } else if (e.type === "dragleave") {
       setDragActive(false);
+    }
+  };
+
+  const handleDownloadSample = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    try {
+      const response = await fetch('/sample-boq.pdf');
+      if (!response.ok) throw new Error('Failed to fetch sample BOQ');
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'sample-boq.pdf';
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (error) {
+      console.error('Error downloading sample BOQ:', error);
+      // Fallback to direct link if fetch fails
+      window.open('/sample-boq.pdf', '_blank');
     }
   };
 
@@ -133,6 +163,27 @@ const RequestBOQ = () => {
               className="flex items-start space-x-4 p-4 rounded-xl bg-surface-container-low"
             >
               <div className="bg-primary-container p-3 rounded-lg text-white">
+                <FileText size={24} />
+              </div>
+              <div>
+                <h4 className="font-headline font-bold text-primary">Sample BOQ Output</h4>
+                <p className="text-sm text-on-surface-variant mb-3">See the level of detail and precision you can expect from our estimators.</p>
+                <button 
+                  onClick={handleDownloadSample}
+                  className="inline-flex items-center text-sm font-bold text-surface-tint hover:underline cursor-pointer bg-transparent border-none p-0"
+                >
+                  Download Sample BOQ (PDF)
+                </button>
+              </div>
+            </motion.div>
+
+            <motion.div 
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.4 }}
+              className="flex items-start space-x-4 p-4 rounded-xl bg-surface-container-low"
+            >
+              <div className="bg-primary-container p-3 rounded-lg text-white">
                 <Zap size={24} />
               </div>
               <div>
@@ -144,7 +195,7 @@ const RequestBOQ = () => {
             <motion.div 
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.4 }}
+              transition={{ delay: 0.5 }}
               className="flex items-start space-x-4 p-4 rounded-xl bg-surface-container-low"
             >
               <div className="bg-primary-container p-3 rounded-lg text-white">
