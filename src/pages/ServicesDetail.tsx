@@ -6,12 +6,12 @@ import { Droplets, Filter, Ruler, BarChart3, CheckCircle2, Zap, Award, Mail, Pho
 const ServicesDetail = () => {
   return (
     <main className="pt-20">
-      <section className="relative bg-slate-50 py-24 px-8 overflow-hidden border-b border-slate-200">
-        <div className="absolute inset-0 opacity-5">
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-white"></div>
+      <section className="relative bg-primary py-24 px-8 overflow-hidden">
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary to-primary-container"></div>
           <img 
             alt="Blueprint" 
-            className="w-full h-full object-cover mix-blend-multiply" 
+            className="w-full h-full object-cover mix-blend-overlay" 
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuDPQVYHLUZYXkYmtoP6Z00I9hYhHK7G8zG3t3mqiDZ9eIUXgYZKUgr9U2dprzDAxQmSFrNxG_sEatIQAm0Xa1yhWFRTZNNNoyjNh3pIeVFWo78LL2DImnNuJii3E2dDEDVjt9kaZWYAkIM8dGkGvFbU0t5v3OMDLq-jmb_cXh5rPl9QIXRva1Shv-0NWTjGfPbPmR2bVyMX2wEmuJogPky9yGZrrlNzufDbur59PaH4TNmp8uptACCsHeGGzo5lChif0jzux2fXw3o" 
           />
         </div>
@@ -22,11 +22,11 @@ const ServicesDetail = () => {
               animate={{ opacity: 1, y: 0 }}
               className="max-w-3xl"
             >
-              <span className="text-primary font-headline font-bold uppercase tracking-[0.2em] text-xs mb-4 block">Precision Engineering Estimating</span>
-              <h1 className="text-slate-900 text-5xl md:text-7xl font-extrabold tracking-tighter leading-tight mb-6">
+              <span className="text-blue-300 font-headline font-bold uppercase tracking-[0.2em] text-xs mb-4 block">Precision Engineering Estimating</span>
+              <h1 className="text-white text-5xl md:text-7xl font-extrabold tracking-tighter leading-tight mb-6">
                 First-Principles Hydraulic Valuation
               </h1>
-              <p className="text-slate-600 text-xl font-light leading-relaxed max-w-2xl font-body">
+              <p className="text-blue-100 text-xl font-light leading-relaxed max-w-2xl font-body">
                 We decompose complex infrastructure into its fundamental units of labor, material, and risk. No benchmarks—just raw data-driven clarity.
               </p>
             </motion.div>
@@ -36,9 +36,9 @@ const ServicesDetail = () => {
               transition={{ delay: 0.3 }}
               className="hidden lg:block"
             >
-              <div className="bg-white p-8 border-l-4 border-primary shadow-sm rounded-r-xl">
-                <div className="text-primary font-headline text-3xl font-bold">99.4%</div>
-                <div className="text-slate-500 text-xs font-bold uppercase tracking-wider font-body">Historical Accuracy</div>
+              <div className="bg-white/10 backdrop-blur-md p-8 border-l-4 border-blue-400">
+                <div className="text-white font-headline text-3xl font-bold">99.4%</div>
+                <div className="text-blue-300 text-xs font-bold uppercase tracking-wider font-body">Historical Accuracy</div>
               </div>
             </motion.div>
           </div>
@@ -139,18 +139,18 @@ const ServicesDetail = () => {
                 <div className="absolute inset-0 bg-primary w-3/4"></div>
               </div>
             </div>
-            <div className="md:col-span-2 bg-blue-50 border border-blue-100 p-10 relative overflow-hidden rounded-xl">
+            <div className="md:col-span-2 bg-primary text-white p-10 relative overflow-hidden">
               <div className="relative z-10">
-                <h3 className="text-2xl font-bold mb-2 font-headline text-primary">Orifice Plate Sizing</h3>
-                <p className="text-slate-600 text-sm">First-principles calculation of headwater levels vs discharge velocity.</p>
+                <h3 className="text-2xl font-bold mb-2 font-headline">Orifice Plate Sizing</h3>
+                <p className="text-blue-200 text-sm">First-principles calculation of headwater levels vs discharge velocity.</p>
               </div>
-              <div className="absolute bottom-0 right-0 opacity-10 text-primary">
+              <div className="absolute bottom-0 right-0 opacity-20">
                 <Droplets size={160} />
               </div>
             </div>
-            <div className="bg-emerald-50 border border-emerald-100 text-emerald-900 p-8 flex flex-col justify-center items-center text-center rounded-xl">
-              <Zap className="text-emerald-500 mb-2" size={32} />
-              <div className="text-xs uppercase tracking-[0.2em] font-bold text-emerald-600">Fast-Track</div>
+            <div className="bg-emerald-900 text-emerald-100 p-8 flex flex-col justify-center items-center text-center">
+              <Zap className="text-emerald-400 mb-2" size={32} />
+              <div className="text-xs uppercase tracking-[0.2em] font-bold">Fast-Track</div>
               <div className="text-xl font-bold font-headline">48hr Turnaround</div>
             </div>
             <div className="bg-slate-200 p-8 flex flex-col justify-center items-center text-center">
@@ -196,11 +196,11 @@ const ServicesDetail = () => {
         </div>
       </section>
 
-      <section className="py-24 px-8 bg-slate-50 border-y border-slate-200" id="pipeline">
+      <section className="py-24 px-8 bg-primary" id="pipeline">
         <div className="max-w-7xl mx-auto text-center font-body">
-          <h2 className="text-3xl font-extrabold text-primary mb-16 tracking-tight font-headline">The Precision Data Pipeline</h2>
+          <h2 className="text-3xl font-extrabold text-white mb-16 tracking-tight font-headline">The Precision Data Pipeline</h2>
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4 relative">
-            <div className="hidden md:block absolute top-1/2 left-0 w-full h-px bg-slate-200 -translate-y-1/2 z-0"></div>
+            <div className="hidden md:block absolute top-1/2 left-0 w-full h-px bg-white/10 -translate-y-1/2 z-0"></div>
             {[
               { id: 1, title: 'Quantification', desc: 'Automated Take-offs from BIM & CAD.' },
               { id: 2, title: 'Market Parity', desc: 'Real-time local material index updates.' },
@@ -208,12 +208,12 @@ const ServicesDetail = () => {
               { id: 4, title: 'Risk Stack', desc: 'Monte Carlo contingency modeling.' },
               { id: 5, title: 'BOQ Delivery', desc: 'Ready-for-tender final submission.', highlight: true }
             ].map((step) => (
-              <div key={step.id} className={`relative z-10 p-8 rounded-lg border ${step.highlight ? 'bg-emerald-50 border-emerald-200 shadow-sm' : 'bg-white border-slate-200 shadow-sm'} backdrop-blur-md`}>
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-4 font-bold ${step.highlight ? 'bg-emerald-500 text-white' : 'bg-primary text-white'}`}>
+              <div key={step.id} className={`relative z-10 p-8 rounded-lg border ${step.highlight ? 'bg-emerald-900 border-emerald-400/20' : 'bg-white/5 border-white/5'} backdrop-blur-md`}>
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-4 font-bold ${step.highlight ? 'bg-emerald-400 text-emerald-900' : 'bg-white text-primary'}`}>
                   {step.id}
                 </div>
-                <h4 className={`font-bold text-sm mb-2 ${step.highlight ? 'text-emerald-700' : 'text-primary'}`}>{step.title}</h4>
-                <p className={`text-xs ${step.highlight ? 'text-emerald-600' : 'text-slate-500'}`}>{step.desc}</p>
+                <h4 className={`font-bold text-sm mb-2 ${step.highlight ? 'text-emerald-400' : 'text-white'}`}>{step.title}</h4>
+                <p className={`text-xs ${step.highlight ? 'text-emerald-100' : 'text-blue-100/60'}`}>{step.desc}</p>
               </div>
             ))}
           </div>

@@ -119,26 +119,26 @@ const ProjectDetail = () => {
 
   return (
     <main className="pt-20">
-      <section className="bg-slate-50 py-20 px-8 border-b border-slate-200">
+      <section className="bg-primary py-20 px-8">
         <div className="max-w-7xl mx-auto">
-          <Link to="/services" className="inline-flex items-center gap-2 text-primary font-bold text-sm uppercase tracking-widest mb-8 hover:text-blue-700 transition-colors">
+          <Link to="/services" className="inline-flex items-center gap-2 text-blue-300 font-bold text-sm uppercase tracking-widest mb-8 hover:text-white transition-colors">
             <ArrowLeft size={16} /> Back to Services
           </Link>
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div>
-              <h1 className="text-slate-900 font-headline text-4xl md:text-6xl font-extrabold mb-4">{project.title}</h1>
-              <div className="flex flex-wrap gap-6 text-slate-500 font-body text-sm">
+              <h1 className="text-white font-headline text-4xl md:text-6xl font-extrabold mb-4">{project.title}</h1>
+              <div className="flex flex-wrap gap-6 text-blue-100/70 font-body text-sm">
                 <div className="flex items-center gap-2">
-                  <MapPin size={16} className="text-primary" /> {project.location}
+                  <MapPin size={16} className="text-blue-400" /> {project.location}
                 </div>
                 <div className="flex items-center gap-2">
-                  <Calendar size={16} className="text-primary" /> {project.date}
+                  <Calendar size={16} className="text-blue-400" /> {project.date}
                 </div>
               </div>
             </div>
-            <div className="bg-white border border-slate-200 p-6 rounded-xl shadow-sm">
-              <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-2">Project Status</p>
-              <p className="text-primary font-headline font-bold text-xl">Completed & Verified</p>
+            <div className="bg-white/10 backdrop-blur-md border border-white/20 p-6 rounded-xl">
+              <p className="text-blue-300 text-[10px] font-bold uppercase tracking-widest mb-2">Project Status</p>
+              <p className="text-white font-headline font-bold text-xl">Completed & Verified</p>
             </div>
           </div>
         </div>

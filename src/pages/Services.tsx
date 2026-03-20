@@ -88,15 +88,15 @@ const Services = () => {
 
   return (
     <main className="pt-20">
-      <section ref={heroRef} className="relative min-h-[800px] flex items-center overflow-hidden bg-slate-50 px-8">
+      <section ref={heroRef} className="relative min-h-[800px] flex items-center overflow-hidden bg-primary px-8">
         <motion.div 
           style={{ y: backgroundY }}
           className="absolute inset-0 z-0"
         >
-          <div className="absolute inset-0 bg-gradient-to-r from-white via-white/95 to-transparent z-10"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-primary via-primary/90 to-transparent z-10"></div>
           <img 
             alt="Blueprint" 
-            className="w-full h-full object-cover opacity-10" 
+            className="w-full h-full object-cover opacity-30" 
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuDj5O6tpaDcBtbszy1Y_0WojtLKOT6JkjF5AHKiglzJkMNNOkop7NFdpcG2ERyzsjetCHxmkGUSU5piqYJ9_2wsVfKo-rtrZZSsu_hRpuVkgFye9yDutAYjdidr1WvrziutdFo7QYt7rCvZvfj4ETcpCOIDpm0c9yIF91IOF3xOL1-1nfHb4dpLwx7WVNfaGnkdaBtR6XHSvbDo38Ce3n4Bji24T0uyl_IAyzOYW4fiMMfMlTnYpLX8qv0W6SXG-to7DvzvKgBlZ8I" 
           />
         </motion.div>
@@ -110,24 +110,24 @@ const Services = () => {
             animate="visible"
             className="space-y-8"
           >
-            <motion.div variants={itemVariants} className="inline-flex items-center gap-2 px-3 py-1 rounded bg-blue-50 text-primary text-xs font-bold tracking-widest uppercase font-body border border-blue-100">
+            <motion.div variants={itemVariants} className="inline-flex items-center gap-2 px-3 py-1 rounded bg-primary-container text-blue-200 text-xs font-bold tracking-widest uppercase font-body">
               <ShieldCheck size={14} />
               Industry Certified Accuracy
             </motion.div>
-            <motion.h1 variants={itemVariants} className="text-slate-900 font-headline text-5xl md:text-7xl font-extrabold leading-[1.1] tracking-tight min-h-[2.2em] md:min-h-[2.2em]">
+            <motion.h1 variants={itemVariants} className="text-white font-headline text-5xl md:text-7xl font-extrabold leading-[1.1] tracking-tight min-h-[2.2em] md:min-h-[2.2em]">
               Precision Engineering. <br/>
-              <span className="text-primary">
+              <span className="text-blue-400">
                 <Typewriter phrases={phrases} />
               </span>
             </motion.h1>
-            <motion.p variants={itemVariants} className="text-slate-600 text-lg md:text-xl max-w-lg leading-relaxed font-body">
+            <motion.p variants={itemVariants} className="text-blue-100 text-lg md:text-xl max-w-lg leading-relaxed opacity-90 font-body">
               Australia's leading experts in Water & Sewer Estimating with a 24-48h turnaround. Reducing risk and ensuring compliance for Sydney's most complex projects.
             </motion.p>
             <motion.div variants={itemVariants} className="flex flex-wrap gap-4 pt-4">
-              <Link to="/request" className="bg-primary text-white px-8 py-4 rounded-md font-bold text-base hover:bg-primary/90 transition-all shadow-xl shadow-primary/20 font-body">
+              <Link to="/request" className="bg-blue-400 text-primary px-8 py-4 rounded-md font-bold text-base hover:bg-blue-300 transition-all shadow-xl shadow-black/20 font-body">
                 Request a BOQ
               </Link>
-              <Link to="/services/detail" className="border border-slate-200 bg-white text-slate-700 px-8 py-4 rounded-md font-bold text-base hover:bg-slate-50 transition-all font-body">
+              <Link to="/services/detail" className="border border-blue-400/30 bg-white/5 backdrop-blur-sm text-white px-8 py-4 rounded-md font-bold text-base hover:bg-white/10 transition-all font-body">
                 Our Services
               </Link>
             </motion.div>
@@ -266,13 +266,13 @@ const Services = () => {
               <h4 className="font-headline font-bold text-lg">15+ Years Experience</h4>
               <p className="text-xs text-slate-400 uppercase tracking-wider">Proven Industry Track Record</p>
             </div>
-            <div className="md:col-span-4 bg-blue-50 p-10 rounded-xl shadow-sm border border-blue-100 flex flex-col items-start gap-4 text-primary font-body">
-              <span className="text-4xl font-headline font-black text-blue-100">02</span>
-              <div className="w-10 h-10 bg-white rounded flex items-center justify-center text-primary shadow-sm">
+            <div className="md:col-span-4 bg-primary p-10 rounded-xl shadow-xl flex flex-col items-start gap-4 text-white font-body">
+              <span className="text-4xl font-headline font-black text-white/10">02</span>
+              <div className="w-10 h-10 bg-white/10 rounded flex items-center justify-center text-blue-300">
                 <ShieldCheck size={20} />
               </div>
               <h4 className="font-headline font-bold text-lg">Sydney Water Accredited</h4>
-              <p className="text-xs text-blue-600 uppercase tracking-wider">Certified Compliance Standards</p>
+              <p className="text-xs text-blue-300 uppercase tracking-wider">Certified Compliance Standards</p>
             </div>
             <div className="md:col-span-8 bg-white p-10 rounded-xl flex flex-col md:flex-row items-center gap-8 border border-slate-100 font-body">
               <div className="flex-1">
@@ -286,9 +286,9 @@ const Services = () => {
                 <div className="px-4 py-2 bg-slate-50 rounded-md text-[10px] font-bold text-primary shadow-sm border border-slate-200 uppercase tracking-widest">Brisbane</div>
               </div>
             </div>
-            <div className="md:col-span-4 bg-emerald-50 p-10 rounded-xl border border-emerald-100 flex flex-col justify-end text-emerald-900 font-body">
-              <p className="text-sm font-medium mb-4 italic text-emerald-800">"The fastest turnaround in the sector without compromising on technical detail."</p>
-              <p className="text-[10px] uppercase font-bold tracking-widest text-emerald-600">Project Director, AustInfra</p>
+            <div className="md:col-span-4 bg-emerald-900 p-10 rounded-xl flex flex-col justify-end text-white font-body">
+              <p className="text-sm font-medium mb-4 italic opacity-80">"The fastest turnaround in the sector without compromising on technical detail."</p>
+              <p className="text-[10px] uppercase font-bold tracking-widest text-emerald-400">Project Director, AustInfra</p>
             </div>
           </div>
         </div>
@@ -419,14 +419,14 @@ const Services = () => {
       </section>
 
       <section className="py-24 px-8">
-        <div className="max-w-5xl mx-auto rounded-3xl bg-gradient-to-br from-blue-50 to-white border border-blue-100 p-12 md:p-20 text-center relative overflow-hidden shadow-xl shadow-blue-500/5">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -mr-32 -mt-32 blur-3xl"></div>
+        <div className="max-w-5xl mx-auto rounded-2xl bg-gradient-to-br from-primary to-primary-container p-12 md:p-20 text-center relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-32 -mt-32 blur-3xl"></div>
           <div className="relative z-10">
-            <h2 className="font-headline text-3xl md:text-5xl font-extrabold text-slate-900 mb-8">Ready to secure your project's accuracy?</h2>
-            <p className="text-slate-600 text-lg mb-12 max-w-2xl mx-auto font-body">Download our rate card or request a Bill of Quantities today for a 48h guaranteed response.</p>
+            <h2 className="font-headline text-3xl md:text-5xl font-extrabold text-white mb-8">Ready to secure your project's accuracy?</h2>
+            <p className="text-blue-100 text-lg mb-12 max-w-2xl mx-auto opacity-80 font-body">Download our rate card or request a Bill of Quantities today for a 48h guaranteed response.</p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center font-body">
-              <Link to="/request" className="bg-primary text-white px-10 py-4 rounded-xl font-bold text-base hover:bg-primary/90 transition-all shadow-lg shadow-primary/20">Request a BOQ</Link>
-              <button className="bg-white border border-slate-200 text-slate-700 px-10 py-4 rounded-xl font-bold text-base hover:bg-slate-50 transition-all">Download Rate Card</button>
+              <Link to="/request" className="bg-white text-primary px-10 py-4 rounded-md font-bold text-base hover:bg-blue-100 transition-all">Request a BOQ</Link>
+              <button className="border border-white/30 text-white px-10 py-4 rounded-md font-bold text-base hover:bg-white/10 transition-all">Download Rate Card</button>
             </div>
           </div>
         </div>

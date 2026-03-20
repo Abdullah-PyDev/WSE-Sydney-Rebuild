@@ -65,12 +65,12 @@ export const Header = () => {
 
 export const Footer = () => {
   return (
-    <footer className="w-full bg-white text-slate-600 pt-20 pb-10 border-t border-slate-100">
+    <footer className="w-full bg-slate-900 text-slate-300 pt-20 pb-10">
       <div className="max-w-7xl mx-auto px-8 grid grid-cols-1 md:grid-cols-12 gap-12 mb-16">
         {/* Brand & Mission */}
         <div className="md:col-span-4 flex flex-col space-y-6">
           <Link to="/" className="flex items-center gap-3">
-            <div className="h-12 flex items-center justify-center overflow-hidden bg-slate-50 rounded-md p-1 px-3 border border-slate-100">
+            <div className="h-12 flex items-center justify-center overflow-hidden bg-white rounded-md p-1 px-3">
               <img 
                 src="/logo.png" 
                 alt="WSE Sydney" 
@@ -79,79 +79,79 @@ export const Footer = () => {
               />
             </div>
           </Link>
-          <p className="text-sm leading-relaxed text-slate-500 max-w-sm">
+          <p className="text-sm leading-relaxed text-slate-400 max-w-sm">
             WSE Sydney provides industry-leading water and sewer estimating solutions. We combine technical precision with local expertise to deliver accurate BOQs for civil projects across New South Wales.
           </p>
           <div className="flex gap-4">
-            <a href="#" className="p-2 bg-slate-100 rounded-full hover:bg-primary hover:text-white transition-all">
-              <Linkedin size={18} />
+            <a href="#" className="p-2 bg-slate-800 rounded-full hover:bg-blue-600 transition-colors">
+              <Linkedin size={18} className="text-white" />
             </a>
-            <a href="#" className="p-2 bg-slate-100 rounded-full hover:bg-blue-400 hover:text-white transition-all">
-              <Twitter size={18} />
+            <a href="#" className="p-2 bg-slate-800 rounded-full hover:bg-blue-400 transition-colors">
+              <Twitter size={18} className="text-white" />
             </a>
-            <a href="#" className="p-2 bg-slate-100 rounded-full hover:bg-blue-600 hover:text-white transition-all">
-              <Facebook size={18} />
+            <a href="#" className="p-2 bg-slate-800 rounded-full hover:bg-blue-700 transition-colors">
+              <Facebook size={18} className="text-white" />
             </a>
           </div>
         </div>
 
         {/* Quick Links */}
         <div className="md:col-span-2">
-          <h5 className="text-slate-900 font-headline font-bold text-sm uppercase tracking-widest mb-8">Navigation</h5>
+          <h5 className="text-white font-headline font-bold text-sm uppercase tracking-widest mb-8">Navigation</h5>
           <ul className="space-y-4 text-sm">
-            <li><Link to="/" className="hover:text-primary transition-colors">Home</Link></li>
-            <li><Link to="/services" className="hover:text-primary transition-colors">Our Services</Link></li>
-            <li><Link to="/locations" className="hover:text-primary transition-colors">Locations</Link></li>
-            <li><Link to="/about" className="hover:text-primary transition-colors">About WSE</Link></li>
-            <li><Link to="/request" className="text-primary font-bold hover:underline transition-colors flex items-center gap-1">Request a BOQ <ArrowUpRight size={14} /></Link></li>
+            <li><Link to="/" className="hover:text-white transition-colors">Home</Link></li>
+            <li><Link to="/services" className="hover:text-white transition-colors">Our Services</Link></li>
+            <li><Link to="/locations" className="hover:text-white transition-colors">Locations</Link></li>
+            <li><Link to="/about" className="hover:text-white transition-colors">About WSE</Link></li>
+            <li><Link to="/request" className="text-blue-400 font-bold hover:text-blue-300 transition-colors flex items-center gap-1">Request a BOQ <ArrowUpRight size={14} /></Link></li>
           </ul>
         </div>
 
         {/* Services */}
         <div className="md:col-span-3">
-          <h5 className="text-slate-900 font-headline font-bold text-sm uppercase tracking-widest mb-8">Core Services</h5>
+          <h5 className="text-white font-headline font-bold text-sm uppercase tracking-widest mb-8">Core Services</h5>
           <ul className="space-y-4 text-sm">
-            <li><a href="#" className="hover:text-primary transition-colors">Water Main Estimating</a></li>
-            <li><a href="#" className="hover:text-primary transition-colors">Sewer Infrastructure BOQ</a></li>
-            <li><a href="#" className="hover:text-primary transition-colors">Sydney Water Compliance</a></li>
-            <li><a href="#" className="hover:text-primary transition-colors">Civil Project Costing</a></li>
-            <li><a href="#" className="hover:text-primary transition-colors">Tender Support Services</a></li>
+            <li><a href="#" className="hover:text-white transition-colors">Water Main Estimating</a></li>
+            <li><a href="#" className="hover:text-white transition-colors">Sewer Infrastructure BOQ</a></li>
+            <li><a href="#" className="hover:text-white transition-colors">Sydney Water Compliance</a></li>
+            <li><a href="#" className="hover:text-white transition-colors">Civil Project Costing</a></li>
+            <li><a href="#" className="hover:text-white transition-colors">Tender Support Services</a></li>
           </ul>
         </div>
 
         {/* Contact Info */}
         <div className="md:col-span-3">
-          <h5 className="text-slate-900 font-headline font-bold text-sm uppercase tracking-widest mb-8">Contact Us</h5>
+          <h5 className="text-white font-headline font-bold text-sm uppercase tracking-widest mb-8">Contact Us</h5>
           <ul className="space-y-6 text-sm">
             <li className="flex items-start gap-3">
-              <MapPin size={18} className="text-primary flex-shrink-0 mt-1" />
+              <MapPin size={18} className="text-blue-500 flex-shrink-0 mt-1" />
               <span>Bankstown Head Office<br/>Sydney, NSW 2200</span>
             </li>
             <li className="flex items-center gap-3">
-              <Phone size={18} className="text-primary flex-shrink-0" />
+              <Phone size={18} className="text-blue-500 flex-shrink-0" />
               <span>+61 2 9000 0000</span>
             </li>
             <li className="flex items-center gap-3">
-              <Mail size={18} className="text-primary flex-shrink-0" />
-              <a href="mailto:info@wsesydney.com.au" className="hover:text-primary transition-colors">info@wsesydney.com.au</a>
+              <Mail size={18} className="text-blue-500 flex-shrink-0" />
+              <a href="mailto:info@wsesydney.com.au" className="hover:text-white transition-colors">info@wsesydney.com.au</a>
             </li>
           </ul>
         </div>
       </div>
 
       {/* Bottom Bar */}
-      <div className="max-w-7xl mx-auto px-8 pt-10 border-t border-slate-100">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-6 text-xs text-slate-400">
+      <div className="max-w-7xl mx-auto px-8 pt-10 border-t border-slate-800">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-6 text-xs text-slate-500">
           <div className="flex items-center gap-2">
             <span>© 2024 Water & Sewer Estimating Sydney.</span>
             <span className="hidden md:inline">|</span>
-            <Link to="/privacy" className="hover:text-slate-600 transition-colors">Privacy Policy</Link>
+            <Link to="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
             <span className="hidden md:inline">|</span>
-            <Link to="/terms" className="hover:text-slate-600 transition-colors">Terms of Service</Link>
+            <Link to="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
           </div>
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-2">
-              <Shield size={14} className="text-primary" />
+              <Shield size={14} className="text-blue-500" />
               <span>ISO 9001 Certified</span>
             </div>
             <div className="flex items-center gap-2">
