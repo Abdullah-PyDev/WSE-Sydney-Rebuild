@@ -136,12 +136,12 @@ const About = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 font-body">
           <motion.div 
             whileHover={{ y: -5 }}
-            className="md:col-span-2 bg-primary text-white p-12 rounded-xl flex flex-col justify-between bg-gradient-to-br from-primary to-primary-container"
+            className="md:col-span-2 bg-blue-50 text-primary p-12 rounded-xl flex flex-col justify-between border border-blue-100"
           >
-            <PrecisionManufacturing className="text-4xl mb-12" size={48} />
+            <PrecisionManufacturing className="text-primary/40 mb-12" size={48} />
             <div>
               <h3 className="font-headline font-bold text-3xl mb-4">Precision First</h3>
-              <p className="text-white/70 max-w-md">We reject the 'rough estimate' culture. Our data is derived from granular analysis of pipe diameter, soil variance, and hydraulic load factors.</p>
+              <p className="text-slate-600 max-w-md">We reject the 'rough estimate' culture. Our data is derived from granular analysis of pipe diameter, soil variance, and hydraulic load factors.</p>
             </div>
           </motion.div>
           <motion.div 

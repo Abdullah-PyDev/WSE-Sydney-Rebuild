@@ -11,6 +11,7 @@
   --color-background: #f7f9ff;
   --color-surface-container-low: #f1f4fa;
   --color-surface-container-lowest: #ffffff;
+  --color-chatbot-primary: #2563eb;
 }
 
 @layer base {
