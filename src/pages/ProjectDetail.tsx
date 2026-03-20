@@ -111,7 +111,7 @@ const ProjectDetail = () => {
   if (!project) {
     return (
       <div className="pt-32 pb-20 px-8 text-center">
-        <h1 className="text-4xl font-headline font-bold text-primary mb-4">Project Not Found</h1>
+        <h1 className="text-4xl font-bold text-slate-900 mb-4">Project Not Found</h1>
         <Link to="/services" className="text-blue-600 font-bold hover:underline">Back to Services</Link>
       </div>
     );
@@ -119,26 +119,26 @@ const ProjectDetail = () => {
 
   return (
     <main className="pt-20">
-      <section className="bg-primary py-20 px-8">
+      <section className="bg-slate-50 py-20 px-8 border-b border-slate-200">
         <div className="max-w-7xl mx-auto">
-          <Link to="/services" className="inline-flex items-center gap-2 text-blue-300 font-bold text-sm uppercase tracking-widest mb-8 hover:text-white transition-colors">
+          <Link to="/services" className="inline-flex items-center gap-2 text-slate-900 font-bold text-sm uppercase tracking-widest mb-8 hover:text-blue-700 transition-colors">
             <ArrowLeft size={16} /> Back to Services
           </Link>
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div>
-              <h1 className="text-white font-headline text-4xl md:text-6xl font-extrabold mb-4">{project.title}</h1>
-              <div className="flex flex-wrap gap-6 text-blue-100/70 font-body text-sm">
+              <h1 className="text-slate-900 text-4xl md:text-6xl font-extrabold mb-4">{project.title}</h1>
+              <div className="flex flex-wrap gap-6 text-slate-600 text-sm">
                 <div className="flex items-center gap-2">
-                  <MapPin size={16} className="text-blue-400" /> {project.location}
+                  <MapPin size={16} className="text-blue-600" /> {project.location}
                 </div>
                 <div className="flex items-center gap-2">
-                  <Calendar size={16} className="text-blue-400" /> {project.date}
+                  <Calendar size={16} className="text-blue-600" /> {project.date}
                 </div>
               </div>
             </div>
-            <div className="bg-white/10 backdrop-blur-md border border-white/20 p-6 rounded-xl">
-              <p className="text-blue-300 text-[10px] font-bold uppercase tracking-widest mb-2">Project Status</p>
-              <p className="text-white font-headline font-bold text-xl">Completed & Verified</p>
+            <div className="bg-white border border-slate-200 p-6 rounded-xl shadow-sm">
+              <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-2">Project Status</p>
+              <p className="text-slate-900 font-bold text-xl">Completed & Verified</p>
             </div>
           </div>
         </div>
@@ -149,8 +149,8 @@ const ProjectDetail = () => {
           <div className="grid lg:grid-cols-3 gap-12">
             <div className="lg:col-span-2 space-y-12">
               <div className="space-y-6">
-                <h2 className="font-headline text-2xl font-bold text-primary">Project Overview</h2>
-                <p className="text-slate-600 leading-relaxed font-body text-lg">
+                <h2 className="text-2xl font-bold text-slate-900">Project Overview</h2>
+                <p className="text-slate-600 leading-relaxed text-lg">
                   {project.description}
                 </p>
               </div>
@@ -158,17 +158,17 @@ const ProjectDetail = () => {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {project.metrics.map((metric, idx) => (
                   <div key={idx} className="p-6 bg-slate-50 rounded-xl border border-slate-100 flex flex-col items-center text-center">
-                    <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-primary shadow-sm mb-4">
+                    <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-slate-900 shadow-sm mb-4">
                       {metric.icon}
                     </div>
                     <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1">{metric.label}</p>
-                    <p className="text-primary font-headline font-black text-2xl">{metric.value}</p>
+                    <p className="text-slate-900 font-black text-2xl">{metric.value}</p>
                   </div>
                 ))}
               </div>
 
               <div className="space-y-8">
-                <h2 className="font-headline text-2xl font-bold text-primary">Project Visuals</h2>
+                <h2 className="text-2xl font-bold text-slate-900">Project Visuals</h2>
                 <div className="grid gap-6">
                   {project.images.map((img, idx) => (
                     <motion.div 
@@ -180,7 +180,7 @@ const ProjectDetail = () => {
                       onClick={() => setSelectedImageIndex(idx)}
                     >
                       <img src={img} alt={`${project.title} ${idx + 1}`} className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105" referrerPolicy="no-referrer" />
-                      <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/20 transition-colors duration-300 flex items-center justify-center">
+                      <div className="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/20 transition-colors duration-300 flex items-center justify-center">
                         <ZoomIn className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" size={32} />
                       </div>
                     </motion.div>
@@ -191,14 +191,14 @@ const ProjectDetail = () => {
 
             <div className="space-y-8">
               <div className="bg-slate-50 p-8 rounded-2xl border border-slate-100 sticky top-32">
-                <h3 className="font-headline text-xl font-bold text-primary mb-6">Need a similar estimate?</h3>
-                <p className="text-slate-600 text-sm mb-8 font-body">
+                <h3 className="text-xl font-bold text-slate-900 mb-6">Need a similar estimate?</h3>
+                <p className="text-slate-600 text-sm mb-8">
                   Our team of Sydney Water accredited estimators can provide a detailed BOQ for your next infrastructure project within 48 hours.
                 </p>
-                <Link to="/request" className="block w-full bg-primary text-white text-center py-4 rounded-lg font-bold hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 mb-4">
+                <Link to="/request-boq" className="block w-full bg-slate-900 text-white text-center py-4 rounded-lg font-bold hover:bg-slate-800 transition-all shadow-lg shadow-slate-900/20 mb-4">
                   Request a BOQ
                 </Link>
-                <button className="block w-full border border-slate-200 text-primary text-center py-4 rounded-lg font-bold hover:bg-white transition-all">
+                <button className="block w-full border border-slate-200 text-slate-900 text-center py-4 rounded-lg font-bold hover:bg-white transition-all">
                   Download Capability Statement
                 </button>
               </div>

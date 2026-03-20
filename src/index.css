@@ -5,11 +5,22 @@
   --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
   
   --color-primary: #001d44;
+  --color-on-primary: #ffffff;
   --color-primary-container: #00326b;
+  --color-on-primary-container: #ffffff;
+  --color-secondary: #255dad;
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #d6e3ff;
+  --color-on-secondary-container: #001b3e;
   --color-surface-tint: #255dad;
+  --color-on-surface: #1a1c1e;
   --color-on-surface-variant: #43474f;
+  --color-outline: #73777f;
+  --color-outline-variant: #c3c7cf;
   --color-background: #f7f9ff;
+  --color-surface: #ffffff;
   --color-surface-container-low: #f1f4fa;
+  --color-surface-container-high: #ebeef5;
   --color-surface-container-lowest: #ffffff;
 }
 

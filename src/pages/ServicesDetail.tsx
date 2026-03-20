@@ -6,12 +6,12 @@ import { Droplets, Filter, Ruler, BarChart3, CheckCircle2, Zap, Award, Mail, Pho
 const ServicesDetail = () => {
   return (
     <main className="pt-20">
-      <section className="relative bg-primary py-24 px-8 overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary to-primary-container"></div>
+      <section className="relative bg-surface-container-low py-24 px-8 overflow-hidden border-b border-outline-variant">
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute inset-0 bg-gradient-to-br from-surface-container-low to-white"></div>
           <img 
             alt="Blueprint" 
-            className="w-full h-full object-cover mix-blend-overlay" 
+            className="w-full h-full object-cover mix-blend-multiply" 
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuDPQVYHLUZYXkYmtoP6Z00I9hYhHK7G8zG3t3mqiDZ9eIUXgYZKUgr9U2dprzDAxQmSFrNxG_sEatIQAm0Xa1yhWFRTZNNNoyjNh3pIeVFWo78LL2DImnNuJii3E2dDEDVjt9kaZWYAkIM8dGkGvFbU0t5v3OMDLq-jmb_cXh5rPl9QIXRva1Shv-0NWTjGfPbPmR2bVyMX2wEmuJogPky9yGZrrlNzufDbur59PaH4TNmp8uptACCsHeGGzo5lChif0jzux2fXw3o" 
           />
         </div>
@@ -22,11 +22,11 @@ const ServicesDetail = () => {
               animate={{ opacity: 1, y: 0 }}
               className="max-w-3xl"
             >
-              <span className="text-blue-300 font-headline font-bold uppercase tracking-[0.2em] text-xs mb-4 block">Precision Engineering Estimating</span>
-              <h1 className="text-white text-5xl md:text-7xl font-extrabold tracking-tighter leading-tight mb-6">
+              <span className="text-primary font-headline font-bold uppercase tracking-[0.2em] text-xs mb-4 block">Precision Engineering Estimating</span>
+              <h1 className="text-on-surface text-5xl md:text-7xl font-extrabold tracking-tighter leading-tight mb-6">
                 First-Principles Hydraulic Valuation
               </h1>
-              <p className="text-blue-100 text-xl font-light leading-relaxed max-w-2xl font-body">
+              <p className="text-on-surface-variant text-xl font-light leading-relaxed max-w-2xl font-body">
                 We decompose complex infrastructure into its fundamental units of labor, material, and risk. No benchmarks—just raw data-driven clarity.
               </p>
             </motion.div>
@@ -36,27 +36,27 @@ const ServicesDetail = () => {
               transition={{ delay: 0.3 }}
               className="hidden lg:block"
             >
-              <div className="bg-white/10 backdrop-blur-md p-8 border-l-4 border-blue-400">
-                <div className="text-white font-headline text-3xl font-bold">99.4%</div>
-                <div className="text-blue-300 text-xs font-bold uppercase tracking-wider font-body">Historical Accuracy</div>
+              <div className="bg-white p-8 border-l-4 border-primary shadow-sm rounded-r-xl">
+                <div className="text-primary font-headline text-3xl font-bold">99.4%</div>
+                <div className="text-on-surface-variant text-xs font-bold uppercase tracking-wider font-body">Historical Accuracy</div>
               </div>
             </motion.div>
           </div>
         </div>
       </section>
 
-      <section className="bg-slate-50 border-b border-slate-200 sticky top-20 z-40">
+      <section className="bg-surface-container-low border-b border-outline-variant sticky top-20 z-40">
         <div className="max-w-7xl mx-auto px-8 flex overflow-x-auto no-scrollbar gap-8 py-4 font-headline text-sm font-bold">
           <a href="#sps" className="whitespace-nowrap text-primary flex items-center gap-2">
             <Droplets size={16} /> Sewer Pump Stations
           </a>
-          <a href="#osd" className="whitespace-nowrap text-slate-500 hover:text-primary transition-colors flex items-center gap-2">
+          <a href="#osd" className="whitespace-nowrap text-on-surface-variant hover:text-primary transition-colors flex items-center gap-2">
             <Filter size={16} /> On-Site Detention
           </a>
-          <a href="#underbores" className="whitespace-nowrap text-slate-500 hover:text-primary transition-colors flex items-center gap-2">
+          <a href="#underbores" className="whitespace-nowrap text-on-surface-variant hover:text-primary transition-colors flex items-center gap-2">
             <Ruler size={16} /> Underbores
           </a>
-          <a href="#pipeline" className="whitespace-nowrap text-slate-500 hover:text-primary transition-colors flex items-center gap-2">
+          <a href="#pipeline" className="whitespace-nowrap text-on-surface-variant hover:text-primary transition-colors flex items-center gap-2">
             <BarChart3 size={16} /> Data Pipeline
           </a>
         </div>
@@ -72,36 +72,36 @@ const ServicesDetail = () => {
                 </div>
                 <h2 className="text-4xl font-extrabold text-primary tracking-tight font-headline">Sewer Pump Stations</h2>
               </div>
-              <div className="space-y-6 text-slate-600 leading-relaxed font-body">
+              <div className="space-y-6 text-on-surface-variant leading-relaxed font-body">
                 <p>Our approach to SPS estimating bypasses generic per-kilowatt rates. We calculate based on wet-well geometry, structural concrete volumes, and mechanical redundancy requirements.</p>
                 <ul className="space-y-4">
                   <li className="flex gap-4">
-                    <CheckCircle2 className="text-blue-500 shrink-0" size={20} />
+                    <CheckCircle2 className="text-surface-tint shrink-0" size={20} />
                     <span>Civil excavation & shoring in variable geotechnical conditions.</span>
                   </li>
                   <li className="flex gap-4">
-                    <CheckCircle2 className="text-blue-500 shrink-0" size={20} />
+                    <CheckCircle2 className="text-surface-tint shrink-0" size={20} />
                     <span>Mechanical & electrical telemetry integration.</span>
                   </li>
                   <li className="flex gap-4">
-                    <CheckCircle2 className="text-blue-500 shrink-0" size={20} />
+                    <CheckCircle2 className="text-surface-tint shrink-0" size={20} />
                     <span>Odour control unit lifecycle costing.</span>
                   </li>
                 </ul>
               </div>
             </div>
             <div className="lg:col-span-7 grid grid-cols-1 md:grid-cols-2 gap-4 font-body">
-              <div className="bg-slate-50 p-8 rounded-lg border-l-4 border-primary">
+              <div className="bg-surface-container-low p-8 rounded-lg border-l-4 border-primary">
                 <span className="text-xs font-bold uppercase text-primary tracking-widest block mb-2">Primary Metric</span>
-                <h3 className="text-3xl font-headline font-bold text-slate-900 mb-2">Cost/m³ Volume</h3>
-                <p className="text-sm text-slate-500">Precise concrete vs backfill volume analysis to minimize procurement waste.</p>
+                <h3 className="text-3xl font-headline font-bold text-on-surface mb-2">Cost/m³ Volume</h3>
+                <p className="text-sm text-on-surface-variant">Precise concrete vs backfill volume analysis to minimize procurement waste.</p>
               </div>
-              <div className="bg-slate-100 p-8 rounded-lg">
-                <span className="text-xs font-bold uppercase text-slate-500 tracking-widest block mb-2">Risk Factor</span>
-                <h3 className="text-3xl font-headline font-bold text-slate-900 mb-2">Geotech-L</h3>
-                <p className="text-sm text-slate-500">Dynamic sensitivity analysis based on rock-socketing requirements.</p>
+              <div className="bg-surface-container p-8 rounded-lg">
+                <span className="text-xs font-bold uppercase text-on-surface-variant tracking-widest block mb-2">Risk Factor</span>
+                <h3 className="text-3xl font-headline font-bold text-on-surface mb-2">Geotech-L</h3>
+                <p className="text-sm text-on-surface-variant">Dynamic sensitivity analysis based on rock-socketing requirements.</p>
               </div>
-              <div className="col-span-1 md:col-span-2 relative h-64 bg-slate-200 rounded-lg overflow-hidden group">
+              <div className="col-span-1 md:col-span-2 relative h-64 bg-outline-variant rounded-lg overflow-hidden group">
                 <img 
                   alt="Construction" 
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
@@ -116,12 +116,12 @@ const ServicesDetail = () => {
         </div>
       </section>
 
-      <section className="py-24 px-8 bg-slate-50" id="osd">
+      <section className="py-24 px-8 bg-surface-container-low" id="osd">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
             <div>
               <h2 className="text-4xl font-extrabold text-primary tracking-tight mb-4 font-headline">On-Site Detention (OSD)</h2>
-              <p className="text-slate-600 max-w-xl font-body">Optimizing discharge rates through rigorous hydraulic modeling and structural innovation.</p>
+              <p className="text-on-surface-variant max-w-xl font-body">Optimizing discharge rates through rigorous hydraulic modeling and structural innovation.</p>
             </div>
             <div className="flex gap-4 font-body">
               <div className="px-6 py-2 border-2 border-primary text-primary font-bold text-xs uppercase tracking-widest rounded-md">Stormwater Design</div>
@@ -133,29 +133,29 @@ const ServicesDetail = () => {
               <div>
                 <span className="text-primary font-bold text-4xl mb-4 block font-headline">01</span>
                 <h3 className="text-2xl font-bold mb-4 font-headline">Structural Integrity Matrix</h3>
-                <p className="text-slate-600 leading-relaxed">Calculations for varying surcharge loads and trafficable lid requirements, ensuring compliance without over-engineering.</p>
+                <p className="text-on-surface-variant leading-relaxed">Calculations for varying surcharge loads and trafficable lid requirements, ensuring compliance without over-engineering.</p>
               </div>
-              <div className="h-1 w-full bg-slate-100 mt-8 relative overflow-hidden">
+              <div className="h-1 w-full bg-surface-container mt-8 relative overflow-hidden">
                 <div className="absolute inset-0 bg-primary w-3/4"></div>
               </div>
             </div>
-            <div className="md:col-span-2 bg-primary text-white p-10 relative overflow-hidden">
+            <div className="md:col-span-2 bg-surface-container-low border border-outline-variant p-10 relative overflow-hidden rounded-xl">
               <div className="relative z-10">
-                <h3 className="text-2xl font-bold mb-2 font-headline">Orifice Plate Sizing</h3>
-                <p className="text-blue-200 text-sm">First-principles calculation of headwater levels vs discharge velocity.</p>
+                <h3 className="text-2xl font-bold mb-2 font-headline text-primary">Orifice Plate Sizing</h3>
+                <p className="text-on-surface-variant text-sm">First-principles calculation of headwater levels vs discharge velocity.</p>
               </div>
-              <div className="absolute bottom-0 right-0 opacity-20">
+              <div className="absolute bottom-0 right-0 opacity-10 text-primary">
                 <Droplets size={160} />
               </div>
             </div>
-            <div className="bg-emerald-900 text-emerald-100 p-8 flex flex-col justify-center items-center text-center">
-              <Zap className="text-emerald-400 mb-2" size={32} />
-              <div className="text-xs uppercase tracking-[0.2em] font-bold">Fast-Track</div>
+            <div className="bg-tertiary-container border border-outline-variant text-on-tertiary-container p-8 flex flex-col justify-center items-center text-center rounded-xl">
+              <Zap className="text-tertiary mb-2" size={32} />
+              <div className="text-xs uppercase tracking-[0.2em] font-bold text-tertiary">Fast-Track</div>
               <div className="text-xl font-bold font-headline">48hr Turnaround</div>
             </div>
-            <div className="bg-slate-200 p-8 flex flex-col justify-center items-center text-center">
+            <div className="bg-outline-variant p-8 flex flex-col justify-center items-center text-center">
               <Award className="text-primary mb-2" size={32} />
-              <div className="text-xs uppercase tracking-[0.2em] font-bold text-slate-500">Council Approval</div>
+              <div className="text-xs uppercase tracking-[0.2em] font-bold text-on-surface-variant">Council Approval</div>
               <div className="text-xl font-bold text-primary font-headline">100% Rate</div>
             </div>
           </div>
@@ -166,7 +166,7 @@ const ServicesDetail = () => {
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
             <div className="order-2 lg:order-1">
-              <div className="bg-slate-50 p-4 rounded-xl">
+              <div className="bg-surface-container-low p-4 rounded-xl">
                 <img 
                   alt="Drilling" 
                   className="w-full aspect-video object-cover rounded-lg grayscale hover:grayscale-0 transition-all duration-700" 
@@ -175,20 +175,20 @@ const ServicesDetail = () => {
               </div>
             </div>
             <div className="order-1 lg:order-2 font-body">
-              <span className="bg-blue-100 text-blue-700 px-3 py-1 text-[10px] font-bold uppercase tracking-widest rounded-sm mb-6 inline-block">Complex Methodology</span>
+              <span className="bg-primary-container text-on-primary-container px-3 py-1 text-[10px] font-bold uppercase tracking-widest rounded-sm mb-6 inline-block">Complex Methodology</span>
               <h2 className="text-4xl font-extrabold text-primary tracking-tight mb-6 font-headline">Trenchless Technology & Underbores</h2>
               <div className="space-y-6">
-                <div className="border-l-2 border-slate-200 pl-6 py-2">
+                <div className="border-l-2 border-outline-variant pl-6 py-2">
                   <h4 className="font-bold text-primary mb-1">Micro-Tunneling Analysis</h4>
-                  <p className="text-sm text-slate-500">Detailed costing for slurry separation, jacking forces, and reception pit structural requirements.</p>
+                  <p className="text-sm text-on-surface-variant">Detailed costing for slurry separation, jacking forces, and reception pit structural requirements.</p>
                 </div>
-                <div className="border-l-2 border-slate-200 pl-6 py-2">
+                <div className="border-l-2 border-outline-variant pl-6 py-2">
                   <h4 className="font-bold text-primary mb-1">Horizontal Directional Drilling (HDD)</h4>
-                  <p className="text-sm text-slate-500">Modeling for annular pressure and inadvertent return risks during creek or road crossings.</p>
+                  <p className="text-sm text-on-surface-variant">Modeling for annular pressure and inadvertent return risks during creek or road crossings.</p>
                 </div>
-                <div className="border-l-2 border-slate-200 pl-6 py-2">
+                <div className="border-l-2 border-outline-variant pl-6 py-2">
                   <h4 className="font-bold text-primary mb-1">Auger Boring</h4>
-                  <p className="text-sm text-slate-500">Precision casing installation estimating with laser-guided accuracy margins.</p>
+                  <p className="text-sm text-on-surface-variant">Precision casing installation estimating with laser-guided accuracy margins.</p>
                 </div>
               </div>
             </div>
@@ -196,11 +196,11 @@ const ServicesDetail = () => {
         </div>
       </section>
 
-      <section className="py-24 px-8 bg-primary" id="pipeline">
+      <section className="py-24 px-8 bg-surface-container-low border-y border-outline-variant" id="pipeline">
         <div className="max-w-7xl mx-auto text-center font-body">
-          <h2 className="text-3xl font-extrabold text-white mb-16 tracking-tight font-headline">The Precision Data Pipeline</h2>
+          <h2 className="text-3xl font-extrabold text-primary mb-16 tracking-tight font-headline">The Precision Data Pipeline</h2>
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4 relative">
-            <div className="hidden md:block absolute top-1/2 left-0 w-full h-px bg-white/10 -translate-y-1/2 z-0"></div>
+            <div className="hidden md:block absolute top-1/2 left-0 w-full h-px bg-outline-variant -translate-y-1/2 z-0"></div>
             {[
               { id: 1, title: 'Quantification', desc: 'Automated Take-offs from BIM & CAD.' },
               { id: 2, title: 'Market Parity', desc: 'Real-time local material index updates.' },
@@ -208,24 +208,24 @@ const ServicesDetail = () => {
               { id: 4, title: 'Risk Stack', desc: 'Monte Carlo contingency modeling.' },
               { id: 5, title: 'BOQ Delivery', desc: 'Ready-for-tender final submission.', highlight: true }
             ].map((step) => (
-              <div key={step.id} className={`relative z-10 p-8 rounded-lg border ${step.highlight ? 'bg-emerald-900 border-emerald-400/20' : 'bg-white/5 border-white/5'} backdrop-blur-md`}>
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-4 font-bold ${step.highlight ? 'bg-emerald-400 text-emerald-900' : 'bg-white text-primary'}`}>
+              <div key={step.id} className={`relative z-10 p-8 rounded-lg border ${step.highlight ? 'bg-tertiary-container border-tertiary shadow-sm' : 'bg-white border-outline-variant shadow-sm'} backdrop-blur-md`}>
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-4 font-bold ${step.highlight ? 'bg-tertiary text-white' : 'bg-primary text-white'}`}>
                   {step.id}
                 </div>
-                <h4 className={`font-bold text-sm mb-2 ${step.highlight ? 'text-emerald-400' : 'text-white'}`}>{step.title}</h4>
-                <p className={`text-xs ${step.highlight ? 'text-emerald-100' : 'text-blue-100/60'}`}>{step.desc}</p>
+                <h4 className={`font-bold text-sm mb-2 ${step.highlight ? 'text-on-tertiary-container' : 'text-primary'}`}>{step.title}</h4>
+                <p className={`text-xs ${step.highlight ? 'text-tertiary' : 'text-on-surface-variant'}`}>{step.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="py-24 px-8 bg-slate-50">
+      <section className="py-24 px-8 bg-surface-container-low">
         <div className="max-w-4xl mx-auto text-center font-body">
           <h2 className="text-4xl font-headline font-extrabold text-primary mb-8">Ready for an engineered estimate?</h2>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to="/request" className="bg-primary text-white px-8 py-4 rounded-md font-bold hover:bg-primary-container transition-all">Submit Tender Documents</Link>
-            <button className="bg-white text-primary border border-slate-200 px-8 py-4 rounded-md font-bold hover:bg-slate-100 transition-all">Download Sample BOQ</button>
+            <button className="bg-white text-primary border border-outline-variant px-8 py-4 rounded-md font-bold hover:bg-surface-container transition-all">Download Sample BOQ</button>
           </div>
         </div>
       </section>
