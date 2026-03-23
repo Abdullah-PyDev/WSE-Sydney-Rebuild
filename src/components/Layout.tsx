@@ -2,6 +2,8 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, Shield, CheckCircle2, Mail, Phone, MapPin, Linkedin, Twitter, Facebook, ArrowUpRight } from 'lucide-react';
 
+import Magnetic from './Magnetic';
+
 export const Header = () => {
   const location = useLocation();
   
@@ -36,24 +38,28 @@ export const Header = () => {
         </Link>
         <div className="hidden md:flex items-center space-x-8">
           {navLinks.map((link) => (
-            <Link
-              key={link.name}
-              to={link.path}
-              className={`font-body text-sm transition-colors ${
-                location.pathname === link.path
-                  ? 'text-primary border-b-2 border-primary pb-1 font-bold'
-                  : 'text-on-surface-variant hover:text-primary'
-              }`}
-            >
-              {link.name}
-            </Link>
+            <Magnetic key={link.name} strength={0.15}>
+              <Link
+                to={link.path}
+                className={`font-body text-sm transition-colors px-2 py-1 ${
+                  location.pathname === link.path
+                    ? 'text-primary border-b-2 border-primary pb-1 font-bold'
+                    : 'text-on-surface-variant hover:text-primary'
+                }`}
+              >
+                {link.name}
+              </Link>
+            </Magnetic>
           ))}
-          <Link
-            to="/request"
-            className="bg-primary text-white px-6 py-2.5 rounded-md font-bold text-sm hover:bg-primary-container transition-all active:scale-95 duration-150"
-          >
-            Request a BOQ
-          </Link>
+          <Magnetic strength={0.2}>
+            <Link
+              to="/request"
+              data-cursor-label="GO"
+              className="bg-primary text-white px-6 py-2.5 rounded-md font-bold text-sm hover:bg-primary-container transition-all active:scale-95 duration-150 block"
+            >
+              Request a BOQ
+            </Link>
+          </Magnetic>
         </div>
         <div className="md:hidden">
           <Menu className="text-primary" />
@@ -84,15 +90,21 @@ export const Footer = () => {
             WSE Sydney provides industry-leading water and sewer estimating solutions. We combine technical precision with local expertise to deliver accurate BOQs for civil projects across New South Wales.
           </p>
           <div className="flex gap-4">
-            <a href="#" className="p-2 bg-white/10 rounded-full hover:bg-surface-tint transition-colors">
-              <Linkedin size={18} className="text-white" />
-            </a>
-            <a href="#" className="p-2 bg-white/10 rounded-full hover:bg-surface-tint transition-colors">
-              <Twitter size={18} className="text-white" />
-            </a>
-            <a href="#" className="p-2 bg-white/10 rounded-full hover:bg-surface-tint transition-colors">
-              <Facebook size={18} className="text-white" />
-            </a>
+            <Magnetic strength={0.3}>
+              <a href="#" className="p-2 bg-white/10 rounded-full hover:bg-surface-tint transition-colors block">
+                <Linkedin size={18} className="text-white" />
+              </a>
+            </Magnetic>
+            <Magnetic strength={0.3}>
+              <a href="#" className="p-2 bg-white/10 rounded-full hover:bg-surface-tint transition-colors block">
+                <Twitter size={18} className="text-white" />
+              </a>
+            </Magnetic>
+            <Magnetic strength={0.3}>
+              <a href="#" className="p-2 bg-white/10 rounded-full hover:bg-surface-tint transition-colors block">
+                <Facebook size={18} className="text-white" />
+              </a>
+            </Magnetic>
           </div>
         </div>
 

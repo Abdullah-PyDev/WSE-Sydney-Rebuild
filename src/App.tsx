@@ -15,11 +15,13 @@ import RequestBOQ from './pages/RequestBOQ';
 import ProjectDetail from './pages/ProjectDetail';
 import ChatBot from './components/ChatBot';
 import ScrollToTop from './components/ScrollToTop';
+import CustomCursor from './components/CustomCursor';
 
 export default function App() {
   return (
     <Router>
       <ScrollToTop />
+      <CustomCursor />
       <div className="min-h-screen flex flex-col">
         <Header />
         <div className="flex-grow">

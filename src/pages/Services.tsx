@@ -267,28 +267,6 @@ const Services = () => {
           <HeroBackground mouseX={mouseX} mouseY={mouseY} />
         </motion.div>
         
-        {/* Interactive Cursor Element */}
-        <motion.div
-          className="pointer-events-none absolute z-50 w-12 h-12 border-2 border-blue-400 rounded-full flex items-center justify-center opacity-0 group-hover/hero:opacity-100 transition-opacity duration-300"
-          style={{
-            x: useSpring(mouseX, { stiffness: 300, damping: 30 }),
-            y: useSpring(mouseY, { stiffness: 300, damping: 30 }),
-            translateX: "-50%",
-            translateY: "-50%",
-          }}
-        >
-          <div className="w-2 h-2 bg-blue-400 rounded-full animate-ping" />
-          <div className="absolute inset-0 rounded-full bg-blue-400/10 blur-md" />
-        </motion.div>
-
-        {/* Debug Mouse Position */}
-        <motion.div 
-          className="absolute top-4 left-4 z-50 bg-black/50 text-white text-[10px] p-1 rounded pointer-events-none opacity-0 group-hover/hero:opacity-100"
-          style={{ x: mouseX, y: mouseY }}
-        >
-          DEBUG: ACTIVE
-        </motion.div>
-
         <motion.div 
           style={{ y: contentY }}
           className="relative z-20 max-w-7xl mx-auto w-full grid md:grid-cols-2 gap-12 items-center"

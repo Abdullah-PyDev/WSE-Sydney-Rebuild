@@ -30,6 +30,8 @@ const WSEIcon = ({ size = 24 }: { size?: number }) => (
   </svg>
 );
 
+import Magnetic from './Magnetic';
+
 const ChatBot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
@@ -169,16 +171,19 @@ const ChatBot = () => {
         )}
       </AnimatePresence>
 
-      <motion.button
-        drag
-        dragMomentum={false}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        onClick={() => setIsOpen(!isOpen)}
-        className="bg-primary text-white w-16 h-16 rounded-full shadow-2xl flex items-center justify-center hover:bg-primary-container transition-all border-4 border-white/20 cursor-grab active:cursor-grabbing"
-      >
-        {isOpen ? <X size={32} /> : <WSEIcon size={32} />}
-      </motion.button>
+      <Magnetic strength={0.3}>
+        <motion.button
+          drag
+          dragMomentum={false}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => setIsOpen(!isOpen)}
+          data-cursor-label="CHAT"
+          className="bg-primary text-white w-16 h-16 rounded-full shadow-2xl flex items-center justify-center hover:bg-primary-container transition-all border-4 border-white/20 cursor-grab active:cursor-grabbing"
+        >
+          {isOpen ? <X size={32} /> : <WSEIcon size={32} />}
+        </motion.button>
+      </Magnetic>
     </div>
   );
 };

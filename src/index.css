@@ -17,6 +17,12 @@
   body {
     @apply bg-background font-body text-slate-900 antialiased;
   }
+
+  @media (min-width: 1024px) {
+    body, a, button, [role="button"] {
+      cursor: none;
+    }
+  }
 }
 
 @layer utilities {
