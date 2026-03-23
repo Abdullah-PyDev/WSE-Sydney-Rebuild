@@ -10,6 +10,7 @@ import Services from './pages/Services';
 import ServicesDetail from './pages/ServicesDetail';
 import Locations from './pages/Locations';
 import About from './pages/About';
+import FAQ from './pages/FAQ';
 import RequestBOQ from './pages/RequestBOQ';
 import ProjectDetail from './pages/ProjectDetail';
 import ChatBot from './components/ChatBot';
@@ -28,6 +29,7 @@ export default function App() {
             <Route path="/services/detail" element={<ServicesDetail />} />
             <Route path="/locations" element={<Locations />} />
             <Route path="/about" element={<About />} />
+            <Route path="/faq" element={<FAQ />} />
             <Route path="/request" element={<RequestBOQ />} />
             <Route path="/projects/:id" element={<ProjectDetail />} />
           </Routes>

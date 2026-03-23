@@ -76,23 +76,28 @@ const ChatBot = () => {
       <AnimatePresence>
         {isOpen && (
           <motion.div
+            drag
+            dragMomentum={false}
             initial={{ opacity: 0, scale: 0.8, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 20 }}
-            className="mb-4 w-[350px] sm:w-[400px] h-[500px] bg-surface-container-high rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-outline-variant"
+            className="mb-4 w-[350px] sm:w-[400px] h-[550px] bg-surface-container-lowest rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-outline-variant cursor-grab active:cursor-grabbing"
           >
             {/* Header */}
-            <div className="bg-primary p-4 flex items-center justify-between text-on-primary">
-              <div className="flex items-center space-x-2">
-                <Bot size={24} />
+            <div className="bg-primary p-5 flex items-center justify-between text-white select-none">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center border border-white/20">
+                  <WSEIcon size={20} />
+                </div>
                 <div>
-                  <h3 className="font-bold text-sm">WSE Sydney Assistant</h3>
-                  <p className="text-[10px] opacity-80">Expert Estimating Support</p>
+                  <h3 className="font-headline font-bold text-sm tracking-tight">WSE Sydney Assistant</h3>
+                  <p className="text-[10px] font-body uppercase tracking-widest opacity-70">Infrastructure Support</p>
                 </div>
               </div>
               <button 
                 onClick={() => setIsOpen(false)}
-                className="hover:bg-white/10 p-1 rounded-full transition-colors"
+                className="hover:bg-white/10 p-2 rounded-full transition-colors"
+                aria-label="Close chat"
               >
                 <X size={20} />
               </button>
@@ -101,21 +106,25 @@ const ChatBot = () => {
             {/* Messages */}
             <div 
               ref={scrollRef}
-              className="flex-1 overflow-y-auto p-4 space-y-4 bg-surface"
+              className="flex-1 overflow-y-auto p-6 space-y-6 bg-background/50"
             >
               {messages.map((msg, idx) => (
                 <div 
                   key={idx}
                   className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
-                  <div className={`flex items-start space-x-2 max-w-[85%] ${msg.role === 'user' ? 'flex-row-reverse space-x-reverse' : ''}`}>
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${msg.role === 'user' ? 'bg-secondary text-on-secondary' : 'bg-primary-container text-on-primary-container'}`}>
-                      {msg.role === 'user' ? <User size={16} /> : <Bot size={16} />}
-                    </div>
-                    <div className={`p-3 rounded-2xl text-sm ${
+                  <div className={`flex items-start gap-3 max-w-[85%] ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 shadow-sm ${
                       msg.role === 'user' 
-                        ? 'bg-secondary-container text-on-secondary-container rounded-tr-none' 
-                        : 'bg-surface-container-low text-on-surface rounded-tl-none border border-outline-variant'
+                        ? 'bg-surface-tint text-white' 
+                        : 'bg-white text-primary border border-outline-variant'
+                    }`}>
+                      {msg.role === 'user' ? <User size={14} /> : <Bot size={14} />}
+                    </div>
+                    <div className={`p-4 rounded-2xl text-sm leading-relaxed font-body ${
+                      msg.role === 'user' 
+                        ? 'bg-primary text-white rounded-tr-none shadow-md' 
+                        : 'bg-white text-on-surface-variant rounded-tl-none border border-outline-variant shadow-sm'
                     }`}>
                       {msg.text}
                     </div>
@@ -124,12 +133,12 @@ const ChatBot = () => {
               ))}
               {isLoading && (
                 <div className="flex justify-start">
-                  <div className="flex items-start space-x-2">
-                    <div className="w-8 h-8 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center">
-                      <Bot size={16} />
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-full bg-white text-primary border border-outline-variant flex items-center justify-center shadow-sm">
+                      <Bot size={14} />
                     </div>
-                    <div className="bg-surface-container-low p-3 rounded-2xl rounded-tl-none border border-outline-variant">
-                      <Loader2 size={16} className="animate-spin text-primary" />
+                    <div className="bg-white p-4 rounded-2xl rounded-tl-none border border-outline-variant shadow-sm">
+                      <Loader2 size={16} className="animate-spin text-surface-tint" />
                     </div>
                   </div>
                 </div>
@@ -139,19 +148,19 @@ const ChatBot = () => {
             {/* Input */}
             <form 
               onSubmit={handleSendMessage}
-              className="p-4 bg-surface border-t border-outline-variant flex items-center space-x-2"
+              className="p-4 bg-white border-t border-outline-variant flex items-center space-x-3"
             >
               <input
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Ask about Sydney Water standards..."
-                className="flex-1 bg-surface-container-low border border-outline rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
+                className="flex-1 bg-surface-container-low border border-outline-variant rounded-xl px-4 py-3 text-sm font-body focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
               />
               <button
                 type="submit"
                 disabled={isLoading || !input.trim()}
-                className="bg-primary text-on-primary p-2 rounded-full disabled:opacity-50 hover:bg-primary/90 transition-colors"
+                className="bg-primary text-white p-3 rounded-xl disabled:opacity-50 hover:bg-primary-container transition-all shadow-md active:scale-95"
               >
                 <Send size={18} />
               </button>
@@ -161,12 +170,14 @@ const ChatBot = () => {
       </AnimatePresence>
 
       <motion.button
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.9 }}
+        drag
+        dragMomentum={false}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
         onClick={() => setIsOpen(!isOpen)}
-        className="bg-primary text-on-primary w-14 h-14 rounded-full shadow-lg flex items-center justify-center hover:bg-primary/90 transition-all"
+        className="bg-primary text-white w-16 h-16 rounded-full shadow-2xl flex items-center justify-center hover:bg-primary-container transition-all border-4 border-white/20 cursor-grab active:cursor-grabbing"
       >
-        {isOpen ? <X size={28} /> : <WSEIcon size={28} />}
+        {isOpen ? <X size={32} /> : <WSEIcon size={32} />}
       </motion.button>
     </div>
   );

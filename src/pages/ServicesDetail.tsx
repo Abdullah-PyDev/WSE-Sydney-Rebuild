@@ -6,15 +6,17 @@ import { Droplets, Filter, Ruler, BarChart3, CheckCircle2, Zap, Award, Mail, Pho
 const ServicesDetail = () => {
   return (
     <main className="pt-20">
-      <section className="relative bg-primary py-24 px-8 overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary to-primary-container"></div>
+      {/* Dark Hero Section */}
+      <section className="relative bg-[#001D3D] py-24 px-8 overflow-hidden">
+        <div className="absolute inset-0 opacity-20">
           <img 
             alt="Blueprint" 
-            className="w-full h-full object-cover mix-blend-overlay" 
+            className="w-full h-full object-cover mix-blend-overlay opacity-30" 
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuDPQVYHLUZYXkYmtoP6Z00I9hYhHK7G8zG3t3mqiDZ9eIUXgYZKUgr9U2dprzDAxQmSFrNxG_sEatIQAm0Xa1yhWFRTZNNNoyjNh3pIeVFWo78LL2DImnNuJii3E2dDEDVjt9kaZWYAkIM8dGkGvFbU0t5v3OMDLq-jmb_cXh5rPl9QIXRva1Shv-0NWTjGfPbPmR2bVyMX2wEmuJogPky9yGZrrlNzufDbur59PaH4TNmp8uptACCsHeGGzo5lChif0jzux2fXw3o" 
+            referrerPolicy="no-referrer"
           />
         </div>
+        
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="flex flex-col md:flex-row items-end justify-between gap-8">
             <motion.div 
@@ -22,11 +24,11 @@ const ServicesDetail = () => {
               animate={{ opacity: 1, y: 0 }}
               className="max-w-3xl"
             >
-              <span className="text-blue-300 font-headline font-bold uppercase tracking-[0.2em] text-xs mb-4 block">Precision Engineering Estimating</span>
-              <h1 className="text-white text-5xl md:text-7xl font-extrabold tracking-tighter leading-tight mb-6">
-                First-Principles Hydraulic Valuation
+              <span className="text-[#8ECAE6] font-headline font-bold uppercase tracking-[0.3em] text-[10px] mb-4 block">PRECISION ENGINEERING ESTIMATING</span>
+              <h1 className="text-white text-5xl md:text-7xl font-extrabold tracking-tighter leading-tight mb-6 font-headline">
+                First-Principles <br/> Hydraulic Valuation
               </h1>
-              <p className="text-blue-100 text-xl font-light leading-relaxed max-w-2xl font-body">
+              <p className="text-white/70 text-xl font-light leading-relaxed max-w-2xl font-body">
                 We decompose complex infrastructure into its fundamental units of labor, material, and risk. No benchmarks—just raw data-driven clarity.
               </p>
             </motion.div>
@@ -36,79 +38,81 @@ const ServicesDetail = () => {
               transition={{ delay: 0.3 }}
               className="hidden lg:block"
             >
-              <div className="bg-white/10 backdrop-blur-md p-8 border-l-4 border-blue-400">
-                <div className="text-white font-headline text-3xl font-bold">99.4%</div>
-                <div className="text-blue-300 text-xs font-bold uppercase tracking-wider font-body">Historical Accuracy</div>
+              <div className="bg-[#001D3D]/40 backdrop-blur-md p-8 border-l-4 border-[#8ECAE6] shadow-xl">
+                <div className="text-white font-headline text-4xl font-bold">99.4%</div>
+                <div className="text-white/50 text-[10px] font-bold uppercase tracking-widest font-body">HISTORICAL ACCURACY</div>
               </div>
             </motion.div>
           </div>
         </div>
       </section>
 
-      <section className="bg-slate-50 border-b border-slate-200 sticky top-20 z-40">
-        <div className="max-w-7xl mx-auto px-8 flex overflow-x-auto no-scrollbar gap-8 py-4 font-headline text-sm font-bold">
-          <a href="#sps" className="whitespace-nowrap text-primary flex items-center gap-2">
-            <Droplets size={16} /> Sewer Pump Stations
+      <section className="bg-white border-b border-gray-200 sticky top-20 z-40 shadow-sm">
+        <div className="max-w-7xl mx-auto px-8 flex overflow-x-auto no-scrollbar gap-12 py-5 font-headline text-[11px] font-bold uppercase tracking-[0.2em]">
+          <a href="#sps" className="whitespace-nowrap text-[#001D3D] hover:text-[#00C49A] transition-colors flex items-center gap-2">
+            <Droplets size={14} className="text-[#00C49A]" /> Sewer Pump Stations
           </a>
-          <a href="#osd" className="whitespace-nowrap text-slate-500 hover:text-primary transition-colors flex items-center gap-2">
-            <Filter size={16} /> On-Site Detention
+          <a href="#osd" className="whitespace-nowrap text-gray-400 hover:text-[#001D3D] transition-colors flex items-center gap-2">
+            <Filter size={14} /> On-Site Detention
           </a>
-          <a href="#underbores" className="whitespace-nowrap text-slate-500 hover:text-primary transition-colors flex items-center gap-2">
-            <Ruler size={16} /> Underbores
+          <a href="#underbores" className="whitespace-nowrap text-gray-400 hover:text-[#001D3D] transition-colors flex items-center gap-2">
+            <Ruler size={14} /> Underbores
           </a>
-          <a href="#pipeline" className="whitespace-nowrap text-slate-500 hover:text-primary transition-colors flex items-center gap-2">
-            <BarChart3 size={16} /> Data Pipeline
+          <a href="#pipeline" className="whitespace-nowrap text-gray-400 hover:text-[#001D3D] transition-colors flex items-center gap-2">
+            <BarChart3 size={14} /> Data Pipeline
           </a>
         </div>
       </section>
 
-      <section className="py-24 px-8 bg-white" id="sps">
+      <section className="py-24 px-8 bg-white border-b border-gray-100" id="sps">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
-            <div className="lg:col-span-5">
-              <div className="mb-8 flex items-center gap-4">
-                <div className="w-12 h-12 bg-primary rounded-md flex items-center justify-center text-white">
-                  <Droplets size={24} />
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 border border-gray-100">
+            <div className="lg:col-span-5 p-12 border-r border-gray-100">
+              <div className="mb-12 flex items-center gap-4">
+                <div className="w-14 h-14 bg-[#001D3D] rounded-xl flex items-center justify-center text-white shadow-lg">
+                  <Droplets size={28} />
                 </div>
-                <h2 className="text-4xl font-extrabold text-primary tracking-tight font-headline">Sewer Pump Stations</h2>
+                <h2 className="text-4xl font-extrabold text-[#001D3D] tracking-tight font-headline">Sewer Pump Stations</h2>
               </div>
-              <div className="space-y-6 text-slate-600 leading-relaxed font-body">
-                <p>Our approach to SPS estimating bypasses generic per-kilowatt rates. We calculate based on wet-well geometry, structural concrete volumes, and mechanical redundancy requirements.</p>
-                <ul className="space-y-4">
-                  <li className="flex gap-4">
-                    <CheckCircle2 className="text-blue-500 shrink-0" size={20} />
-                    <span>Civil excavation & shoring in variable geotechnical conditions.</span>
-                  </li>
-                  <li className="flex gap-4">
-                    <CheckCircle2 className="text-blue-500 shrink-0" size={20} />
-                    <span>Mechanical & electrical telemetry integration.</span>
-                  </li>
-                  <li className="flex gap-4">
-                    <CheckCircle2 className="text-blue-500 shrink-0" size={20} />
-                    <span>Odour control unit lifecycle costing.</span>
-                  </li>
-                </ul>
+              <div className="space-y-8 text-gray-500 leading-relaxed font-body">
+                <p className="text-lg">Our approach to SPS estimating bypasses generic per-kilowatt rates. We calculate based on wet-well geometry, structural concrete volumes, and mechanical redundancy requirements.</p>
+                <div className="space-y-4">
+                  {[
+                    "Civil excavation & shoring in variable geotechnical conditions.",
+                    "Mechanical & electrical telemetry integration.",
+                    "Odour control unit lifecycle costing."
+                  ].map((item, i) => (
+                    <div key={i} className="flex gap-4 items-start">
+                      <div className="mt-1 w-5 h-5 rounded-full bg-[#00C49A]/10 flex items-center justify-center text-[#00C49A]">
+                        <CheckCircle2 size={14} />
+                      </div>
+                      <span className="text-sm">{item}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
-            <div className="lg:col-span-7 grid grid-cols-1 md:grid-cols-2 gap-4 font-body">
-              <div className="bg-slate-50 p-8 rounded-lg border-l-4 border-primary">
-                <span className="text-xs font-bold uppercase text-primary tracking-widest block mb-2">Primary Metric</span>
-                <h3 className="text-3xl font-headline font-bold text-slate-900 mb-2">Cost/m³ Volume</h3>
-                <p className="text-sm text-slate-500">Precise concrete vs backfill volume analysis to minimize procurement waste.</p>
+            <div className="lg:col-span-7 grid grid-cols-1 md:grid-cols-2 gap-0">
+              <div className="p-12 border-b border-r border-gray-100 bg-gray-50/30">
+                <span className="text-[10px] font-bold uppercase text-[#00C49A] tracking-[0.3em] block mb-4">PRIMARY METRIC</span>
+                <h3 className="text-3xl font-headline font-bold text-[#001D3D] mb-4">Cost/m³ Volume</h3>
+                <p className="text-sm text-gray-500 leading-relaxed">Precise concrete vs backfill volume analysis to minimize procurement waste and optimize structural efficiency.</p>
               </div>
-              <div className="bg-slate-100 p-8 rounded-lg">
-                <span className="text-xs font-bold uppercase text-slate-500 tracking-widest block mb-2">Risk Factor</span>
-                <h3 className="text-3xl font-headline font-bold text-slate-900 mb-2">Geotech-L</h3>
-                <p className="text-sm text-slate-500">Dynamic sensitivity analysis based on rock-socketing requirements.</p>
+              <div className="p-12 border-b border-gray-100">
+                <span className="text-[10px] font-bold uppercase text-[#00C49A] tracking-[0.3em] block mb-4">RISK FACTOR</span>
+                <h3 className="text-3xl font-headline font-bold text-[#001D3D] mb-4">Geotech-L</h3>
+                <p className="text-sm text-gray-500 leading-relaxed">Dynamic sensitivity analysis based on rock-socketing requirements and groundwater table fluctuations.</p>
               </div>
-              <div className="col-span-1 md:col-span-2 relative h-64 bg-slate-200 rounded-lg overflow-hidden group">
+              <div className="col-span-1 md:col-span-2 relative h-96 overflow-hidden group">
                 <img 
                   alt="Construction" 
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
+                  className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
                   src="https://lh3.googleusercontent.com/aida-public/AB6AXuCzu28mN-GFQdnJ4VGNUXL6NSNFnNFgI7XqUrcbl3iNCzO_R6cDrd8-cp4oVwIENxXC5K3o5dSEr-oC6UuJF1HnTUQR9cyIXcMy5UXidOjOzbj7VmBOedixSlUe6pHdNTemaUNECLpE3rpZhJKSxWuvN1BHv6uFHX9lTnfbh6xpQy3AspqgiOekXb7BbY4FZmZY9AblloBVma4tTGGSjh8zJwXUGthimGVZBziODvJepiRLINZwr6KYi65H1NqG5zGjbhT6EwZAeSE" 
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-primary/80 to-transparent flex items-end p-8">
-                  <span className="text-white font-headline font-bold">Industrial Scale Efficiency</span>
+                <div className="absolute inset-0 bg-gradient-to-t from-[#001D3D] via-transparent to-transparent opacity-60"></div>
+                <div className="absolute bottom-0 left-0 p-12">
+                  <span className="text-white font-headline font-bold text-2xl tracking-tight">Industrial Scale Efficiency</span>
+                  <div className="h-1 w-12 bg-[#00C49A] mt-4"></div>
                 </div>
               </div>
             </div>
@@ -116,47 +120,56 @@ const ServicesDetail = () => {
         </div>
       </section>
 
-      <section className="py-24 px-8 bg-slate-50" id="osd">
+      <section className="py-24 px-8 bg-gray-50" id="osd">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
             <div>
-              <h2 className="text-4xl font-extrabold text-primary tracking-tight mb-4 font-headline">On-Site Detention (OSD)</h2>
-              <p className="text-slate-600 max-w-xl font-body">Optimizing discharge rates through rigorous hydraulic modeling and structural innovation.</p>
+              <span className="text-[#00C49A] font-headline font-bold uppercase tracking-[0.3em] text-[10px] mb-4 block">HYDRAULIC OPTIMIZATION</span>
+              <h2 className="text-4xl font-extrabold text-[#001D3D] tracking-tight mb-4 font-headline">On-Site Detention (OSD)</h2>
+              <p className="text-gray-500 max-w-xl font-body">Optimizing discharge rates through rigorous hydraulic modeling and structural innovation to meet stringent council requirements.</p>
             </div>
-            <div className="flex gap-4 font-body">
-              <div className="px-6 py-2 border-2 border-primary text-primary font-bold text-xs uppercase tracking-widest rounded-md">Stormwater Design</div>
-              <div className="px-6 py-2 border-2 border-primary text-primary font-bold text-xs uppercase tracking-widest rounded-md">Volume Optimization</div>
+            <div className="flex gap-3 font-body">
+              <div className="px-5 py-2 bg-white border border-gray-200 text-[#001D3D] font-bold text-[10px] uppercase tracking-widest shadow-sm">STORMWATER DESIGN</div>
+              <div className="px-5 py-2 bg-white border border-gray-200 text-[#001D3D] font-bold text-[10px] uppercase tracking-widest shadow-sm">VOLUME OPTIMIZATION</div>
             </div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-4 grid-rows-2 gap-4 h-auto md:h-[600px] font-body">
-            <div className="md:col-span-2 md:row-span-2 bg-white p-10 flex flex-col justify-between group cursor-pointer hover:shadow-lg transition-all">
+          <div className="grid grid-cols-1 md:grid-cols-4 grid-rows-2 gap-4 h-auto md:h-[650px] font-body">
+            <div className="md:col-span-2 md:row-span-2 bg-white p-12 flex flex-col justify-between group shadow-sm border border-gray-100 rounded-2xl hover:shadow-xl transition-all duration-500">
               <div>
-                <span className="text-primary font-bold text-4xl mb-4 block font-headline">01</span>
-                <h3 className="text-2xl font-bold mb-4 font-headline">Structural Integrity Matrix</h3>
-                <p className="text-slate-600 leading-relaxed">Calculations for varying surcharge loads and trafficable lid requirements, ensuring compliance without over-engineering.</p>
+                <span className="text-gray-100 font-bold text-7xl mb-8 block font-headline group-hover:text-[#00C49A]/10 transition-colors">01</span>
+                <h3 className="text-3xl font-bold mb-6 font-headline text-[#001D3D]">Structural Integrity Matrix</h3>
+                <p className="text-gray-500 leading-relaxed text-lg">Calculations for varying surcharge loads and trafficable lid requirements, ensuring compliance without over-engineering.</p>
               </div>
-              <div className="h-1 w-full bg-slate-100 mt-8 relative overflow-hidden">
-                <div className="absolute inset-0 bg-primary w-3/4"></div>
+              <div className="h-2 w-full bg-gray-100 mt-8 relative overflow-hidden rounded-full">
+                <motion.div 
+                  initial={{ width: 0 }}
+                  whileInView={{ width: "75%" }}
+                  className="absolute inset-0 bg-[#00C49A]"
+                ></motion.div>
               </div>
             </div>
-            <div className="md:col-span-2 bg-primary text-white p-10 relative overflow-hidden">
+            <div className="md:col-span-2 bg-[#001D3D] p-12 relative overflow-hidden flex flex-col justify-center rounded-2xl group">
               <div className="relative z-10">
-                <h3 className="text-2xl font-bold mb-2 font-headline">Orifice Plate Sizing</h3>
-                <p className="text-blue-200 text-sm">First-principles calculation of headwater levels vs discharge velocity.</p>
+                <h3 className="text-3xl font-bold mb-4 font-headline text-white group-hover:text-[#8ECAE6] transition-colors">Orifice Plate Sizing</h3>
+                <p className="text-white/60 text-base leading-relaxed">First-principles calculation of headwater levels vs discharge velocity for precise flow control.</p>
               </div>
-              <div className="absolute bottom-0 right-0 opacity-20">
-                <Droplets size={160} />
+              <div className="absolute -bottom-10 -right-10 opacity-5 text-white transform rotate-12 group-hover:rotate-0 transition-transform duration-700">
+                <Droplets size={200} />
               </div>
             </div>
-            <div className="bg-emerald-900 text-emerald-100 p-8 flex flex-col justify-center items-center text-center">
-              <Zap className="text-emerald-400 mb-2" size={32} />
-              <div className="text-xs uppercase tracking-[0.2em] font-bold">Fast-Track</div>
-              <div className="text-xl font-bold font-headline">48hr Turnaround</div>
+            <div className="bg-[#002B2B] p-10 flex flex-col justify-center items-center text-center rounded-2xl group hover:bg-[#003d3d] transition-colors">
+              <div className="w-12 h-12 bg-[#00C49A] rounded-xl flex items-center justify-center text-[#002B2B] mb-6 shadow-lg shadow-[#00C49A]/20">
+                <Zap size={24} />
+              </div>
+              <div className="text-[10px] uppercase tracking-[0.3em] font-bold text-[#00C49A] mb-2">FAST-TRACK</div>
+              <div className="text-2xl font-bold font-headline text-white">48hr Turnaround</div>
             </div>
-            <div className="bg-slate-200 p-8 flex flex-col justify-center items-center text-center">
-              <Award className="text-primary mb-2" size={32} />
-              <div className="text-xs uppercase tracking-[0.2em] font-bold text-slate-500">Council Approval</div>
-              <div className="text-xl font-bold text-primary font-headline">100% Rate</div>
+            <div className="bg-white p-10 flex flex-col justify-center items-center text-center rounded-2xl border border-gray-100 shadow-sm group hover:shadow-md transition-all">
+              <div className="w-12 h-12 bg-[#001D3D] rounded-xl flex items-center justify-center text-white mb-6 shadow-lg shadow-[#001D3D]/20">
+                <CheckCircle2 size={24} />
+              </div>
+              <div className="text-[10px] uppercase tracking-[0.3em] font-bold text-gray-400 mb-2">COUNCIL APPROVAL</div>
+              <div className="text-2xl font-bold text-[#001D3D] font-headline">100% Rate</div>
             </div>
           </div>
         </div>
@@ -166,29 +179,29 @@ const ServicesDetail = () => {
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
             <div className="order-2 lg:order-1">
-              <div className="bg-slate-50 p-4 rounded-xl">
+              <div className="bg-gray-100 p-2 rounded-xl">
                 <img 
                   alt="Drilling" 
-                  className="w-full aspect-video object-cover rounded-lg grayscale hover:grayscale-0 transition-all duration-700" 
+                  className="w-full aspect-video object-cover rounded-lg" 
                   src="https://lh3.googleusercontent.com/aida-public/AB6AXuCeFu82izwPPDY9PHHbv8SrDMsVmDjvpwnm-4HUCpSzznI0M9GqyadXOKzwBAuk7PVArFd020jeqYZvpXvBrgFQrhKwwWMt9m9GXPyAConn54wWGPz4VmOMhFssXdW1T-r17cLNM7bvNJTLiSgY-acMDjxAIWscUZZ8PmPT8nVUJqUjkFj8i3Mxguxq7LrY5Esa8AM7XH5x-tH40FRZMjlN5uo5CUWLEGbBreYhinIH-9eYL7Y-PVG7jQ5qC5LXbsrLY5MSoBObDKU" 
                 />
               </div>
             </div>
             <div className="order-1 lg:order-2 font-body">
-              <span className="bg-blue-100 text-blue-700 px-3 py-1 text-[10px] font-bold uppercase tracking-widest rounded-sm mb-6 inline-block">Complex Methodology</span>
-              <h2 className="text-4xl font-extrabold text-primary tracking-tight mb-6 font-headline">Trenchless Technology & Underbores</h2>
-              <div className="space-y-6">
-                <div className="border-l-2 border-slate-200 pl-6 py-2">
-                  <h4 className="font-bold text-primary mb-1">Micro-Tunneling Analysis</h4>
-                  <p className="text-sm text-slate-500">Detailed costing for slurry separation, jacking forces, and reception pit structural requirements.</p>
+              <span className="bg-[#9381FF]/10 text-[#9381FF] px-3 py-1 text-[10px] font-bold uppercase tracking-widest rounded-sm mb-6 inline-block">COMPLEX METHODOLOGY</span>
+              <h2 className="text-4xl font-extrabold text-[#001D3D] tracking-tight mb-8 font-headline">Trenchless Technology & Underbores</h2>
+              <div className="space-y-8">
+                <div>
+                  <h4 className="font-bold text-[#001D3D] mb-2 text-lg">Micro-Tunneling Analysis</h4>
+                  <p className="text-sm text-gray-500 leading-relaxed">Detailed costing for slurry separation, jacking forces, and reception pit structural requirements.</p>
                 </div>
-                <div className="border-l-2 border-slate-200 pl-6 py-2">
-                  <h4 className="font-bold text-primary mb-1">Horizontal Directional Drilling (HDD)</h4>
-                  <p className="text-sm text-slate-500">Modeling for annular pressure and inadvertent return risks during creek or road crossings.</p>
+                <div>
+                  <h4 className="font-bold text-[#001D3D] mb-2 text-lg">Horizontal Directional Drilling (HDD)</h4>
+                  <p className="text-sm text-gray-500 leading-relaxed">Modeling for annular pressure and inadvertent return risks during creek or road crossings.</p>
                 </div>
-                <div className="border-l-2 border-slate-200 pl-6 py-2">
-                  <h4 className="font-bold text-primary mb-1">Auger Boring</h4>
-                  <p className="text-sm text-slate-500">Precision casing installation estimating with laser-guided accuracy margins.</p>
+                <div>
+                  <h4 className="font-bold text-[#001D3D] mb-2 text-lg">Auger Boring</h4>
+                  <p className="text-sm text-gray-500 leading-relaxed">Precision casing installation estimating with laser-guided accuracy margins.</p>
                 </div>
               </div>
             </div>
@@ -196,36 +209,38 @@ const ServicesDetail = () => {
         </div>
       </section>
 
-      <section className="py-24 px-8 bg-primary" id="pipeline">
-        <div className="max-w-7xl mx-auto text-center font-body">
-          <h2 className="text-3xl font-extrabold text-white mb-16 tracking-tight font-headline">The Precision Data Pipeline</h2>
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4 relative">
-            <div className="hidden md:block absolute top-1/2 left-0 w-full h-px bg-white/10 -translate-y-1/2 z-0"></div>
+      <section className="py-24 px-8 bg-[#001D3D] relative overflow-hidden" id="pipeline">
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '40px 40px' }}></div>
+        </div>
+        <div className="max-w-7xl mx-auto text-center font-body relative z-10">
+          <span className="text-[#00C49A] font-headline font-bold uppercase tracking-[0.4em] text-[10px] mb-4 block">SYSTEMATIC METHODOLOGY</span>
+          <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-20 tracking-tight font-headline">The Precision Data Pipeline</h2>
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-0 border border-white/10">
             {[
-              { id: 1, title: 'Quantification', desc: 'Automated Take-offs from BIM & CAD.' },
-              { id: 2, title: 'Market Parity', desc: 'Real-time local material index updates.' },
-              { id: 3, title: 'Labour Logics', desc: 'Production rate adjustment per terrain.' },
-              { id: 4, title: 'Risk Stack', desc: 'Monte Carlo contingency modeling.' },
-              { id: 5, title: 'BOQ Delivery', desc: 'Ready-for-tender final submission.', highlight: true }
+              { id: '01', title: 'Quantification', desc: 'Automated Take-offs from BIM & CAD.' },
+              { id: '02', title: 'Market Parity', desc: 'Real-time local material index updates.' },
+              { id: '03', title: 'Labour Logics', desc: 'Production rate adjustment per terrain.' },
+              { id: '04', title: 'Risk Stack', desc: 'Monte Carlo contingency modeling.' },
+              { id: '05', title: 'BOQ Delivery', desc: 'Ready-for-tender final submission.', highlight: true }
             ].map((step) => (
-              <div key={step.id} className={`relative z-10 p-8 rounded-lg border ${step.highlight ? 'bg-emerald-900 border-emerald-400/20' : 'bg-white/5 border-white/5'} backdrop-blur-md`}>
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-4 font-bold ${step.highlight ? 'bg-emerald-400 text-emerald-900' : 'bg-white text-primary'}`}>
-                  {step.id}
-                </div>
-                <h4 className={`font-bold text-sm mb-2 ${step.highlight ? 'text-emerald-400' : 'text-white'}`}>{step.title}</h4>
-                <p className={`text-xs ${step.highlight ? 'text-emerald-100' : 'text-blue-100/60'}`}>{step.desc}</p>
+              <div key={step.id} className={`p-10 border-r border-white/10 last:border-r-0 transition-all duration-500 hover:bg-white/5 group ${step.highlight ? 'bg-white/5' : ''}`}>
+                <div className="text-4xl font-headline font-black text-white/10 mb-8 group-hover:text-[#00C49A]/20 transition-colors">{step.id}</div>
+                <h4 className="font-headline font-bold text-lg mb-4 text-white">{step.title}</h4>
+                <p className="text-xs leading-relaxed text-white/50 group-hover:text-white/80 transition-colors">{step.desc}</p>
+                {step.highlight && <div className="mt-8 h-1 w-full bg-[#00C49A]"></div>}
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="py-24 px-8 bg-slate-50">
+      <section className="py-24 px-8 bg-gray-50">
         <div className="max-w-4xl mx-auto text-center font-body">
-          <h2 className="text-4xl font-headline font-extrabold text-primary mb-8">Ready for an engineered estimate?</h2>
+          <h2 className="text-4xl font-headline font-extrabold text-[#001D3D] mb-12">Ready for an engineered estimate?</h2>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/request" className="bg-primary text-white px-8 py-4 rounded-md font-bold hover:bg-primary-container transition-all">Submit Tender Documents</Link>
-            <button className="bg-white text-primary border border-slate-200 px-8 py-4 rounded-md font-bold hover:bg-slate-100 transition-all">Download Sample BOQ</button>
+            <Link to="/request" className="bg-[#001D3D] text-white px-10 py-4 rounded-md font-bold hover:bg-[#002B2B] transition-all">Submit Tender Documents</Link>
+            <button className="bg-white text-[#001D3D] border border-gray-200 px-10 py-4 rounded-md font-bold hover:bg-gray-50 transition-all">Download Sample BOQ</button>
           </div>
         </div>
       </section>

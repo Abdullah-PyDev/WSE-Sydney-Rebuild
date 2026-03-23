@@ -5,30 +5,38 @@ import { MapPin, Phone, Mail, Building2, Landmark, Factory } from 'lucide-react'
 const Locations = () => {
   return (
     <main className="pt-24">
-      <section className="max-w-7xl mx-auto px-8 py-16 md:py-24">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 items-end">
+      {/* Light Hero Section matching About Us theme */}
+      <header className="pt-12 pb-20 px-8 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-end">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="md:col-span-7"
+            className="lg:col-span-8"
           >
-            <span className="font-headline uppercase tracking-widest text-xs text-on-surface-variant mb-4 block">National Presence</span>
-            <h1 className="font-headline text-5xl md:text-7xl font-extrabold text-primary leading-tight tracking-tight">
-              Precise Estimating, <br/><span className="text-surface-tint">Across Australia.</span>
+            <div className="mb-6 inline-flex items-center gap-2 text-primary font-headline font-bold uppercase tracking-widest text-xs">
+              <span className="h-px w-8 bg-primary"></span>
+              National Presence
+            </div>
+            <h1 className="font-headline font-extrabold text-5xl md:text-7xl text-primary leading-tight tracking-tighter mb-8">
+              Precise Estimating, <span className="text-surface-tint">Across Australia.</span>
             </h1>
-          </motion.div>
-          <motion.div 
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2 }}
-            className="md:col-span-5 pb-2"
-          >
-            <p className="text-on-surface-variant text-lg leading-relaxed border-l-4 border-primary-container pl-6 font-body">
+            <p className="text-xl text-on-surface-variant max-w-2xl leading-relaxed font-body">
               From our strategic hub in Bankstown to regional centers in Melbourne and Brisbane, WSE Sydney provides data-driven water and sewer estimating for Australia's largest civil projects.
             </p>
           </motion.div>
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.2 }}
+            className="lg:col-span-4 flex justify-start lg:justify-end pb-4"
+          >
+            <div className="bg-surface-container-low p-8 rounded-xl border-l-4 border-primary">
+              <div className="text-4xl font-headline font-extrabold text-primary mb-1">3+</div>
+              <div className="text-sm font-body uppercase tracking-wider text-on-surface-variant">Strategic Hubs</div>
+            </div>
+          </motion.div>
         </div>
-      </section>
+      </header>
 
       <section className="bg-surface-container-low py-20 px-8">
         <div className="max-w-7xl mx-auto">
@@ -36,7 +44,7 @@ const Locations = () => {
             <motion.div 
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="lg:col-span-2 relative min-h-[500px] bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden flex items-center justify-center"
+              className="lg:col-span-2 relative min-h-[500px] bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden flex items-center justify-center border border-outline-variant"
             >
               <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle, #001d44 1px, transparent 1px)', backgroundSize: '30px 30px' }}></div>
               <div className="w-full h-full relative">
@@ -44,6 +52,7 @@ const Locations = () => {
                   className="w-full h-full object-cover opacity-90 grayscale contrast-125" 
                   src="https://lh3.googleusercontent.com/aida-public/AB6AXuDqg_mNJ65MD6_Sw3VtJsmM7XexeTtccznk3s8a3z1r3NEov5G4zqUWguGgOKZxJoxPDarN-0_mfctBbMjhLF36hz8AvEBFMqM4N1Zsggwbxg-4fqpHNtFwsEf6XT-fwxZoo-5VO68PjOPfh07n2RBydEOMqnLQpXAxIHRtF_6etgn5Kl-CDhI4JVHqG8ZxBVigiA9VhB-BXvMmLc_GnharkShw4H-Wy_cRsvGd_iAZam_C1vjwOhRHyLCzS11VMw5yIcjdnAFhXzY" 
                   alt="Australia Map"
+                  referrerPolicy="no-referrer"
                 />
                 <div className="absolute top-[65%] left-[80%] -translate-x-1/2 -translate-y-1/2 group">
                   <div className="w-4 h-4 bg-primary rounded-full ring-4 ring-primary/20 animate-pulse"></div>
@@ -55,17 +64,17 @@ const Locations = () => {
                   <div className="w-3 h-3 bg-surface-tint rounded-full ring-4 ring-surface-tint/20"></div>
                 </div>
               </div>
-              <div className="absolute bottom-6 left-6 p-6 bg-primary/90 text-white backdrop-blur-md rounded-lg max-w-xs">
+              <div className="absolute bottom-6 left-6 p-6 bg-surface-container-lowest/90 text-on-surface backdrop-blur-md rounded-lg max-w-xs border border-outline-variant shadow-xl">
                 <h4 className="font-headline font-bold text-lg mb-2">Coverage Statistics</h4>
                 <div className="flex justify-between items-end gap-4">
                   <div>
-                    <span className="block text-2xl font-bold font-headline">98%</span>
-                    <span className="text-[10px] uppercase font-body opacity-70">NSW Market Coverage</span>
+                    <span className="block text-2xl font-bold font-headline text-primary">98%</span>
+                    <span className="text-[10px] uppercase font-body text-on-surface-variant">NSW Market Coverage</span>
                   </div>
-                  <div className="w-[1px] h-10 bg-white/20"></div>
+                  <div className="w-[1px] h-10 bg-outline-variant"></div>
                   <div>
-                    <span className="block text-2xl font-bold font-headline">48h</span>
-                    <span className="text-[10px] uppercase font-body opacity-70">Average Response</span>
+                    <span className="block text-2xl font-bold font-headline text-primary">48h</span>
+                    <span className="text-[10px] uppercase font-body text-on-surface-variant">Average Response</span>
                   </div>
                 </div>
               </div>
@@ -139,22 +148,22 @@ const Locations = () => {
       </section>
 
       <section className="max-w-7xl mx-auto px-8 py-20">
-        <div className="bg-primary-container p-12 rounded-2xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-12">
-          <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
+        <div className="bg-surface-container-low border border-outline-variant p-12 rounded-2xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-12">
+          <div className="absolute inset-0 opacity-5 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
           <div className="relative z-10 md:w-2/3">
-            <h2 className="font-headline text-3xl font-bold text-white mb-4">National Service Capability</h2>
-            <p className="text-white/80 text-lg leading-relaxed font-body">
+            <h2 className="font-headline text-3xl font-bold text-primary mb-4">National Service Capability</h2>
+            <p className="text-on-surface-variant text-lg leading-relaxed font-body">
               While our hubs serve as regional command centers, our estimating teams are equipped to handle infrastructure projects in any territory. We utilize advanced geospatial data and local cost indices to ensure precision anywhere in Australia.
             </p>
           </div>
           <div className="relative z-10 flex gap-4">
-            <div className="bg-white/10 p-6 rounded-lg backdrop-blur-md">
-              <span className="block text-white text-3xl font-black mb-1 font-headline">150+</span>
-              <span className="text-white/60 text-[10px] uppercase tracking-widest font-bold font-body">Projects Annually</span>
+            <div className="bg-surface-container-lowest p-6 rounded-lg shadow-sm border border-outline-variant">
+              <span className="block text-primary text-3xl font-black mb-1 font-headline">150+</span>
+              <span className="text-on-surface-variant text-[10px] uppercase tracking-widest font-bold font-body">Projects Annually</span>
             </div>
-            <div className="bg-white/10 p-6 rounded-lg backdrop-blur-md">
-              <span className="block text-white text-3xl font-black mb-1 font-headline">24h</span>
-              <span className="text-white/60 text-[10px] uppercase tracking-widest font-bold font-body">Local Support</span>
+            <div className="bg-surface-container-lowest p-6 rounded-lg shadow-sm border border-outline-variant">
+              <span className="block text-primary text-3xl font-black mb-1 font-headline">24h</span>
+              <span className="text-on-surface-variant text-[10px] uppercase tracking-widest font-bold font-body">Local Support</span>
             </div>
           </div>
         </div>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, useScroll, useTransform } from 'motion/react';
+import { motion, useScroll, useTransform, AnimatePresence, useMotionValue, useSpring } from 'motion/react';
 import { Link } from 'react-router-dom';
 import { Droplets, Settings, Waves, ArrowRight, History, ShieldCheck, Globe, Plus } from 'lucide-react';
 import TestimonialCarousel from '../components/TestimonialCarousel';
@@ -48,8 +48,174 @@ const Typewriter = ({ phrases, delay = 0, speed = 100, deleteSpeed = 50, pause =
   );
 };
 
+const FAQItem: React.FC<{ question: string; answer: string }> = ({ question, answer }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  return (
+    <div className="border-b border-slate-200 py-4 last:border-0">
+      <button 
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full flex justify-between items-center text-left font-headline font-bold text-primary hover:text-blue-600 transition-colors py-2"
+      >
+        <span className="pr-8">{question}</span>
+        <Plus className={`transform transition-transform duration-300 flex-shrink-0 ${isOpen ? 'rotate-45' : ''}`} size={20} />
+      </button>
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="overflow-hidden"
+          >
+            <p className="pt-4 text-slate-600 font-body text-sm leading-relaxed pb-4">
+              {answer}
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
+const FAQSection = () => {
+  const faqs = [
+    {
+      question: "What is a Bill of Quantities (BOQ)?",
+      answer: "A Bill of Quantities is a document used in tendering in the construction industry in which materials, parts, and labor (and their costs) are itemized. It provides a common basis for all contractors to bid on a project, ensuring fair competition and accurate cost estimation."
+    },
+    {
+      question: "How long does a typical estimate take?",
+      answer: "We pride ourselves on our industry-leading turnaround times. Most standard BOQ requests are completed within 24 to 48 hours. For larger, more complex infrastructure projects, we will provide a specific timeline upon review of the project documents."
+    },
+    {
+      question: "Are you Sydney Water accredited?",
+      answer: "Yes, WSE Sydney is fully accredited for Sydney Water projects. Our estimators have deep knowledge of Sydney Water's standards and compliance requirements, ensuring that every BOQ we produce meets the necessary regulatory benchmarks."
+    },
+    {
+      question: "What geographical areas do you service?",
+      answer: "While our head office is in Bankstown, Sydney, we have national capability with a strategic presence in Melbourne and Brisbane. We service civil infrastructure projects across all of New South Wales and major metropolitan areas in Australia."
+    }
+  ];
+
+  return (
+    <section className="py-24 px-8 bg-slate-50">
+      <div className="max-w-3xl mx-auto">
+        <div className="text-center mb-16">
+          <h2 className="font-headline text-3xl md:text-4xl font-extrabold text-primary mb-4">Frequently Asked Questions</h2>
+          <div className="h-1.5 w-24 bg-primary mx-auto mt-6"></div>
+        </div>
+        <div className="bg-white rounded-2xl shadow-sm p-8 md:p-12">
+          {faqs.map((faq, index) => (
+            <FAQItem key={index} question={faq.question} answer={faq.answer} />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const HeroBackground = ({ mouseX, mouseY }: { mouseX: any; mouseY: any }) => {
+  const spotlightX = useSpring(mouseX, { stiffness: 50, damping: 20 });
+  const spotlightY = useSpring(mouseY, { stiffness: 50, damping: 20 });
+
+  return (
+    <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+      {/* Interactive Spotlight */}
+      <motion.div 
+        className="absolute inset-0 z-10 opacity-60"
+        style={{
+          background: useTransform(
+            [spotlightX, spotlightY],
+            ([x, y]) => `radial-gradient(800px circle at ${x}px ${y}px, rgba(59, 130, 246, 0.25), transparent 85%)`
+          )
+        }}
+      />
+
+      {/* Base Grid */}
+      <div 
+        className="absolute inset-0 opacity-[0.05]" 
+        style={{ 
+          backgroundImage: `linear-gradient(to right, white 1px, transparent 1px), linear-gradient(to bottom, white 1px, transparent 1px)`,
+          backgroundSize: '80px 80px'
+        }}
+      />
+      
+      {/* Animated Scanning Line */}
+      <motion.div
+        className="absolute inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-blue-400/10 to-transparent"
+        animate={{ top: ['0%', '100%'] }}
+        transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
+      />
+
+      {/* Floating Technical Elements */}
+      <svg className="absolute inset-0 w-full h-full opacity-20">
+        <defs>
+          <pattern id="dots" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+            <circle cx="2" cy="2" r="1" fill="white" fillOpacity="0.3" />
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#dots)" />
+        
+        {/* Abstract "Flow" lines */}
+        <motion.path
+          d="M 0 400 Q 400 350 800 450 T 1600 400"
+          stroke="white"
+          strokeWidth="1"
+          fill="none"
+          strokeOpacity="0.2"
+          initial={{ pathLength: 0, opacity: 0 }}
+          animate={{ pathLength: 1, opacity: [0, 1, 0] }}
+          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.path
+          d="M 0 600 Q 600 650 1200 550 T 2000 600"
+          stroke="white"
+          strokeWidth="1"
+          fill="none"
+          strokeOpacity="0.15"
+          initial={{ pathLength: 0, opacity: 0 }}
+          animate={{ pathLength: 1, opacity: [0, 1, 0] }}
+          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut", delay: 5 }}
+        />
+      </svg>
+
+      {/* Pulsing Data Points */}
+      {[...Array(12)].map((_, i) => (
+        <motion.div
+          key={i}
+          className="absolute w-1 h-1 bg-blue-300 rounded-full"
+          style={{ 
+            left: `${Math.random() * 100}%`, 
+            top: `${Math.random() * 100}%` 
+          }}
+          animate={{ 
+            scale: [1, 2.5, 1],
+            opacity: [0.1, 0.4, 0.1]
+          }}
+          transition={{ 
+            duration: 4 + Math.random() * 6, 
+            repeat: Infinity, 
+            ease: "easeInOut",
+            delay: Math.random() * 10
+          }}
+        />
+      ))}
+    </div>
+  );
+};
+
 const Services = () => {
-  const heroRef = useRef(null);
+  const heroRef = useRef<HTMLElement>(null);
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!heroRef.current) return;
+    const rect = heroRef.current.getBoundingClientRect();
+    mouseX.set(e.clientX - rect.left);
+    mouseY.set(e.clientY - rect.top);
+  };
+
   const phrases = [
     "Guaranteed Accuracy.",
     "Sydney Water Accredited.",
@@ -88,18 +254,41 @@ const Services = () => {
 
   return (
     <main className="pt-20">
-      <section ref={heroRef} className="relative min-h-[800px] flex items-center overflow-hidden bg-primary px-8">
+      <section 
+        ref={heroRef} 
+        onMouseMove={handleMouseMove}
+        className="relative min-h-[800px] flex items-center overflow-hidden bg-primary px-8 group/hero"
+      >
         <motion.div 
           style={{ y: backgroundY }}
           className="absolute inset-0 z-0"
         >
           <div className="absolute inset-0 bg-gradient-to-r from-primary via-primary/90 to-transparent z-10"></div>
-          <img 
-            alt="Blueprint" 
-            className="w-full h-full object-cover opacity-30" 
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDj5O6tpaDcBtbszy1Y_0WojtLKOT6JkjF5AHKiglzJkMNNOkop7NFdpcG2ERyzsjetCHxmkGUSU5piqYJ9_2wsVfKo-rtrZZSsu_hRpuVkgFye9yDutAYjdidr1WvrziutdFo7QYt7rCvZvfj4ETcpCOIDpm0c9yIF91IOF3xOL1-1nfHb4dpLwx7WVNfaGnkdaBtR6XHSvbDo38Ce3n4Bji24T0uyl_IAyzOYW4fiMMfMlTnYpLX8qv0W6SXG-to7DvzvKgBlZ8I" 
-          />
+          <HeroBackground mouseX={mouseX} mouseY={mouseY} />
         </motion.div>
+        
+        {/* Interactive Cursor Element */}
+        <motion.div
+          className="pointer-events-none absolute z-50 w-12 h-12 border-2 border-blue-400 rounded-full flex items-center justify-center opacity-0 group-hover/hero:opacity-100 transition-opacity duration-300"
+          style={{
+            x: useSpring(mouseX, { stiffness: 300, damping: 30 }),
+            y: useSpring(mouseY, { stiffness: 300, damping: 30 }),
+            translateX: "-50%",
+            translateY: "-50%",
+          }}
+        >
+          <div className="w-2 h-2 bg-blue-400 rounded-full animate-ping" />
+          <div className="absolute inset-0 rounded-full bg-blue-400/10 blur-md" />
+        </motion.div>
+
+        {/* Debug Mouse Position */}
+        <motion.div 
+          className="absolute top-4 left-4 z-50 bg-black/50 text-white text-[10px] p-1 rounded pointer-events-none opacity-0 group-hover/hero:opacity-100"
+          style={{ x: mouseX, y: mouseY }}
+        >
+          DEBUG: ACTIVE
+        </motion.div>
+
         <motion.div 
           style={{ y: contentY }}
           className="relative z-20 max-w-7xl mx-auto w-full grid md:grid-cols-2 gap-12 items-center"
@@ -417,6 +606,8 @@ const Services = () => {
           <TestimonialCarousel />
         </div>
       </section>
+
+      <FAQSection />
 
       <section className="py-24 px-8">
         <div className="max-w-5xl mx-auto rounded-2xl bg-gradient-to-br from-primary to-primary-container p-12 md:p-20 text-center relative overflow-hidden">

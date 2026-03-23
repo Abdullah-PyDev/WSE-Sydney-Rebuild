@@ -9,6 +9,7 @@ export const Header = () => {
     { name: 'Services', path: '/services' },
     { name: 'Locations', path: '/locations' },
     { name: 'About Us', path: '/about' },
+    { name: 'FAQ', path: '/faq' },
   ];
 
   return (
@@ -40,8 +41,8 @@ export const Header = () => {
               to={link.path}
               className={`font-body text-sm transition-colors ${
                 location.pathname === link.path
-                  ? 'text-blue-700 border-b-2 border-blue-700 pb-1 font-bold'
-                  : 'text-slate-600 hover:text-blue-900'
+                  ? 'text-primary border-b-2 border-primary pb-1 font-bold'
+                  : 'text-on-surface-variant hover:text-primary'
               }`}
             >
               {link.name}
@@ -65,7 +66,7 @@ export const Header = () => {
 
 export const Footer = () => {
   return (
-    <footer className="w-full bg-slate-900 text-slate-300 pt-20 pb-10">
+    <footer className="w-full bg-primary text-white/70 pt-20 pb-10">
       <div className="max-w-7xl mx-auto px-8 grid grid-cols-1 md:grid-cols-12 gap-12 mb-16">
         {/* Brand & Mission */}
         <div className="md:col-span-4 flex flex-col space-y-6">
@@ -79,17 +80,17 @@ export const Footer = () => {
               />
             </div>
           </Link>
-          <p className="text-sm leading-relaxed text-slate-400 max-w-sm">
+          <p className="text-sm leading-relaxed text-white/50 max-w-sm font-body">
             WSE Sydney provides industry-leading water and sewer estimating solutions. We combine technical precision with local expertise to deliver accurate BOQs for civil projects across New South Wales.
           </p>
           <div className="flex gap-4">
-            <a href="#" className="p-2 bg-slate-800 rounded-full hover:bg-blue-600 transition-colors">
+            <a href="#" className="p-2 bg-white/10 rounded-full hover:bg-surface-tint transition-colors">
               <Linkedin size={18} className="text-white" />
             </a>
-            <a href="#" className="p-2 bg-slate-800 rounded-full hover:bg-blue-400 transition-colors">
+            <a href="#" className="p-2 bg-white/10 rounded-full hover:bg-surface-tint transition-colors">
               <Twitter size={18} className="text-white" />
             </a>
-            <a href="#" className="p-2 bg-slate-800 rounded-full hover:bg-blue-700 transition-colors">
+            <a href="#" className="p-2 bg-white/10 rounded-full hover:bg-surface-tint transition-colors">
               <Facebook size={18} className="text-white" />
             </a>
           </div>
@@ -98,19 +99,20 @@ export const Footer = () => {
         {/* Quick Links */}
         <div className="md:col-span-2">
           <h5 className="text-white font-headline font-bold text-sm uppercase tracking-widest mb-8">Navigation</h5>
-          <ul className="space-y-4 text-sm">
+          <ul className="space-y-4 text-sm font-body">
             <li><Link to="/" className="hover:text-white transition-colors">Home</Link></li>
             <li><Link to="/services" className="hover:text-white transition-colors">Our Services</Link></li>
             <li><Link to="/locations" className="hover:text-white transition-colors">Locations</Link></li>
             <li><Link to="/about" className="hover:text-white transition-colors">About WSE</Link></li>
-            <li><Link to="/request" className="text-blue-400 font-bold hover:text-blue-300 transition-colors flex items-center gap-1">Request a BOQ <ArrowUpRight size={14} /></Link></li>
+            <li><Link to="/faq" className="hover:text-white transition-colors">FAQ</Link></li>
+            <li><Link to="/request" className="text-surface-tint font-bold hover:text-white transition-colors flex items-center gap-1">Request a BOQ <ArrowUpRight size={14} /></Link></li>
           </ul>
         </div>
 
         {/* Services */}
         <div className="md:col-span-3">
           <h5 className="text-white font-headline font-bold text-sm uppercase tracking-widest mb-8">Core Services</h5>
-          <ul className="space-y-4 text-sm">
+          <ul className="space-y-4 text-sm font-body">
             <li><a href="#" className="hover:text-white transition-colors">Water Main Estimating</a></li>
             <li><a href="#" className="hover:text-white transition-colors">Sewer Infrastructure BOQ</a></li>
             <li><a href="#" className="hover:text-white transition-colors">Sydney Water Compliance</a></li>
@@ -122,17 +124,17 @@ export const Footer = () => {
         {/* Contact Info */}
         <div className="md:col-span-3">
           <h5 className="text-white font-headline font-bold text-sm uppercase tracking-widest mb-8">Contact Us</h5>
-          <ul className="space-y-6 text-sm">
+          <ul className="space-y-6 text-sm font-body">
             <li className="flex items-start gap-3">
-              <MapPin size={18} className="text-blue-500 flex-shrink-0 mt-1" />
+              <MapPin size={18} className="text-surface-tint flex-shrink-0 mt-1" />
               <span>Bankstown Head Office<br/>Sydney, NSW 2200</span>
             </li>
             <li className="flex items-center gap-3">
-              <Phone size={18} className="text-blue-500 flex-shrink-0" />
+              <Phone size={18} className="text-surface-tint flex-shrink-0" />
               <span>+61 2 9000 0000</span>
             </li>
             <li className="flex items-center gap-3">
-              <Mail size={18} className="text-blue-500 flex-shrink-0" />
+              <Mail size={18} className="text-surface-tint flex-shrink-0" />
               <a href="mailto:info@wsesydney.com.au" className="hover:text-white transition-colors">info@wsesydney.com.au</a>
             </li>
           </ul>
@@ -140,8 +142,8 @@ export const Footer = () => {
       </div>
 
       {/* Bottom Bar */}
-      <div className="max-w-7xl mx-auto px-8 pt-10 border-t border-slate-800">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-6 text-xs text-slate-500">
+      <div className="max-w-7xl mx-auto px-8 pt-10 border-t border-white/10">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-6 text-xs text-white/40 font-body">
           <div className="flex items-center gap-2">
             <span>© 2024 Water & Sewer Estimating Sydney.</span>
             <span className="hidden md:inline">|</span>
@@ -151,7 +153,7 @@ export const Footer = () => {
           </div>
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-2">
-              <Shield size={14} className="text-blue-500" />
+              <Shield size={14} className="text-surface-tint" />
               <span>ISO 9001 Certified</span>
             </div>
             <div className="flex items-center gap-2">

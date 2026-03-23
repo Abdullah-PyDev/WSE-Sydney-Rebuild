@@ -50,7 +50,7 @@ const About = () => {
         </div>
       </header>
 
-      <section className="bg-surface-container py-24 px-8 overflow-hidden">
+      <section className="bg-surface-container-low py-24 px-8 overflow-hidden">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <motion.div 
@@ -58,7 +58,7 @@ const About = () => {
               animate={{ opacity: 1, x: 0 }}
               className="relative group"
             >
-              <div className="absolute -top-4 -left-4 w-24 h-24 bg-surface-tint/20 rounded-xl"></div>
+              <div className="absolute -top-4 -left-4 w-24 h-24 bg-surface-tint/10 rounded-xl"></div>
               <div className="relative z-10 overflow-hidden rounded-xl bg-white shadow-xl aspect-[4/5]">
                 <img 
                   alt="Shoaib Saeed" 
@@ -97,14 +97,14 @@ const About = () => {
                 </p>
               </div>
               <div className="grid grid-cols-2 gap-4">
-                <div className="bg-surface-container-lowest p-6 rounded-md">
+                <div className="bg-surface-container-lowest p-6 rounded-md shadow-sm">
                   <div className="text-surface-tint mb-4">
                     <Architecture size={24} />
                   </div>
                   <div className="font-headline font-bold text-primary">Technical Depth</div>
                   <div className="text-xs text-on-surface-variant mt-1 font-body">Specializing in Sydney Water standards and compliance.</div>
                 </div>
-                <div className="bg-surface-container-lowest p-6 rounded-md">
+                <div className="bg-surface-container-lowest p-6 rounded-md shadow-sm">
                   <div className="text-surface-tint mb-4">
                     <AccountBalance size={24} />
                   </div>
@@ -117,11 +117,11 @@ const About = () => {
         </div>
       </section>
 
-      <section className="py-24 px-8 bg-white overflow-hidden">
+      <section className="py-24 px-8 bg-surface-container-lowest overflow-hidden">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="font-headline text-3xl md:text-4xl font-extrabold text-primary mb-4">Client Testimonials</h2>
-            <p className="text-slate-500 max-w-2xl mx-auto font-body">Hear from the industry leaders who trust WSE Sydney for their infrastructure estimating needs.</p>
+            <p className="text-on-surface-variant max-w-2xl mx-auto font-body">Hear from the industry leaders who trust WSE Sydney for their infrastructure estimating needs.</p>
           </div>
           
           <TestimonialCarousel />
@@ -136,12 +136,12 @@ const About = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 font-body">
           <motion.div 
             whileHover={{ y: -5 }}
-            className="md:col-span-2 bg-primary text-white p-12 rounded-xl flex flex-col justify-between bg-gradient-to-br from-primary to-primary-container"
+            className="md:col-span-2 bg-surface-container-low text-primary p-12 rounded-xl flex flex-col justify-between border border-outline-variant"
           >
-            <PrecisionManufacturing className="text-4xl mb-12" size={48} />
+            <PrecisionManufacturing className="text-surface-tint/30 mb-12" size={48} />
             <div>
               <h3 className="font-headline font-bold text-3xl mb-4">Precision First</h3>
-              <p className="text-white/70 max-w-md">We reject the 'rough estimate' culture. Our data is derived from granular analysis of pipe diameter, soil variance, and hydraulic load factors.</p>
+              <p className="text-on-surface-variant max-w-md">We reject the 'rough estimate' culture. Our data is derived from granular analysis of pipe diameter, soil variance, and hydraulic load factors.</p>
             </div>
           </motion.div>
           <motion.div 
@@ -156,12 +156,12 @@ const About = () => {
           </motion.div>
           <motion.div 
             whileHover={{ y: -5 }}
-            className="bg-surface-container-highest p-8 rounded-xl flex flex-col justify-between"
+            className="bg-primary p-8 rounded-xl flex flex-col justify-between text-white"
           >
-            <WaterDrop className="text-primary mb-8" size={32} />
+            <WaterDrop className="text-white mb-8" size={32} />
             <div>
-              <h4 className="font-headline font-bold text-xl text-primary mb-2">Fluidity</h4>
-              <p className="text-sm text-on-surface-variant">Agile response times to design changes, ensuring project timelines remain intact.</p>
+              <h4 className="font-headline font-bold text-xl mb-2">Fluidity</h4>
+              <p className="text-sm text-white/70">Agile response times to design changes, ensuring project timelines remain intact.</p>
             </div>
           </motion.div>
           <motion.div 
