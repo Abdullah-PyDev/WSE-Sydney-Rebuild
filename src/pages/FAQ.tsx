@@ -37,7 +37,7 @@ const FAQItem: React.FC<FAQItemProps> = ({ question, answer, isOpen, onClick }) 
         transition={{ duration: 0.3, ease: 'easeInOut' }}
         className="overflow-hidden"
       >
-        <div className="pb-8 text-on-surface-variant leading-relaxed font-body text-lg max-w-3xl">
+        <div className="pb-8 text-on-surface-variant leading-relaxed font-body text-base md:text-lg max-w-3xl">
           {answer}
         </div>
       </motion.div>
@@ -77,37 +77,37 @@ const FAQ = () => {
 
   return (
     <main className="pt-24">
-      <header className="pt-12 pb-20 px-8 max-w-7xl mx-auto">
+      <header className="pt-8 md:pt-12 pb-12 md:pb-20 px-4 md:px-8 max-w-7xl mx-auto">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="max-w-3xl"
         >
-          <div className="mb-6 inline-flex items-center gap-2 text-primary font-headline font-bold uppercase tracking-widest text-xs">
-            <span className="h-px w-8 bg-primary"></span>
+          <div className="mb-4 md:mb-6 inline-flex items-center gap-2 text-primary font-headline font-bold uppercase tracking-widest text-[10px] md:text-xs">
+            <span className="h-px w-6 md:w-8 bg-primary"></span>
             Knowledge Base
           </div>
-          <h1 className="font-headline font-extrabold text-5xl md:text-7xl text-primary leading-tight tracking-tighter mb-8">
+          <h1 className="font-headline font-extrabold text-4xl md:text-7xl text-primary leading-tight tracking-tighter mb-6 md:mb-8">
             Frequently Asked <span className="text-surface-tint">Questions</span>.
           </h1>
-          <p className="text-xl text-on-surface-variant leading-relaxed font-body">
+          <p className="text-lg md:text-xl text-on-surface-variant leading-relaxed font-body">
             Everything you need to know about our estimating process, timelines, and technical standards.
           </p>
         </motion.div>
       </header>
 
-      <section className="bg-surface-container-low py-24 px-8">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-16">
-          <div className="lg:col-span-4 space-y-8">
-            <div className="bg-white p-8 rounded-2xl shadow-sm border border-outline-variant">
-              <HelpCircle className="text-surface-tint mb-6" size={40} />
-              <h3 className="font-headline font-bold text-2xl text-primary mb-4">Still have questions?</h3>
-              <p className="text-on-surface-variant font-body mb-8">
+      <section className="bg-surface-container-low py-12 md:py-24 px-4 md:px-8">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 md:gap-16">
+          <div className="lg:col-span-4 space-y-6 md:space-y-8">
+            <div className="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-outline-variant">
+              <HelpCircle className="text-surface-tint mb-4 md:mb-6" size={32} md:size={40} />
+              <h3 className="font-headline font-bold text-xl md:text-2xl text-primary mb-4">Still have questions?</h3>
+              <p className="text-on-surface-variant text-sm md:text-base font-body mb-6 md:mb-8">
                 If you can't find the answer you're looking for, please feel free to reach out to our team directly.
               </p>
               <a 
                 href="/request" 
-                className="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-full font-body font-bold hover:bg-surface-tint transition-colors w-full justify-center"
+                className="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-full font-body font-bold hover:bg-surface-tint transition-colors w-full justify-center text-sm md:text-base"
               >
                 <MessageSquare size={18} />
                 Contact Support
@@ -146,7 +146,7 @@ const FAQ = () => {
           </div>
 
           <div className="lg:col-span-8">
-            <div className="bg-white rounded-3xl p-8 md:p-12 shadow-sm border border-outline-variant">
+            <div className="bg-white rounded-2xl md:rounded-3xl p-6 md:p-12 shadow-sm border border-outline-variant">
               {faqs.map((faq, index) => (
                 <FAQItem
                   key={`faq-${index}`}
@@ -161,25 +161,25 @@ const FAQ = () => {
         </div>
       </section>
 
-      <section className="py-24 px-8 bg-primary text-white overflow-hidden relative">
+      <section className="py-16 md:py-24 px-4 md:px-8 bg-primary text-white overflow-hidden relative">
         <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl"></div>
         <div className="max-w-4xl mx-auto text-center relative z-10">
-          <h2 className="font-headline font-extrabold text-4xl md:text-5xl mb-8 leading-tight">
+          <h2 className="font-headline font-extrabold text-3xl md:text-5xl mb-6 md:mb-8 leading-tight">
             Ready to secure your next project with <span className="text-surface-tint">engineered certainty</span>?
           </h2>
-          <p className="text-xl text-white/80 mb-12 font-body max-w-2xl mx-auto">
+          <p className="text-lg md:text-xl text-white/80 mb-8 md:mb-12 font-body max-w-2xl mx-auto">
             Join the Tier 1 contractors who trust WSE Sydney for their most critical infrastructure estimates.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a 
               href="/request" 
-              className="bg-white text-primary px-10 py-4 rounded-full font-headline font-bold text-lg hover:bg-surface-tint hover:text-white transition-all shadow-xl"
+              className="bg-white text-primary px-10 py-4 rounded-full font-headline font-bold text-base md:text-lg hover:bg-surface-tint hover:text-white transition-all shadow-xl text-center"
             >
               Request a BOQ
             </a>
             <a 
               href="/services" 
-              className="border border-white/30 text-white px-10 py-4 rounded-full font-headline font-bold text-lg hover:bg-white/10 transition-all"
+              className="border border-white/30 text-white px-10 py-4 rounded-full font-headline font-bold text-base md:text-lg hover:bg-white/10 transition-all text-center"
             >
               Our Services
             </a>

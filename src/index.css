@@ -29,4 +29,13 @@
   .glass-nav {
     @apply bg-white/80 backdrop-blur-md;
   }
+  
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 }

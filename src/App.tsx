@@ -12,6 +12,7 @@ import Locations from './pages/Locations';
 import About from './pages/About';
 import FAQ from './pages/FAQ';
 import RequestBOQ from './pages/RequestBOQ';
+import Estimator from './pages/Estimator';
 import ProjectDetail from './pages/ProjectDetail';
 import ChatBot from './components/ChatBot';
 import ScrollToTop from './components/ScrollToTop';
@@ -33,6 +34,7 @@ export default function App() {
             <Route path="/about" element={<About />} />
             <Route path="/faq" element={<FAQ />} />
             <Route path="/request" element={<RequestBOQ />} />
+            <Route path="/estimator" element={<Estimator />} />
             <Route path="/projects/:id" element={<ProjectDetail />} />
           </Routes>
         </div>
