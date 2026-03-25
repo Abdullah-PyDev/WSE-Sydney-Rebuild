@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'motion/react';
+import { Link } from 'react-router-dom';
 import { 
   Plus, 
   Minus, 
@@ -100,18 +101,18 @@ const FAQ = () => {
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 md:gap-16">
           <div className="lg:col-span-4 space-y-6 md:space-y-8">
             <div className="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-outline-variant">
-              <HelpCircle className="text-surface-tint mb-4 md:mb-6" size={32} md:size={40} />
+              <HelpCircle className="text-surface-tint mb-4 md:mb-6 w-8 h-8 md:w-10 md:h-10" />
               <h3 className="font-headline font-bold text-xl md:text-2xl text-primary mb-4">Still have questions?</h3>
               <p className="text-on-surface-variant text-sm md:text-base font-body mb-6 md:mb-8">
                 If you can't find the answer you're looking for, please feel free to reach out to our team directly.
               </p>
-              <a 
-                href="/request" 
+              <Link 
+                to="/request" 
                 className="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-full font-body font-bold hover:bg-surface-tint transition-colors w-full justify-center text-sm md:text-base"
               >
                 <MessageSquare size={18} />
                 Contact Support
-              </a>
+              </Link>
             </div>
 
             <div className="grid grid-cols-1 gap-4">
@@ -161,28 +162,28 @@ const FAQ = () => {
         </div>
       </section>
 
-      <section className="py-16 md:py-24 px-4 md:px-8 bg-primary text-white overflow-hidden relative">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl"></div>
+      <section className="py-16 md:py-24 px-4 md:px-8 bg-surface-container-lowest text-primary overflow-hidden relative border-t border-outline-variant">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl"></div>
         <div className="max-w-4xl mx-auto text-center relative z-10">
           <h2 className="font-headline font-extrabold text-3xl md:text-5xl mb-6 md:mb-8 leading-tight">
             Ready to secure your next project with <span className="text-surface-tint">engineered certainty</span>?
           </h2>
-          <p className="text-lg md:text-xl text-white/80 mb-8 md:mb-12 font-body max-w-2xl mx-auto">
+          <p className="text-lg md:text-xl text-on-surface-variant mb-8 md:mb-12 font-body max-w-2xl mx-auto">
             Join the Tier 1 contractors who trust WSE Sydney for their most critical infrastructure estimates.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a 
-              href="/request" 
-              className="bg-white text-primary px-10 py-4 rounded-full font-headline font-bold text-base md:text-lg hover:bg-surface-tint hover:text-white transition-all shadow-xl text-center"
+            <Link 
+              to="/request" 
+              className="bg-primary text-white px-10 py-4 rounded-full font-headline font-bold text-base md:text-lg hover:bg-surface-tint transition-all shadow-xl text-center"
             >
               Request a BOQ
-            </a>
-            <a 
-              href="/services" 
-              className="border border-white/30 text-white px-10 py-4 rounded-full font-headline font-bold text-base md:text-lg hover:bg-white/10 transition-all text-center"
+            </Link>
+            <Link 
+              to="/services" 
+              className="border border-primary/20 text-primary px-10 py-4 rounded-full font-headline font-bold text-base md:text-lg hover:bg-primary/5 transition-all text-center"
             >
               Our Services
-            </a>
+            </Link>
           </div>
         </div>
       </section>

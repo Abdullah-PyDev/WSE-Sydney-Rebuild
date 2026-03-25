@@ -115,11 +115,11 @@ const QuickEstimator = () => {
       {/* Header */}
       <div className="bg-primary p-6 md:p-8 text-white relative overflow-hidden">
         <div className="absolute top-0 right-0 p-4 opacity-10">
-          <Calculator size={80} md:size={120} />
+          <Calculator className="w-20 h-20 md:w-[120px] md:h-[120px]" />
         </div>
         <div className="relative z-10">
           <div className="inline-flex items-center space-x-2 bg-white/10 px-3 py-1 rounded-full mb-4">
-            <TrendingUp size={12} md:size={14} />
+            <TrendingUp className="w-3 h-3 md:w-3.5 md:h-3.5" />
             <span className="text-[9px] md:text-[10px] font-bold uppercase tracking-widest">ROM Estimator v1.2</span>
           </div>
           <h2 className="text-2xl md:text-3xl font-extrabold font-headline tracking-tighter">Quick Project Estimator</h2>
@@ -375,6 +375,7 @@ const QuickEstimator = () => {
                   New Estimate
                 </button>
                 <button 
+                  onClick={() => window.location.href = '/request'}
                   className="bg-primary text-white px-10 py-4 rounded-xl font-bold font-headline flex items-center justify-center space-x-2 hover:scale-105 transition-all shadow-lg shadow-primary/20"
                 >
                   <span>Get Detailed Quote</span>

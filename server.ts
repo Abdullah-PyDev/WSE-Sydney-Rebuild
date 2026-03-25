@@ -8,7 +8,12 @@ import multer from "multer";
 dotenv.config();
 
 const resend = new Resend(process.env.RESEND_API_KEY);
-const upload = multer({ storage: multer.memoryStorage() });
+const upload = multer({ 
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 25 * 1024 * 1024 // 25MB limit
+  }
+});
 
 async function startServer() {
   const app = express();

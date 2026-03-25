@@ -38,6 +38,7 @@ export default function App() {
             <Route path="/projects/:id" element={<ProjectDetail />} />
           </Routes>
         </div>
+        <div className="bg-slate-100 h-[1px] w-full"></div>
         <Footer />
         <ChatBot />
       </div>

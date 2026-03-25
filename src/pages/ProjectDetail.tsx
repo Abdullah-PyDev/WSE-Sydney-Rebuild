@@ -165,7 +165,7 @@ const ProjectDetail = () => {
         <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
       </section>
 
-      <section className="py-20 px-8 bg-white">
+      <section className="py-20 px-8 bg-white mb-20">
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-3 gap-12">
             <div className="lg:col-span-2 space-y-12">
@@ -216,12 +216,12 @@ const ProjectDetail = () => {
                 <p className="text-slate-600 text-sm mb-8">
                   Our team of Sydney Water accredited estimators can provide a detailed BOQ for your next infrastructure project within 48 hours.
                 </p>
-                <Link to="/request-boq" className="block w-full bg-slate-900 text-white text-center py-4 rounded-lg font-bold hover:bg-slate-800 transition-all shadow-lg shadow-slate-900/20 mb-4">
+                <Link to="/request" className="block w-full bg-slate-900 text-white text-center py-4 rounded-lg font-bold hover:bg-slate-800 transition-all shadow-lg shadow-slate-900/20 mb-4">
                   Request a BOQ
                 </Link>
-                <button className="block w-full border border-slate-200 text-slate-900 text-center py-4 rounded-lg font-bold hover:bg-white transition-all">
+                <Link to="/about" className="block w-full border border-slate-200 text-slate-900 text-center py-4 rounded-lg font-bold hover:bg-white transition-all">
                   Download Capability Statement
-                </button>
+                </Link>
               </div>
             </div>
           </div>

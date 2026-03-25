@@ -83,7 +83,7 @@ const Estimator = () => {
                 className="flex items-start space-x-4"
               >
                 <div className="bg-primary/5 p-3 rounded-xl text-primary flex-shrink-0">
-                  <item.icon size={20} md:size={24} />
+                  <item.icon className="w-5 h-5 md:w-6 md:h-6" />
                 </div>
                 <div>
                   <h4 className="font-bold text-primary font-headline text-base md:text-lg">{item.title}</h4>
@@ -96,7 +96,7 @@ const Estimator = () => {
 
         <div className="bg-surface-container-low rounded-2xl md:rounded-3xl p-8 md:p-12 border border-outline-variant relative overflow-hidden">
           <div className="absolute top-0 right-0 p-8 opacity-5">
-            <TrendingUp size={150} md:size={200} />
+            <TrendingUp className="w-[150px] h-[150px] md:w-[200px] md:h-[200px]" />
           </div>
           <div className="relative z-10">
             <h3 className="text-xl md:text-2xl font-extrabold text-primary mb-6 font-headline tracking-tighter">The Precision Difference</h3>
@@ -116,7 +116,10 @@ const Estimator = () => {
                 </div>
               ))}
             </div>
-            <button className="w-full bg-primary text-white font-bold py-4 rounded-xl font-headline flex items-center justify-center space-x-2 hover:scale-[1.02] transition-all shadow-lg shadow-primary/20 text-sm md:text-base">
+            <button 
+              onClick={() => window.location.href = '/request'}
+              className="w-full bg-primary text-white font-bold py-4 rounded-xl font-headline flex items-center justify-center space-x-2 hover:scale-[1.02] transition-all shadow-lg shadow-primary/20 text-sm md:text-base"
+            >
               <FileText size={18} />
               <span>Request Full BOQ Estimate</span>
             </button>
@@ -140,10 +143,16 @@ const Estimator = () => {
             Upload your technical drawings and receive a comprehensive, tender-ready estimate within 24-48 hours.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-6">
-            <button className="w-full sm:w-auto bg-white text-primary px-10 py-4 rounded-xl font-bold font-headline hover:scale-105 transition-all shadow-xl">
+            <button 
+              onClick={() => window.location.href = '/request'}
+              className="w-full sm:w-auto bg-white text-primary px-10 py-4 rounded-xl font-bold font-headline hover:scale-105 transition-all shadow-xl"
+            >
               Upload Drawings Now
             </button>
-            <button className="text-white font-bold font-headline hover:underline">
+            <button 
+              onClick={() => window.location.href = '/request'}
+              className="text-white font-bold font-headline hover:underline"
+            >
               View Sample BOQ
             </button>
           </div>

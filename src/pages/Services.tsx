@@ -764,7 +764,7 @@ const Services = () => {
 
       <FAQSection />
 
-      <section className="py-16 md:py-24 px-4 md:px-8">
+      <section className="py-16 md:py-24 px-4 md:px-8 mb-20">
         <div className="max-w-5xl mx-auto rounded-2xl bg-gradient-to-br from-primary to-primary-container p-8 md:p-20 text-center relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-32 -mt-32 blur-3xl"></div>
           <div className="relative z-10">
@@ -772,7 +772,7 @@ const Services = () => {
             <p className="text-blue-100 text-base md:text-lg mb-8 md:mb-12 max-w-2xl mx-auto opacity-80 font-body">Download our rate card or request a Bill of Quantities today for a 48h guaranteed response.</p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center font-body">
               <Link to="/request" className="bg-white text-primary px-8 md:px-10 py-3 md:py-4 rounded-md font-bold text-sm md:text-base hover:bg-blue-100 transition-all">Request a BOQ</Link>
-              <button className="border border-white/30 text-white px-8 md:px-10 py-3 md:py-4 rounded-md font-bold text-sm md:text-base hover:bg-white/10 transition-all">Download Rate Card</button>
+              <Link to="/about" className="border border-white/30 text-white px-8 md:px-10 py-3 md:py-4 rounded-md font-bold text-sm md:text-base hover:bg-white/10 transition-all flex items-center justify-center">Download Rate Card</Link>
             </div>
           </div>
         </div>

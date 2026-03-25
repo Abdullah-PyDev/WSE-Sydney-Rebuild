@@ -132,7 +132,7 @@ const RequestBOQ = () => {
             animate={{ opacity: 1, x: 0 }}
             className="inline-flex items-center space-x-2 text-surface-tint mb-4 md:mb-6"
           >
-            <CheckCircle2 size={14} md:size={16} className="fill-surface-tint text-white" />
+            <CheckCircle2 className="fill-surface-tint text-white w-3.5 h-3.5 md:w-4 md:h-4" />
             <span className="text-[9px] md:text-[10px] font-bold uppercase tracking-[0.2em] font-headline">Industry Standard Precision</span>
           </motion.div>
           
@@ -163,7 +163,7 @@ const RequestBOQ = () => {
               className="flex items-start space-x-4 p-4 md:p-6 rounded-xl bg-surface-container-low border border-outline-variant"
             >
               <div className="bg-primary p-2 md:p-3 rounded-lg text-white shrink-0">
-                <FileText size={20} md:size={24} />
+                <FileText className="w-5 h-5 md:w-6 md:h-6" />
               </div>
               <div>
                 <h4 className="font-bold text-primary font-headline text-sm md:text-base">Sample BOQ Output</h4>
@@ -184,7 +184,7 @@ const RequestBOQ = () => {
               className="flex items-start space-x-4 p-4 md:p-6 rounded-xl bg-surface-container-low border border-outline-variant"
             >
               <div className="bg-primary p-2 md:p-3 rounded-lg text-white shrink-0">
-                <Zap size={20} md:size={24} />
+                <Zap className="w-5 h-5 md:w-6 md:h-6" />
               </div>
               <div>
                 <h4 className="font-bold text-primary font-headline text-sm md:text-base">24-48 Hour Turnaround</h4>
@@ -199,7 +199,7 @@ const RequestBOQ = () => {
               className="flex items-start space-x-4 p-4 md:p-6 rounded-xl bg-surface-container-low border border-outline-variant"
             >
               <div className="bg-primary p-2 md:p-3 rounded-lg text-white shrink-0">
-                <ShieldCheck size={20} md:size={24} />
+                <ShieldCheck className="w-5 h-5 md:w-6 md:h-6" />
               </div>
               <div>
                 <h4 className="font-bold text-primary font-headline text-sm md:text-base">Sydney Water Compliance</h4>
@@ -220,7 +220,7 @@ const RequestBOQ = () => {
             {isSubmitted ? (
               <div className="text-center py-8 md:py-12">
                 <div className="w-16 h-16 md:w-20 md:h-20 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 md:mb-6">
-                  <CheckCircle2 size={32} md:size={48} />
+                  <CheckCircle2 className="w-8 h-8 md:w-12 md:h-12" />
                 </div>
                 <h2 className="text-xl md:text-2xl font-bold text-primary mb-2 font-headline">Submission Received</h2>
                 <p className="text-sm md:text-base text-on-surface-variant mb-6 md:mb-8 font-body">
@@ -255,7 +255,7 @@ const RequestBOQ = () => {
                 <form onSubmit={handleSubmit} className="space-y-6 md:space-y-8">
                   {error && (
                     <div className="bg-red-50 border border-red-100 text-red-600 p-3 md:p-4 rounded-lg flex items-center gap-2 md:gap-3 text-xs md:text-sm font-body">
-                      <AlertCircle size={16} md:size={18} />
+                      <AlertCircle className="w-4 h-4 md:w-[18px] md:h-[18px]" />
                       {error}
                     </div>
                   )}
@@ -283,7 +283,7 @@ const RequestBOQ = () => {
                     <div className="flex flex-col space-y-1 md:space-y-2 md:col-span-2">
                       <label className="text-[9px] md:text-[10px] font-bold text-primary uppercase tracking-widest font-headline">Project Address / Location</label>
                       <div className="relative">
-                        <MapPin className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 text-on-surface-variant" size={16} md:size={18} />
+                        <MapPin className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 text-on-surface-variant w-4 h-4 md:w-[18px] md:h-[18px]" />
                         <input 
                           required 
                           name="address"
@@ -313,7 +313,7 @@ const RequestBOQ = () => {
                         onChange={handleFileChange}
                         accept=".pdf,.dwg,.doc,.docx,.xls,.xlsx,.jpg,.png"
                       />
-                      <Upload className="text-surface-tint mb-3 md:mb-4" size={32} md:size={40} />
+                      <Upload className="text-surface-tint mb-3 md:mb-4 w-8 h-8 md:w-10 md:h-10" />
                       <p className="text-xs md:text-sm font-bold text-primary font-headline text-center">Drag and drop technical files here</p>
                       <p className="text-[10px] md:text-xs text-on-surface-variant mt-1 md:text-center font-body">Maximum file size 50MB per upload</p>
                       <button 
@@ -394,7 +394,7 @@ const RequestBOQ = () => {
                     >
                       {isSubmitting ? (
                         <>
-                          <Clock className="animate-spin" size={18} md:size={20} />
+                          <Clock className="animate-spin w-[18px] h-[18px] md:w-5 md:h-5" />
                           Sending...
                         </>
                       ) : (
@@ -418,7 +418,7 @@ const RequestBOQ = () => {
             className="bg-surface-container-low p-8 md:p-10 rounded-2xl relative overflow-hidden group border border-outline-variant"
           >
             <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
-              <FileSearch size={72} md:size={96} />
+              <FileSearch className="w-[72px] h-[72px] md:w-24 md:h-24" />
             </div>
             <span className="inline-block px-3 py-1 bg-primary text-white text-[9px] md:text-[10px] font-bold rounded-full mb-4 font-headline tracking-widest">PHASE 01</span>
             <h3 className="font-bold text-lg md:text-xl text-primary mb-3 md:mb-4 font-headline">Digitization</h3>
@@ -430,7 +430,7 @@ const RequestBOQ = () => {
             className="bg-surface-container-low p-8 md:p-10 rounded-2xl relative overflow-hidden group border border-outline-variant"
           >
             <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
-              <Calculator size={72} md:size={96} />
+              <Calculator className="w-[72px] h-[72px] md:w-24 md:h-24" />
             </div>
             <span className="inline-block px-3 py-1 bg-primary text-white text-[9px] md:text-[10px] font-bold rounded-full mb-4 font-headline tracking-widest">PHASE 02</span>
             <h3 className="font-bold text-lg md:text-xl text-primary mb-3 md:mb-4 font-headline">Expert Review</h3>
@@ -442,7 +442,7 @@ const RequestBOQ = () => {
             className="bg-surface-container-low p-8 md:p-10 rounded-2xl relative overflow-hidden group border border-outline-variant"
           >
             <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
-              <Mail size={72} md:size={96} />
+              <Mail className="w-[72px] h-[72px] md:w-24 md:h-24" />
             </div>
             <span className="inline-block px-3 py-1 bg-primary text-white text-[9px] md:text-[10px] font-bold rounded-full mb-4 font-headline tracking-widest">PHASE 03</span>
             <h3 className="font-bold text-lg md:text-xl text-primary mb-3 md:mb-4 font-headline">Delivery</h3>

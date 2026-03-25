@@ -1,9 +1,58 @@
-import React from 'react';
-import { motion } from 'motion/react';
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { Link } from 'react-router-dom';
-import { Droplets, Filter, Ruler, BarChart3, CheckCircle2, Zap, Award, Mail, Phone, MapPin, Settings, Waves } from 'lucide-react';
+import { Droplets, Filter, Ruler, BarChart3, CheckCircle2, Zap, Award, Mail, Phone, MapPin, Settings, Waves, ChevronRight } from 'lucide-react';
 
 const ServicesDetail = () => {
+  const [activeSection, setActiveSection] = useState('water');
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observerOptions = {
+      root: null,
+      rootMargin: '-100px 0px -70% 0px',
+      threshold: 0
+    };
+
+    const observerCallback = (entries: IntersectionObserverEntry[]) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setActiveSection(entry.target.id);
+          
+          // Auto-scroll sub-nav to active item
+          const navElement = document.querySelector(`a[href="#${entry.target.id}"]`);
+          if (navElement && scrollContainerRef.current) {
+            const container = scrollContainerRef.current;
+            const navRect = navElement.getBoundingClientRect();
+            const containerRect = container.getBoundingClientRect();
+            
+            if (navRect.left < containerRect.left || navRect.right > containerRect.right) {
+              navElement.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+            }
+          }
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(observerCallback, observerOptions);
+    const sections = ['water', 'sewer', 'stormwater', 'underbores', 'pipeline'];
+    
+    sections.forEach((id) => {
+      const element = document.getElementById(id);
+      if (element) observer.observe(element);
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  const navItems = [
+    { id: 'water', label: 'Water', icon: Droplets },
+    { id: 'sewer', label: 'Sewer', icon: Settings },
+    { id: 'stormwater', label: 'Storm', icon: Waves },
+    { id: 'underbores', label: 'Trenchless', icon: Ruler },
+    { id: 'pipeline', label: 'Methodology', icon: BarChart3 },
+  ];
+
   return (
     <main className="pt-20">
       {/* Dark Hero Section */}
@@ -47,20 +96,38 @@ const ServicesDetail = () => {
         </div>
       </section>
 
-      <section className="bg-white border-b border-gray-200 sticky top-20 z-40 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 md:px-8 flex overflow-x-auto no-scrollbar gap-8 md:gap-12 py-4 md:py-5 font-headline text-[11px] md:text-[12px] font-bold uppercase tracking-[0.2em]">
-          <a href="#water" className="whitespace-nowrap text-[#001D3D] hover:text-blue-500 transition-colors flex items-center gap-2">
-            <Droplets size={14} className="text-blue-500" /> Water Mains
-          </a>
-          <a href="#sewer" className="whitespace-nowrap text-gray-400 hover:text-[#001D3D] transition-colors flex items-center gap-2">
-            <Settings size={14} /> Sewer Mains
-          </a>
-          <a href="#stormwater" className="whitespace-nowrap text-gray-400 hover:text-[#001D3D] transition-colors flex items-center gap-2">
-            <Waves size={14} /> Stormwater
-          </a>
-          <a href="#methodology" className="whitespace-nowrap text-gray-400 hover:text-[#001D3D] transition-colors flex items-center gap-2">
-            <BarChart3 size={14} /> Methodology
-          </a>
+      <section className="bg-white border-b border-gray-200 sticky top-16 md:top-20 z-40 shadow-sm overflow-hidden">
+        <div className="max-w-7xl mx-auto relative">
+          {/* Mobile Gradient Masks */}
+          <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none md:hidden" />
+          <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none md:hidden" />
+          
+          <div 
+            ref={scrollContainerRef}
+            className="px-4 md:px-8 flex overflow-x-auto no-scrollbar gap-6 md:gap-12 py-3 md:py-5 font-headline text-[10px] md:text-[12px] font-bold uppercase tracking-[0.2em]"
+          >
+            {navItems.map((item) => (
+              <a 
+                key={item.id}
+                href={`#${item.id}`} 
+                className={`whitespace-nowrap transition-all duration-300 flex items-center gap-2 relative py-1 ${
+                  activeSection === item.id 
+                    ? 'text-blue-600 scale-105' 
+                    : 'text-gray-400 hover:text-primary'
+                }`}
+              >
+                <item.icon size={14} className={activeSection === item.id ? 'text-blue-500' : 'text-gray-400'} />
+                {item.label}
+                {activeSection === item.id && (
+                  <motion.div 
+                    layoutId="activeSubNav"
+                    className="absolute -bottom-3 md:-bottom-5 left-0 right-0 h-0.5 bg-blue-600 rounded-full"
+                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                  />
+                )}
+              </a>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -312,7 +379,13 @@ const ServicesDetail = () => {
           <h2 className="text-3xl md:text-4xl font-headline font-extrabold text-[#001D3D] mb-8 md:mb-12">Ready for an engineered estimate?</h2>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to="/request" className="bg-[#001D3D] text-white px-8 md:px-10 py-3 md:py-4 rounded-md font-bold hover:bg-[#002B2B] transition-all text-center">Submit Tender Documents</Link>
-            <button className="bg-white text-[#001D3D] border border-gray-200 px-8 md:px-10 py-3 md:py-4 rounded-md font-bold hover:bg-gray-50 transition-all text-center">Download Sample BOQ</button>
+            <a 
+              href="/sample-boq.pdf" 
+              download 
+              className="bg-white text-[#001D3D] border border-gray-200 px-8 md:px-10 py-3 md:py-4 rounded-md font-bold hover:bg-gray-50 transition-all text-center"
+            >
+              Download Sample BOQ
+            </a>
           </div>
         </div>
       </section>

@@ -18,7 +18,7 @@ export const Header = () => {
   ];
 
   return (
-    <nav className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md shadow-sm">
+    <nav className="fixed top-0 w-full z-50 bg-background/90 backdrop-blur-md shadow-sm border-b border-primary/5">
       <div className="flex justify-between items-center px-4 md:px-8 py-4 max-w-7xl mx-auto h-20">
         <Link to="/" className="flex items-center gap-3 group">
           <div className="h-10 md:h-14 flex items-center justify-center overflow-hidden min-w-[100px] md:min-w-[120px]">
@@ -101,7 +101,7 @@ export const Header = () => {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed top-0 right-0 bottom-0 w-[80%] max-w-sm bg-white z-50 shadow-2xl md:hidden flex flex-col"
+              className="fixed top-0 right-0 bottom-0 w-[80%] max-w-sm bg-background z-50 shadow-2xl md:hidden flex flex-col"
             >
               <div className="p-6 flex justify-between items-center border-b border-slate-100">
                 <span className="font-headline font-bold text-primary">Navigation</span>
@@ -112,18 +112,23 @@ export const Header = () => {
                   <Menu size={24} className="rotate-90" />
                 </button>
               </div>
-              <div className="flex-grow py-8 px-6 space-y-6">
+              <div className="flex-grow py-10 px-8 space-y-8 bg-surface-container-low/95 backdrop-blur-sm">
                 {navLinks.map((link) => (
-                  <Link
+                  <motion.div
                     key={link.name}
-                    to={link.path}
-                    onClick={() => setIsMenuOpen(false)}
-                    className={`block font-headline text-2xl font-bold transition-colors ${
-                      location.pathname === link.path ? 'text-primary' : 'text-slate-400 hover:text-primary'
-                    }`}
+                    whileHover={{ x: 10 }}
+                    transition={{ type: 'spring', stiffness: 400, damping: 10 }}
                   >
-                    {link.name}
-                  </Link>
+                    <Link
+                      to={link.path}
+                      onClick={() => setIsMenuOpen(false)}
+                      className={`block font-headline text-3xl font-bold transition-colors ${
+                        location.pathname === link.path ? 'text-primary' : 'text-slate-400 hover:text-primary'
+                      }`}
+                    >
+                      {link.name}
+                    </Link>
+                  </motion.div>
                 ))}
                 <div className="pt-8 border-t border-slate-100">
                   <Link
@@ -135,7 +140,7 @@ export const Header = () => {
                   </Link>
                 </div>
               </div>
-              <div className="p-8 bg-slate-50 space-y-4">
+              <div className="p-8 bg-surface-container-low/95 backdrop-blur-sm space-y-5 border-t border-primary/10">
                 <div className="flex items-center gap-3 text-slate-500">
                   <Phone size={18} />
                   <span className="text-sm font-medium">+61 2 9000 0000</span>
@@ -157,7 +162,7 @@ export const Header = () => {
 
 export const Footer = () => {
   return (
-    <footer className="w-full bg-primary text-white/70 pt-20 pb-10">
+    <footer className="w-full bg-primary text-white/70 pt-20 pb-10 border-t border-white/10">
       <div className="max-w-7xl mx-auto px-8 grid grid-cols-1 md:grid-cols-12 gap-12 mb-16">
         {/* Brand & Mission */}
         <div className="md:col-span-4 flex flex-col space-y-6">

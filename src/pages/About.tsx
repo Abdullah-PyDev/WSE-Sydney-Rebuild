@@ -1,11 +1,13 @@
 import React from 'react';
 import { motion } from 'motion/react';
+import { Link } from 'react-router-dom';
 import { 
   PencilRuler as ArchitectureIcon, 
   Landmark as AccountBalanceIcon, 
   Cpu as PrecisionManufacturingIcon, 
   CheckCircle as VerifiedIcon, 
-  Droplets as WaterDropIcon 
+  Droplets as WaterDropIcon,
+  ArrowRight
 } from 'lucide-react';
 import TestimonialCarousel from '../components/TestimonialCarousel';
 
@@ -32,9 +34,15 @@ const About = () => {
             <h1 className="font-headline font-extrabold text-5xl md:text-7xl text-primary leading-tight tracking-tighter mb-6 md:mb-8">
               Bridging the gap between <span className="text-surface-tint">technical drawings</span> and cost reality.
             </h1>
-            <p className="text-lg md:text-xl text-on-surface-variant max-w-2xl leading-relaxed font-body">
+            <p className="text-lg md:text-xl text-on-surface-variant max-w-2xl leading-relaxed font-body mb-8">
               At WSE Sydney, we don't just estimate; we engineer financial certainty into the fluid complexity of water and sewer infrastructure.
             </p>
+            <Link 
+              to="/services" 
+              className="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-md font-bold text-sm hover:bg-primary-container transition-all"
+            >
+              Explore Our Services <ArrowRight size={16} />
+            </Link>
           </motion.div>
           <motion.div 
             initial={{ opacity: 0, scale: 0.9 }}
@@ -97,20 +105,20 @@ const About = () => {
                 </p>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="bg-surface-container-lowest p-6 rounded-md shadow-sm">
-                  <div className="text-surface-tint mb-4 flex justify-center lg:justify-start">
+                <Link to="/services/detail#water" className="bg-surface-container-lowest p-6 rounded-md shadow-sm hover:shadow-md transition-shadow group">
+                  <div className="text-surface-tint mb-4 flex justify-center lg:justify-start group-hover:scale-110 transition-transform">
                     <Architecture size={24} />
                   </div>
                   <div className="font-headline font-bold text-primary">Technical Depth</div>
                   <div className="text-xs text-on-surface-variant mt-1 font-body">Specializing in Sydney Water standards and compliance.</div>
-                </div>
-                <div className="bg-surface-container-lowest p-6 rounded-md shadow-sm">
-                  <div className="text-surface-tint mb-4 flex justify-center lg:justify-start">
+                </Link>
+                <Link to="/request" className="bg-surface-container-lowest p-6 rounded-md shadow-sm hover:shadow-md transition-shadow group">
+                  <div className="text-surface-tint mb-4 flex justify-center lg:justify-start group-hover:scale-110 transition-transform">
                     <AccountBalance size={24} />
                   </div>
                   <div className="font-headline font-bold text-primary">Fiscal Integrity</div>
                   <div className="text-xs text-on-surface-variant mt-1 font-body">Transparent cost modeling for Tier 1 contractors.</div>
-                </div>
+                </Link>
               </div>
             </motion.div>
           </div>
@@ -134,52 +142,69 @@ const About = () => {
           <div className="h-1 w-20 bg-primary mx-auto md:mx-0"></div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 font-body">
-          <motion.div 
-            whileHover={{ y: -5 }}
-            className="md:col-span-2 bg-surface-container-low text-primary p-8 md:p-12 rounded-xl flex flex-col justify-between border border-outline-variant"
+          <Link 
+            to="/services/detail#pipeline"
+            className="md:col-span-2 bg-surface-container-low text-primary p-8 md:p-12 rounded-xl flex flex-col justify-between border border-outline-variant hover:border-primary/20 transition-colors group"
           >
-            <PrecisionManufacturing className="text-surface-tint/30 mb-8 md:mb-12" size={48} />
+            <PrecisionManufacturing className="text-surface-tint/30 mb-8 md:mb-12 group-hover:text-surface-tint/50 transition-colors" size={48} />
             <div>
               <h3 className="font-headline font-bold text-2xl md:text-3xl mb-4">Precision First</h3>
               <p className="text-on-surface-variant text-sm md:text-base max-w-md">We reject the 'rough estimate' culture. Our data is derived from granular analysis of pipe diameter, soil variance, and hydraulic load factors.</p>
             </div>
-          </motion.div>
-          <motion.div 
-            whileHover={{ y: -5 }}
-            className="bg-surface-container-low p-6 md:p-8 rounded-xl flex flex-col justify-between"
+          </Link>
+          <Link 
+            to="/faq"
+            className="bg-surface-container-low p-6 md:p-8 rounded-xl flex flex-col justify-between hover:bg-surface-container transition-colors group"
           >
-            <Verified className="text-primary mb-6 md:mb-8" size={32} />
+            <Verified className="text-primary mb-6 md:mb-8 group-hover:scale-110 transition-transform" size={32} />
             <div>
               <h4 className="font-headline font-bold text-lg md:text-xl text-primary mb-2">Compliance</h4>
               <p className="text-xs md:text-sm text-on-surface-variant">100% adherence to Australian Standards and local council water regulations.</p>
             </div>
-          </motion.div>
-          <motion.div 
-            whileHover={{ y: -5 }}
-            className="bg-primary p-6 md:p-8 rounded-xl flex flex-col justify-between text-white"
+          </Link>
+          <Link 
+            to="/request"
+            className="bg-primary p-6 md:p-8 rounded-xl flex flex-col justify-between text-white hover:bg-primary-container transition-colors group"
           >
-            <WaterDrop className="text-white mb-6 md:mb-8" size={32} />
+            <WaterDrop className="text-white mb-6 md:mb-8 group-hover:animate-pulse" size={32} />
             <div>
               <h4 className="font-headline font-bold text-lg md:text-xl mb-2">Fluidity</h4>
               <p className="text-xs md:text-sm text-white/70">Agile response times to design changes, ensuring project timelines remain intact.</p>
             </div>
-          </motion.div>
-          <motion.div 
-            whileHover={{ y: -5 }}
-            className="md:col-span-2 bg-surface-container-low p-8 md:p-12 rounded-xl flex flex-col md:flex-row items-center gap-8 md:gap-12 text-center md:text-left"
+          </Link>
+          <Link 
+            to="/locations"
+            className="md:col-span-2 bg-surface-container-low p-8 md:p-12 rounded-xl flex flex-col md:flex-row items-center gap-8 md:gap-12 text-center md:text-left hover:bg-surface-container transition-colors group"
           >
             <div className="w-full md:w-48 h-32 rounded-lg overflow-hidden shrink-0">
               <img 
                 alt="Pipes" 
-                className="w-full h-full object-cover" 
+                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuDkpXIQsyi2bDthtOtpCULtWuqGob2vJ3LLKaNm3kaei8i8naFwVKcj9yhk4mk5kXk2_WUc07ekHbApqnDDRuf_psi90eqLYPiJT6uTC3lmjZjLsosIAodSvY27-pls4o5pr6ZZBSY5OPX8LlqEgqaSo4TK8MT-r9llzMVO3GV-mhyXH9Y1XIqS8YNrWQzKAJM0mFgvhqju-KZaBusaWzgHZbUF6ttjkL1rZbRpKa5w95K5EG0ny_1ZANUpiqnmg4hN0MADQI5dKDk" 
               />
             </div>
             <div>
               <h3 className="font-headline font-bold text-xl md:text-2xl text-primary mb-3">Sydney Local. Global Standards.</h3>
-              <p className="text-sm md:text-base text-on-surface-variant">Based in Bankstown, we serve the entire Sydney basin with international-grade estimating methodologies used by global civil firms.</p>
+              <p className="text-sm md:text-base text-on-surface-variant mb-4">Based in Bankstown, we serve the entire Sydney basin with international-grade estimating methodologies used by global civil firms.</p>
+              <div className="inline-flex items-center gap-2 text-primary font-bold text-xs uppercase tracking-widest group-hover:text-surface-tint transition-colors">
+                Contact Our Local Team <ArrowRight size={14} />
+              </div>
             </div>
-          </motion.div>
+          </Link>
+        </div>
+      </section>
+
+      <section className="py-16 md:py-24 px-4 md:px-8 bg-primary text-white text-center relative overflow-hidden">
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '40px 40px' }}></div>
+        </div>
+        <div className="max-w-3xl mx-auto relative z-10">
+          <h2 className="font-headline text-3xl md:text-5xl font-extrabold mb-6">Ready to engineer your next project?</h2>
+          <p className="text-white/70 text-lg mb-10 font-body">Join the Tier 1 contractors who trust WSE Sydney for precision infrastructure estimating.</p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link to="/request" className="bg-white text-primary px-10 py-4 rounded-md font-bold hover:bg-blue-50 transition-all shadow-xl shadow-black/20">Request a BOQ</Link>
+            <Link to="/services" className="border border-white/30 text-white px-10 py-4 rounded-md font-bold hover:bg-white/10 transition-all">View Our Services</Link>
+          </div>
         </div>
       </section>
     </main>
