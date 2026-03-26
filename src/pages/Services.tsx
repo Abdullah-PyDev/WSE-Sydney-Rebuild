@@ -208,6 +208,16 @@ const Services = () => {
   const heroRef = useRef<HTMLElement>(null);
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
+  const [dynamicContent, setDynamicContent] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    fetch('/api/admin/content')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) setDynamicContent(data.content);
+      })
+      .catch(err => console.error('Failed to fetch content', err));
+  }, []);
 
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!heroRef.current) return;
@@ -282,13 +292,13 @@ const Services = () => {
               Industry Certified Accuracy
             </motion.div>
             <motion.h1 variants={itemVariants} className="text-white font-headline text-4xl md:text-7xl font-extrabold leading-[1.1] tracking-tight min-h-[3.3em] md:min-h-[2.2em]">
-              Precision Engineering. <br/>
+              {dynamicContent['hero_headline'] || "Precision Engineering."} <br/>
               <span className="text-blue-400">
                 <Typewriter phrases={phrases} />
               </span>
             </motion.h1>
             <motion.p variants={itemVariants} className="text-blue-100 text-base md:text-xl max-w-lg leading-relaxed opacity-90 font-body">
-              Australia's leading experts in Water & Sewer Estimating with a 24-48h turnaround. Reducing risk and ensuring compliance for Sydney's most complex projects.
+              {dynamicContent['hero_subheadline'] || "Australia's leading experts in Water & Sewer Estimating with a 24-48h turnaround. Reducing risk and ensuring compliance for Sydney's most complex projects."}
             </motion.p>
             <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4 pt-4">
               <Link to="/request" className="bg-blue-400 text-primary px-8 py-4 rounded-md font-bold text-base hover:bg-blue-300 transition-all shadow-xl shadow-black/20 font-body text-center">
