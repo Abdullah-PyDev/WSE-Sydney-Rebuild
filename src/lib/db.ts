@@ -4,6 +4,7 @@ import fs from 'fs';
 import bcrypt from 'bcryptjs';
 
 const dbPath = path.join(process.cwd(), 'data.db');
+console.log(`[${new Date().toISOString()}] Initializing database at ${dbPath}`);
 
 // Ensure data directory exists if needed, but here it's just root
 const db = new Database(dbPath);
