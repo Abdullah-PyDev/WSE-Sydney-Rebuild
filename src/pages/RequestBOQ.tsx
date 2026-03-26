@@ -41,7 +41,7 @@ const RequestBOQ = () => {
     formData.set('isUrgent', urgentCheckbox.checked.toString());
 
     try {
-      console.log('Submitting BOQ form data...');
+      console.log('Submitting BOQ form data to /api/send-boq...');
       const response = await fetch('/api/send-boq', {
         method: 'POST',
         body: formData, // Sending as FormData
@@ -50,12 +50,14 @@ const RequestBOQ = () => {
 
       if (!response.ok) {
         const contentType = response.headers.get('content-type');
+        console.log('Response content-type:', contentType);
         if (contentType && contentType.includes('application/json')) {
           const result = await response.json();
+          console.error('JSON error response:', result);
           throw new Error(result.error || 'Failed to send request');
         } else {
           const text = await response.text();
-          console.error('Non-JSON error response:', text);
+          console.error('Non-JSON error response (first 200 chars):', text.substring(0, 200));
           throw new Error(`Server error: ${response.status} ${response.statusText}. Please try again later.`);
         }
       }

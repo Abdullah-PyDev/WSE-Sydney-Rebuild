@@ -840,7 +840,7 @@ const Admin = () => {
                     <Download size={20} />
                   </button>
                   <a 
-                    href={`/api/admin/submissions/${previewSubmission.id}/file?token=${token}`}
+                    href={`/api/admin/submissions/${previewSubmission.id}/file?token=${encodeURIComponent(token || '')}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="p-3 text-primary hover:bg-surface-container rounded-xl transition-all"
@@ -860,39 +860,57 @@ const Admin = () => {
 
               {/* Content */}
               <div className="flex-1 bg-surface-container-low relative">
-                {previewSubmission.fileMimeType?.startsWith('image/') ? (
-                  <div className="absolute inset-0 flex items-center justify-center p-8">
-                    <img 
-                      src={`/api/admin/submissions/${previewSubmission.id}/file?preview=true&token=${token}`}
-                      alt={previewSubmission.fileName || 'Preview'}
-                      className="max-w-full max-h-full object-contain rounded-lg shadow-lg"
-                      referrerPolicy="no-referrer"
-                    />
-                  </div>
-                ) : previewSubmission.fileMimeType === 'application/pdf' ? (
-                  <iframe 
-                    src={`/api/admin/submissions/${previewSubmission.id}/file?preview=true&token=${token}`}
-                    className="w-full h-full border-none"
-                    title="PDF Preview"
-                  />
-                ) : (
-                  <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center">
-                    <div className="w-20 h-20 bg-surface-container rounded-3xl flex items-center justify-center text-on-surface-variant mb-6">
-                      <FileText size={40} />
+                {(() => {
+                  const mime = previewSubmission.fileMimeType || '';
+                  const fileName = previewSubmission.fileName || '';
+                  const ext = fileName.split('.').pop()?.toLowerCase();
+                  const isImage = mime.startsWith('image/') || ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext || '');
+                  const isPdf = mime.includes('pdf') || ext === 'pdf';
+                  const encodedToken = encodeURIComponent(token || '');
+                  const previewUrl = `/api/admin/submissions/${previewSubmission.id}/file?preview=true&token=${encodedToken}`;
+
+                  if (isImage) {
+                    return (
+                      <div className="absolute inset-0 flex items-center justify-center p-8">
+                        <img 
+                          src={previewUrl}
+                          alt={fileName || 'Preview'}
+                          className="max-w-full max-h-full object-contain rounded-lg shadow-lg"
+                          referrerPolicy="no-referrer"
+                        />
+                      </div>
+                    );
+                  }
+
+                  if (isPdf) {
+                    return (
+                      <iframe 
+                        src={previewUrl}
+                        className="w-full h-full border-none"
+                        title="PDF Preview"
+                      />
+                    );
+                  }
+
+                  return (
+                    <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center">
+                      <div className="w-20 h-20 bg-surface-container rounded-3xl flex items-center justify-center text-on-surface-variant mb-6">
+                        <FileText size={40} />
+                      </div>
+                      <h4 className="text-xl font-headline font-bold text-primary mb-2">No Preview Available</h4>
+                      <p className="text-on-surface-variant font-body max-w-md mb-8">
+                        This file type ({mime || 'unknown'}) cannot be previewed directly in the browser. Please download the file to view its contents.
+                      </p>
+                      <button 
+                        onClick={() => downloadFile(previewSubmission.id, previewSubmission.fileName!)}
+                        className="flex items-center gap-2 bg-primary text-white px-8 py-4 rounded-2xl font-bold hover:scale-105 transition-all shadow-xl shadow-primary/20"
+                      >
+                        <Download size={20} />
+                        Download File
+                      </button>
                     </div>
-                    <h4 className="text-xl font-headline font-bold text-primary mb-2">No Preview Available</h4>
-                    <p className="text-on-surface-variant font-body max-w-md mb-8">
-                      This file type ({previewSubmission.fileMimeType}) cannot be previewed directly in the browser. Please download the file to view its contents.
-                    </p>
-                    <button 
-                      onClick={() => downloadFile(previewSubmission.id, previewSubmission.fileName!)}
-                      className="flex items-center gap-2 bg-primary text-white px-8 py-4 rounded-2xl font-bold hover:scale-105 transition-all shadow-xl shadow-primary/20"
-                    >
-                      <Download size={20} />
-                      Download File
-                    </button>
-                  </div>
-                )}
+                  );
+                })()}
               </div>
             </motion.div>
           </div>

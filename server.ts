@@ -7,6 +7,7 @@ import dotenv from "dotenv";
 import multer from "multer";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
+import cors from "cors";
 import db from "./src/lib/db";
 
 dotenv.config();
@@ -31,6 +32,7 @@ async function startServer() {
 
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
+  app.use(cors());
 
   // Health check
   app.get("/api/health", (req, res) => {
@@ -63,13 +65,17 @@ async function startServer() {
   // Middleware to verify JWT
   const authenticateAdmin = (req: any, res: any, next: any) => {
     const token = req.headers.authorization?.split(' ')[1] || req.query.token;
-    if (!token) return res.status(401).json({ error: "Unauthorized" });
+    if (!token) {
+      console.warn("Authentication failed: No token provided");
+      return res.status(401).json({ error: "Unauthorized" });
+    }
     
     try {
       const decoded = jwt.verify(token, JWT_SECRET);
       req.admin = decoded;
       next();
     } catch (err) {
+      console.error("Authentication failed: Invalid token", err instanceof Error ? err.message : err);
       res.status(401).json({ error: "Invalid token" });
     }
   };
@@ -184,24 +190,13 @@ async function startServer() {
 
   // API Route to send BOQ request
   app.post("/api/send-boq", (req, res, next) => {
-    console.log("Received POST /api/send-boq request");
+    console.log(`[${new Date().toISOString()}] Received POST /api/send-boq request`);
     next();
-  }, (req, res, next) => {
-    upload.array("files")(req, res, (err) => {
-      if (err instanceof multer.MulterError) {
-        console.error("Multer error:", err);
-        return res.status(400).json({ error: `Upload error: ${err.message}` });
-      } else if (err) {
-        console.error("Unknown upload error:", err);
-        return res.status(500).json({ error: "Unknown upload error" });
-      }
-      next();
-    });
-  }, async (req, res) => {
-    console.log("Processing BOQ request body:", JSON.stringify(req.body, null, 2));
+  }, upload.array("files"), async (req, res) => {
+    console.log(`[${new Date().toISOString()}] Processing BOQ request body:`, JSON.stringify(req.body, null, 2));
     const { fullName, companyName, address, notes, isUrgent } = req.body;
     const files = req.files as Express.Multer.File[];
-    console.log("Files received:", files?.map(f => ({ name: f.originalname, size: f.size })) || []);
+    console.log(`[${new Date().toISOString()}] Files received:`, files?.map(f => ({ name: f.originalname, size: f.size })) || []);
 
     try {
       const apiKey = process.env.RESEND_API_KEY;
@@ -264,6 +259,7 @@ async function startServer() {
 
   // Catch-all for API routes to prevent falling through to Vite
   app.all("/api/*", (req, res) => {
+    console.log(`[${new Date().toISOString()}] API 404: ${req.method} ${req.url}`);
     res.status(404).json({ error: `API route not found: ${req.method} ${req.url}` });
   });
 
