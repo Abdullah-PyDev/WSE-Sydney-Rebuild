@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence, useMotionValue, useSpring } from 'motion/react';
 import { Link } from 'react-router-dom';
+import ReactMarkdown from 'react-markdown';
 import { Droplets, Settings, Waves, ArrowRight, History, ShieldCheck, Globe, Plus, BarChart3, CheckCircle2, Calculator } from 'lucide-react';
 import TestimonialCarousel from '../components/TestimonialCarousel';
 
@@ -258,7 +259,7 @@ const Services = () => {
     visible: { 
       opacity: 1, 
       y: 0,
-      transition: { duration: 0.6, ease: "easeOut" }
+      transition: { duration: 0.6, ease: "easeOut" as any }
     }
   };
 
@@ -291,15 +292,19 @@ const Services = () => {
               <ShieldCheck size={14} />
               Industry Certified Accuracy
             </motion.div>
-            <motion.h1 variants={itemVariants} className="text-white font-headline text-4xl md:text-7xl font-extrabold leading-[1.1] tracking-tight min-h-[3.3em] md:min-h-[2.2em]">
-              {dynamicContent['hero_headline'] || "Precision Engineering."} <br/>
+            <motion.div variants={itemVariants} className="text-white font-headline text-4xl md:text-7xl font-extrabold leading-[1.1] tracking-tight min-h-[3.3em] md:min-h-[2.2em] prose prose-invert max-w-none prose-h1:text-white prose-h1:font-headline prose-h1:text-4xl md:prose-h1:text-7xl prose-h1:font-extrabold prose-h1:mb-0 prose-strong:text-blue-400 prose-p:text-white prose-p:font-headline prose-p:text-4xl md:prose-p:text-7xl prose-p:font-extrabold prose-p:mb-0 prose-p:leading-[1.1]">
+              <ReactMarkdown components={{ p: 'span' }}>
+                {dynamicContent['hero_headline'] || "Precision Engineering."}
+              </ReactMarkdown>
               <span className="text-blue-400">
                 <Typewriter phrases={phrases} />
               </span>
-            </motion.h1>
-            <motion.p variants={itemVariants} className="text-blue-100 text-base md:text-xl max-w-lg leading-relaxed opacity-90 font-body">
-              {dynamicContent['hero_subheadline'] || "Australia's leading experts in Water & Sewer Estimating with a 24-48h turnaround. Reducing risk and ensuring compliance for Sydney's most complex projects."}
-            </motion.p>
+            </motion.div>
+            <motion.div variants={itemVariants} className="text-blue-100 text-base md:text-xl max-w-lg leading-relaxed opacity-90 font-body prose prose-invert prose-p:text-blue-100 prose-p:leading-relaxed">
+              <ReactMarkdown>
+                {dynamicContent['hero_subheadline'] || "Australia's leading experts in Water & Sewer Estimating with a 24-48h turnaround. Reducing risk and ensuring compliance for Sydney's most complex projects."}
+              </ReactMarkdown>
+            </motion.div>
             <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4 pt-4">
               <Link to="/request" className="bg-blue-400 text-primary px-8 py-4 rounded-md font-bold text-base hover:bg-blue-300 transition-all shadow-xl shadow-black/20 font-body text-center">
                 Request a BOQ

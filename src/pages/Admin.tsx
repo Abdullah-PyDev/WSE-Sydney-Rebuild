@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import ReactMarkdown from 'react-markdown';
+import { Toaster, toast } from 'sonner';
 import { 
   LayoutDashboard, 
   FileText, 
@@ -18,8 +20,111 @@ import {
   BarChart,
   Users,
   AlertTriangle,
-  FileCheck
+  FileCheck,
+  Bold,
+  Italic,
+  Type,
+  Loader2,
+  X,
+  Maximize2
 } from 'lucide-react';
+
+const MarkdownEditor = ({ 
+  label, 
+  value, 
+  onChange, 
+  onBlur,
+  placeholder,
+  isSaving = false
+}: { 
+  label: string; 
+  value: string; 
+  onChange: (val: string) => void;
+  onBlur: (val: string) => void;
+  placeholder?: string;
+  isSaving?: boolean;
+}) => {
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const insertText = (before: string, after: string = '') => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const text = textarea.value;
+    const selectedText = text.substring(start, end);
+    const newText = text.substring(0, start) + before + selectedText + after + text.substring(end);
+    
+    onChange(newText);
+    
+    // Reset focus and selection
+    setTimeout(() => {
+      textarea.focus();
+      textarea.setSelectionRange(start + before.length, end + before.length);
+    }, 0);
+  };
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <label className="block text-xs font-bold text-primary uppercase tracking-widest">{label}</label>
+          {isSaving && (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="flex items-center gap-1 text-[10px] text-surface-tint font-bold uppercase tracking-wider"
+            >
+              <Loader2 size={10} className="animate-spin" />
+              Saving...
+            </motion.div>
+          )}
+        </div>
+        <div className="flex items-center gap-1 bg-surface-container-low rounded-lg p-1 border border-outline-variant/50">
+          <button 
+            type="button"
+            onClick={() => insertText('**', '**')}
+            className="p-1.5 hover:bg-white rounded transition-colors text-primary"
+            title="Bold"
+          >
+            <Bold size={14} />
+          </button>
+          <button 
+            type="button"
+            onClick={() => insertText('_', '_')}
+            className="p-1.5 hover:bg-white rounded transition-colors text-primary"
+            title="Italic"
+          >
+            <Italic size={14} />
+          </button>
+          <button 
+            type="button"
+            onClick={() => insertText('# ', '')}
+            className="p-1.5 hover:bg-white rounded transition-colors text-primary"
+            title="Heading"
+          >
+            <Type size={14} />
+          </button>
+        </div>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <textarea 
+          ref={textareaRef}
+          className="w-full bg-surface-container-low border border-outline-variant rounded-xl px-4 py-3 text-sm font-body focus:outline-none focus:ring-2 focus:ring-primary/20 h-32 resize-none"
+          value={value}
+          placeholder={placeholder}
+          onChange={e => onChange(e.target.value)}
+          onBlur={e => onBlur(e.target.value)}
+        />
+        <div className="w-full bg-slate-50 border border-dashed border-outline-variant rounded-xl px-4 py-3 text-sm font-body h-32 overflow-y-auto prose prose-sm prose-slate max-w-none">
+          <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 border-b border-slate-200 pb-1">Preview</div>
+          <ReactMarkdown>{value || ""}</ReactMarkdown>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 interface Submission {
   id: number;
@@ -52,6 +157,9 @@ const Admin = () => {
   const [loginData, setLoginData] = useState({ username: '', password: '' });
   const [searchTerm, setSearchTerm] = useState('');
   const [expandedRow, setExpandedRow] = useState<number | null>(null);
+  const [savingKeys, setSavingKeys] = useState<Set<string>>(new Set());
+  const [deleteConfirmId, setDeleteConfirmId] = useState<number | null>(null);
+  const [previewSubmission, setPreviewSubmission] = useState<Submission | null>(null);
 
   useEffect(() => {
     if (token) {
@@ -83,6 +191,7 @@ const Admin = () => {
       if (statsData.success) setStats(statsData.stats);
     } catch (err) {
       setError('Failed to fetch data');
+      toast.error('Failed to fetch data');
     } finally {
       setLoading(false);
     }
@@ -101,11 +210,14 @@ const Admin = () => {
       if (data.success) {
         localStorage.setItem('admin_token', data.token);
         setToken(data.token);
+        toast.success('Login successful');
       } else {
         setError(data.error || 'Login failed');
+        toast.error(data.error || 'Login failed');
       }
     } catch (err) {
       setError('Connection error');
+      toast.error('Connection error');
     }
   };
 
@@ -113,9 +225,13 @@ const Admin = () => {
     localStorage.removeItem('admin_token');
     setToken(null);
     setSubmissions([]);
+    toast.info('Signed out');
   };
 
   const updateContent = async (key: string, value: string) => {
+    if (content[key] === value) return; // Skip if no change
+    
+    setSavingKeys(prev => new Set(prev).add(key));
     try {
       const res = await fetch('/api/admin/content', {
         method: 'POST',
@@ -127,9 +243,18 @@ const Admin = () => {
       });
       if (res.ok) {
         setContent(prev => ({ ...prev, [key]: value }));
+        toast.success(`Updated ${key.replace('_', ' ')}`);
+      } else {
+        toast.error(`Failed to update ${key.replace('_', ' ')}`);
       }
     } catch (err) {
-      alert('Failed to update content');
+      toast.error('Failed to update content');
+    } finally {
+      setSavingKeys(prev => {
+        const next = new Set(prev);
+        next.delete(key);
+        return next;
+      });
     }
   };
 
@@ -146,14 +271,16 @@ const Admin = () => {
       if (res.ok) {
         setSubmissions(prev => prev.map(s => s.id === id ? { ...s, status: status as any } : s));
         fetchData(); // Refresh stats
+        toast.success(`Status updated to ${status}`);
+      } else {
+        toast.error('Failed to update status');
       }
     } catch (err) {
-      alert('Failed to update status');
+      toast.error('Failed to update status');
     }
   };
 
   const deleteSubmission = async (id: number) => {
-    if (!confirm('Are you sure you want to delete this submission?')) return;
     try {
       const res = await fetch(`/api/admin/submissions/${id}`, {
         method: 'DELETE',
@@ -162,9 +289,13 @@ const Admin = () => {
       if (res.ok) {
         setSubmissions(prev => prev.filter(s => s.id !== id));
         fetchData(); // Refresh stats
+        toast.success('Submission deleted');
+        setDeleteConfirmId(null);
+      } else {
+        toast.error('Failed to delete submission');
       }
     } catch (err) {
-      alert('Failed to delete submission');
+      toast.error('Failed to delete submission');
     }
   };
 
@@ -182,11 +313,12 @@ const Admin = () => {
         document.body.appendChild(a);
         a.click();
         window.URL.revokeObjectURL(url);
+        toast.success('Download started');
       } else {
-        alert('File not found');
+        toast.error('File not found');
       }
     } catch (err) {
-      alert('Failed to download file');
+      toast.error('Failed to download file');
     }
   };
 
@@ -230,6 +362,7 @@ const Admin = () => {
   if (!token) {
     return (
       <div className="min-h-screen bg-surface-container-lowest flex items-center justify-center p-4">
+        <Toaster position="top-right" richColors />
         <motion.div 
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -467,7 +600,7 @@ const Admin = () => {
                                 </button>
                               )}
                               <button 
-                                onClick={(e) => { e.stopPropagation(); deleteSubmission(sub.id); }}
+                                onClick={(e) => { e.stopPropagation(); setDeleteConfirmId(sub.id); }}
                                 className="p-2 text-error hover:bg-error-container/20 rounded-lg transition-all"
                                 title="Delete"
                               >
@@ -532,19 +665,17 @@ const Admin = () => {
                                                 <Download size={18} />
                                                 Download
                                               </button>
-                                              <a 
-                                                href={`/api/admin/submissions/${sub.id}/file`}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
+                                              <button 
+                                                onClick={() => setPreviewSubmission(sub)}
                                                 className="flex items-center gap-2 bg-surface-container text-primary px-6 py-3 rounded-xl text-sm font-bold hover:bg-surface-container-high transition-all border border-outline-variant"
                                               >
                                                 <Eye size={18} />
                                                 View
-                                              </a>
+                                              </button>
                                             </div>
                                           )}
                                           <button 
-                                            onClick={() => deleteSubmission(sub.id)}
+                                            onClick={() => setDeleteConfirmId(sub.id)}
                                             className="flex items-center gap-2 bg-red-50 text-red-600 px-6 py-3 rounded-xl text-sm font-bold hover:bg-red-100 transition-all border border-red-100"
                                           >
                                             <Trash2 size={18} />
@@ -573,29 +704,27 @@ const Admin = () => {
             </div>
           </div>
         ) : activeTab === 'content' ? (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 gap-8">
             <div className="bg-white border border-outline-variant rounded-3xl p-8">
               <h3 className="text-lg font-headline font-bold text-primary mb-6 flex items-center gap-2">
                 <Settings size={20} className="text-surface-tint" />
                 Hero Section
               </h3>
-              <div className="space-y-6">
-                <div>
-                  <label className="block text-xs font-bold text-primary uppercase tracking-widest mb-2">Hero Headline</label>
-                  <textarea 
-                    className="w-full bg-surface-container-low border border-outline-variant rounded-xl px-4 py-3 text-sm font-body focus:outline-none focus:ring-2 focus:ring-primary/20 h-24"
-                    defaultValue={content['hero_headline'] || "Engineering Water Infrastructure with Precision."}
-                    onBlur={e => updateContent('hero_headline', e.target.value)}
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-primary uppercase tracking-widest mb-2">Hero Subheadline</label>
-                  <textarea 
-                    className="w-full bg-surface-container-low border border-outline-variant rounded-xl px-4 py-3 text-sm font-body focus:outline-none focus:ring-2 focus:ring-primary/20 h-24"
-                    defaultValue={content['hero_subheadline'] || "Sydney's premier specialist in water, sewer, and stormwater estimating. Delivering tender-ready BOQs for Tier 1 contractors and developers."}
-                    onBlur={e => updateContent('hero_subheadline', e.target.value)}
-                  />
-                </div>
+              <div className="space-y-8">
+                <MarkdownEditor 
+                  label="Hero Headline"
+                  value={content['hero_headline'] || "Engineering Water Infrastructure with Precision."}
+                  onChange={val => setContent(prev => ({ ...prev, hero_headline: val }))}
+                  onBlur={val => updateContent('hero_headline', val)}
+                  isSaving={savingKeys.has('hero_headline')}
+                />
+                <MarkdownEditor 
+                  label="Hero Subheadline"
+                  value={content['hero_subheadline'] || "Sydney's premier specialist in water, sewer, and stormwater estimating. Delivering tender-ready BOQs for Tier 1 contractors and developers."}
+                  onChange={val => setContent(prev => ({ ...prev, hero_subheadline: val }))}
+                  onBlur={val => updateContent('hero_subheadline', val)}
+                  isSaving={savingKeys.has('hero_subheadline')}
+                />
               </div>
             </div>
 
@@ -628,6 +757,148 @@ const Admin = () => {
           </div>
         ) : null}
       </main>
+
+      {/* Delete Confirmation Modal */}
+      <AnimatePresence>
+        {deleteConfirmId && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setDeleteConfirmId(null)}
+              className="absolute inset-0 bg-primary/20 backdrop-blur-sm"
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="relative bg-white p-8 rounded-3xl shadow-2xl border border-outline-variant w-full max-sm"
+            >
+              <div className="w-12 h-12 bg-error-container text-error rounded-2xl flex items-center justify-center mb-6">
+                <AlertTriangle size={24} />
+              </div>
+              <h3 className="text-xl font-headline font-bold text-primary mb-2">Delete Submission?</h3>
+              <p className="text-on-surface-variant text-sm font-body mb-8">This action cannot be undone. All project data and files will be permanently removed.</p>
+              <div className="flex gap-3">
+                <button 
+                  onClick={() => setDeleteConfirmId(null)}
+                  className="flex-1 px-6 py-3 rounded-xl text-sm font-bold text-primary bg-surface-container hover:bg-surface-container-high transition-all"
+                >
+                  Cancel
+                </button>
+                <button 
+                  onClick={() => deleteSubmission(deleteConfirmId)}
+                  className="flex-1 px-6 py-3 rounded-xl text-sm font-bold text-white bg-error hover:bg-error/90 transition-all shadow-lg shadow-error/20"
+                >
+                  Delete
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Document Preview Modal */}
+      <AnimatePresence>
+        {previewSubmission && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setPreviewSubmission(null)}
+              className="absolute inset-0 bg-primary/40 backdrop-blur-md"
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9, y: 40 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 40 }}
+              className="relative bg-white rounded-[2rem] shadow-2xl border border-outline-variant w-full h-full max-w-6xl flex flex-col overflow-hidden"
+            >
+              {/* Header */}
+              <div className="p-6 border-b border-outline-variant flex items-center justify-between bg-white">
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 bg-primary/5 rounded-xl flex items-center justify-center text-primary">
+                    <FileText size={20} />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-headline font-bold text-primary leading-tight">
+                      {previewSubmission.fileName}
+                    </h3>
+                    <p className="text-xs text-on-surface-variant font-body">
+                      Submitted by {previewSubmission.fullName} • {new Date(previewSubmission.createdAt).toLocaleDateString()}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button 
+                    onClick={() => downloadFile(previewSubmission.id, previewSubmission.fileName!)}
+                    className="p-3 text-primary hover:bg-surface-container rounded-xl transition-all"
+                    title="Download"
+                  >
+                    <Download size={20} />
+                  </button>
+                  <a 
+                    href={`/api/admin/submissions/${previewSubmission.id}/file?token=${token}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-3 text-primary hover:bg-surface-container rounded-xl transition-all"
+                    title="Open in New Tab"
+                  >
+                    <Maximize2 size={20} />
+                  </a>
+                  <div className="w-px h-6 bg-outline-variant mx-2" />
+                  <button 
+                    onClick={() => setPreviewSubmission(null)}
+                    className="p-3 text-on-surface-variant hover:bg-error-container hover:text-error rounded-xl transition-all"
+                  >
+                    <X size={20} />
+                  </button>
+                </div>
+              </div>
+
+              {/* Content */}
+              <div className="flex-1 bg-surface-container-low relative">
+                {previewSubmission.fileMimeType?.startsWith('image/') ? (
+                  <div className="absolute inset-0 flex items-center justify-center p-8">
+                    <img 
+                      src={`/api/admin/submissions/${previewSubmission.id}/file?preview=true&token=${token}`}
+                      alt={previewSubmission.fileName || 'Preview'}
+                      className="max-w-full max-h-full object-contain rounded-lg shadow-lg"
+                      referrerPolicy="no-referrer"
+                    />
+                  </div>
+                ) : previewSubmission.fileMimeType === 'application/pdf' ? (
+                  <iframe 
+                    src={`/api/admin/submissions/${previewSubmission.id}/file?preview=true&token=${token}`}
+                    className="w-full h-full border-none"
+                    title="PDF Preview"
+                  />
+                ) : (
+                  <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center">
+                    <div className="w-20 h-20 bg-surface-container rounded-3xl flex items-center justify-center text-on-surface-variant mb-6">
+                      <FileText size={40} />
+                    </div>
+                    <h4 className="text-xl font-headline font-bold text-primary mb-2">No Preview Available</h4>
+                    <p className="text-on-surface-variant font-body max-w-md mb-8">
+                      This file type ({previewSubmission.fileMimeType}) cannot be previewed directly in the browser. Please download the file to view its contents.
+                    </p>
+                    <button 
+                      onClick={() => downloadFile(previewSubmission.id, previewSubmission.fileName!)}
+                      className="flex items-center gap-2 bg-primary text-white px-8 py-4 rounded-2xl font-bold hover:scale-105 transition-all shadow-xl shadow-primary/20"
+                    >
+                      <Download size={20} />
+                      Download File
+                    </button>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+      <Toaster position="top-right" richColors />
     </div>
   );
 };

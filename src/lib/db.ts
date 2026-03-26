@@ -37,10 +37,16 @@ db.exec(`
 
 // Seed admin if not exists
 const adminCount = db.prepare('SELECT count(*) as count FROM admins').get() as { count: number };
+const defaultPassword = process.env.ADMIN_PASSWORD || 'admin123';
+const hashedPassword = bcrypt.hashSync(defaultPassword, 10);
+
 if (adminCount.count === 0) {
-  const hashedPassword = bcrypt.hashSync(process.env.ADMIN_PASSWORD || 'admin123', 10);
   db.prepare('INSERT INTO admins (username, password) VALUES (?, ?)').run('admin', hashedPassword);
-  console.log('Default admin created: admin / ' + (process.env.ADMIN_PASSWORD || 'admin123'));
+  console.log('Default admin created: admin / ' + defaultPassword);
+} else {
+  // Force update admin password to ensure it matches environment or default
+  db.prepare('UPDATE admins SET password = ? WHERE username = ?').run(hashedPassword, 'admin');
+  console.log('Admin password synchronized');
 }
 
 export default db;

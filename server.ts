@@ -43,7 +43,13 @@ async function startServer() {
 
   // Admin Auth
   app.post("/api/admin/login", (req, res) => {
-    const { username, password } = req.body;
+    const username = req.body.username?.trim();
+    const password = req.body.password?.trim();
+    
+    if (!username || !password) {
+      return res.status(400).json({ error: "Username and password are required" });
+    }
+
     const admin = db.prepare('SELECT * FROM admins WHERE username = ?').get(username) as any;
     
     if (admin && bcrypt.compareSync(password, admin.password)) {
@@ -56,7 +62,7 @@ async function startServer() {
 
   // Middleware to verify JWT
   const authenticateAdmin = (req: any, res: any, next: any) => {
-    const token = req.headers.authorization?.split(' ')[1];
+    const token = req.headers.authorization?.split(' ')[1] || req.query.token;
     if (!token) return res.status(401).json({ error: "Unauthorized" });
     
     try {
@@ -95,8 +101,8 @@ async function startServer() {
   app.get("/api/admin/stats", authenticateAdmin, (req, res) => {
     const total = db.prepare('SELECT count(*) as count FROM submissions').get() as any;
     const urgent = db.prepare('SELECT count(*) as count FROM submissions WHERE isUrgent = 1').get() as any;
-    const pending = db.prepare('SELECT count(*) as count FROM submissions WHERE status = "pending"').get() as any;
-    const processed = db.prepare('SELECT count(*) as count FROM submissions WHERE status = "processed"').get() as any;
+    const pending = db.prepare("SELECT count(*) as count FROM submissions WHERE status = 'pending'").get() as any;
+    const processed = db.prepare("SELECT count(*) as count FROM submissions WHERE status = 'processed'").get() as any;
     
     res.json({ 
       success: true, 
@@ -144,8 +150,13 @@ async function startServer() {
       return res.status(404).json({ error: "File not found on disk" });
     }
 
+    const isPreview = req.query.preview === 'true';
     res.setHeader('Content-Type', sub.fileMimeType || 'application/octet-stream');
-    res.setHeader('Content-Disposition', `attachment; filename="${sub.fileName}"`);
+    if (!isPreview) {
+      res.setHeader('Content-Disposition', `attachment; filename="${sub.fileName}"`);
+    } else {
+      res.setHeader('Content-Disposition', 'inline');
+    }
     fs.createReadStream(filePath).pipe(res);
   });
 
