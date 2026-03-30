@@ -205,19 +205,37 @@ const HeroBackground = ({ mouseX, mouseY }: { mouseX: any; mouseY: any }) => {
   );
 };
 
+
 const Services = () => {
   const heroRef = useRef<HTMLElement>(null);
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
-  const [dynamicContent, setDynamicContent] = useState<Record<string, string>>({});
+  const [dynamicContent, setDynamicContent] = useState<Record<string, string>>({
+    'hero_headline': "Precision Engineering.",
+    'hero_subheadline': "Australia's leading experts in Water & Sewer Estimating with a 24-48h turnaround. Reducing risk and ensuring compliance for Sydney's most complex projects."
+  });
 
   useEffect(() => {
-    fetch('/api/admin/content')
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) setDynamicContent(data.content);
-      })
-      .catch(err => console.error('Failed to fetch content', err));
+    const fetchContent = async () => {
+      try {
+        const res = await fetch('/api/content');
+        const data = await res.json();
+        const contentMap: Record<string, string> = {};
+        data.forEach((item: any) => {
+          contentMap[item.key] = item.value;
+        });
+        if (Object.keys(contentMap).length > 0) {
+          setDynamicContent(prev => ({
+            ...prev,
+            'hero_headline': contentMap['hero_title'] || prev['hero_headline'],
+            'hero_subheadline': contentMap['hero_subheadline'] || prev['hero_subheadline']
+          }));
+        }
+      } catch (err) {
+        console.error('Failed to fetch content', err);
+      }
+    };
+    fetchContent();
   }, []);
 
   const handleMouseMove = (e: React.MouseEvent) => {

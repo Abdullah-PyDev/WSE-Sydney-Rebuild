@@ -1,6 +1,7 @@
-import React from 'react';
-import { motion } from 'motion/react';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import QuickEstimator from '../components/QuickEstimator';
+import PlantHireEstimator from '../components/PlantHireEstimator';
 import { 
   Calculator, 
   ShieldCheck, 
@@ -8,21 +9,25 @@ import {
   TrendingUp,
   CheckCircle2,
   BarChart3,
-  FileText
+  FileText,
+  Truck,
+  Droplets
 } from 'lucide-react';
 
 const Estimator = () => {
+  const [activeTab, setActiveTab] = useState<'infrastructure' | 'plant'>('infrastructure');
+
   return (
     <main className="pt-24 md:pt-28 pb-12 md:pb-20 px-4 md:px-6 max-w-7xl mx-auto">
       {/* Hero Section */}
-      <section className="text-center mb-12 md:mb-20">
+      <section className="text-center mb-12 md:mb-16">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="inline-flex items-center space-x-2 text-surface-tint mb-4 md:mb-6"
         >
           <Calculator size={14} className="fill-surface-tint text-white" />
-          <span className="text-[9px] md:text-[10px] font-bold uppercase tracking-[0.2em] font-headline">Instant ROM Estimating</span>
+          <span className="text-[9px] md:text-[10px] font-bold uppercase tracking-[0.2em] font-headline">Professional Estimating Portal</span>
         </motion.div>
         
         <motion.h1 
@@ -41,13 +46,53 @@ const Estimator = () => {
           transition={{ delay: 0.2 }}
           className="text-on-surface-variant text-base md:text-lg leading-relaxed mb-8 md:mb-10 max-w-2xl mx-auto font-body"
         >
-          Leverage our proprietary data engine to generate instant Rough Order of Magnitude (ROM) estimates for Sydney's water, sewer, and stormwater infrastructure.
+          Leverage our proprietary data engine to generate instant estimates for Sydney's infrastructure projects and plant hire requirements.
         </motion.p>
+      </section>
+
+      {/* Tabs */}
+      <section className="flex justify-center mb-12">
+        <div className="bg-surface-container-low p-1.5 rounded-2xl border border-outline-variant flex items-center space-x-2">
+          <button
+            onClick={() => setActiveTab('infrastructure')}
+            className={`flex items-center space-x-2 px-6 py-3 rounded-xl font-bold font-headline transition-all ${activeTab === 'infrastructure' ? 'bg-primary text-white shadow-lg' : 'text-on-surface-variant hover:bg-surface-container'}`}
+          >
+            <Droplets size={18} />
+            <span className="text-sm">Infrastructure ROM</span>
+          </button>
+          <button
+            onClick={() => setActiveTab('plant')}
+            className={`flex items-center space-x-2 px-6 py-3 rounded-xl font-bold font-headline transition-all ${activeTab === 'plant' ? 'bg-primary text-white shadow-lg' : 'text-on-surface-variant hover:bg-surface-container'}`}
+          >
+            <Truck size={18} />
+            <span className="text-sm">Plant Hire Rates</span>
+          </button>
+        </div>
       </section>
 
       {/* Estimator Component */}
       <section className="mb-16 md:mb-32">
-        <QuickEstimator />
+        <AnimatePresence mode="wait">
+          {activeTab === 'infrastructure' ? (
+            <motion.div
+              key="infrastructure"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+            >
+              <QuickEstimator />
+            </motion.div>
+          ) : (
+            <motion.div
+              key="plant"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+            >
+              <PlantHireEstimator />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </section>
 
       {/* Why Use Our Estimator? */}

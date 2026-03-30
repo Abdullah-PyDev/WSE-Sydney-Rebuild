@@ -56,6 +56,7 @@ export const Header = () => {
               </Link>
             </Magnetic>
           ))}
+
           <Magnetic strength={0.2}>
             <Link
               to="/request"
@@ -112,7 +113,7 @@ export const Header = () => {
                   <Menu size={24} className="rotate-90" />
                 </button>
               </div>
-              <div className="flex-grow py-10 px-8 space-y-8 bg-surface-container-low/95 backdrop-blur-sm">
+              <div className="flex-grow py-10 px-8 space-y-8 bg-surface-container-low/95 backdrop-blur-sm overflow-y-auto">
                 {navLinks.map((link) => (
                   <motion.div
                     key={link.name}
@@ -130,7 +131,8 @@ export const Header = () => {
                     </Link>
                   </motion.div>
                 ))}
-                <div className="pt-8 border-t border-slate-100">
+
+                <div className="pt-8 border-t border-slate-100 space-y-4">
                   <Link
                     to="/request"
                     onClick={() => setIsMenuOpen(false)}

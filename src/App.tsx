@@ -18,6 +18,7 @@ import Admin from './pages/Admin';
 import ChatBot from './components/ChatBot';
 import ScrollToTop from './components/ScrollToTop';
 import CustomCursor from './components/CustomCursor';
+import { AlertCircle } from 'lucide-react';
 
 function AppContent() {
   const location = useLocation();

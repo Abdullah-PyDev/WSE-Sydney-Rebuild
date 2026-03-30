@@ -3,29 +3,79 @@
 @theme {
   --font-headline: "Manrope", ui-sans-serif, system-ui, sans-serif;
   --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-label: "Inter", ui-sans-serif, system-ui, sans-serif;
   
   --color-primary: #001d44;
   --color-primary-container: #00326b;
+  --color-primary-fixed: #d7e2ff;
+  --color-primary-fixed-dim: #abc7ff;
+  --color-on-primary-fixed: #001b3f;
+  --color-on-primary-fixed-variant: #00458f;
+  
+  --color-secondary: #734aa3;
+  --color-secondary-container: #cca0ff;
+  --color-secondary-fixed: #efdbff;
+  --color-secondary-fixed-dim: #dab9ff;
+  --color-on-secondary-fixed: #2b0053;
+  --color-on-secondary-fixed-variant: #5a3289;
+  
+  --color-tertiary: #002323;
+  --color-tertiary-container: #003a3a;
+  --color-tertiary-fixed: #72f6f6;
+  --color-tertiary-fixed-dim: #50dad9;
+  --color-on-tertiary-fixed: #002020;
+  --color-on-tertiary-fixed-variant: #004f4f;
+
+  --color-surface: #f7f9ff;
+  --color-surface-bright: #f7f9ff;
+  --color-surface-dim: #d7dae0;
+  --color-surface-variant: #dfe3e8;
   --color-surface-tint: #255dad;
+  --color-on-surface: #181c20;
   --color-on-surface-variant: #43474f;
-  --color-background: #f7f9ff;
+  
+  --color-surface-container: #ebeef4;
   --color-surface-container-low: #f1f4fa;
   --color-surface-container-lowest: #ffffff;
+  --color-surface-container-high: #e5e8ee;
+  --color-surface-container-highest: #dfe3e8;
+  
+  --color-outline: #737780;
+  --color-outline-variant: #c3c6d1;
+  
+  --color-background: #f7f9ff;
+  --color-on-background: #181c20;
+  
+  --color-error: #ba1a1a;
+  --color-error-container: #ffdad6;
+  --color-on-error: #ffffff;
+  --color-on-error-container: #93000a;
 }
 
 @layer base {
   body {
-    @apply bg-background font-body text-slate-900 antialiased;
+    @apply bg-background font-body text-on-surface antialiased;
   }
 
-  @media (min-width: 1024px) {
-    body, a, button, [role="button"] {
-      cursor: none;
-    }
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
   }
 }
 
 @layer utilities {
+  .headline-font {
+    font-family: 'Manrope', sans-serif;
+  }
+  
+  .glass-effect {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(12px);
+  }
+  
+  .gradient-brand {
+    background: linear-gradient(135deg, #001d44 0%, #00326b 100%);
+  }
+
   .glass-nav {
     @apply bg-white/80 backdrop-blur-md;
   }

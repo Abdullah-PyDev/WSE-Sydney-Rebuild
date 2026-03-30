@@ -2,31 +2,48 @@ import express from "express";
 import { createServer as createViteServer } from "vite";
 import path from "path";
 import fs from "fs";
-import { Resend } from "resend";
 import dotenv from "dotenv";
+import cors from "cors";
 import multer from "multer";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-import cors from "cors";
-import db from "./src/lib/db";
+import db from "./src/lib/db.ts";
 
 dotenv.config();
 
-const UPLOADS_DIR = path.join(process.cwd(), "uploads");
-if (!fs.existsSync(UPLOADS_DIR)) {
-  fs.mkdirSync(UPLOADS_DIR);
+export const app = express();
+
+const JWT_SECRET = process.env.JWT_SECRET || "supersecretkey";
+const UPLOADS_DIR = "/tmp/uploads";
+
+// Ensure uploads directory exists
+try {
+  if (!fs.existsSync(UPLOADS_DIR)) {
+    fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+  }
+  // Test writability
+  const testFile = path.join(UPLOADS_DIR, ".test-write");
+  fs.writeFileSync(testFile, "test");
+  fs.unlinkSync(testFile);
+  console.log(`[${new Date().toISOString()}] Uploads directory is writable: ${UPLOADS_DIR}`);
+} catch (error: any) {
+  console.error(`[${new Date().toISOString()}] Uploads directory error:`, error.message);
 }
 
-const JWT_SECRET = process.env.JWT_SECRET || "super-secret-key";
-const resend = new Resend(process.env.RESEND_API_KEY);
-const upload = multer({ 
-  storage: multer.memoryStorage(),
-  limits: {
-    fileSize: 25 * 1024 * 1024 // 25MB limit
-  }
+// Multer configuration
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, UPLOADS_DIR);
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(null, uniqueSuffix + "-" + file.originalname);
+  },
 });
-
-export const app = express();
+const upload = multer({ 
+  storage,
+  limits: { fileSize: 50 * 1024 * 1024 } // 50MB
+});
 
 async function startServer() {
   const PORT = 3000;
@@ -35,237 +52,127 @@ async function startServer() {
   app.use(express.urlencoded({ extended: true }));
   app.use(cors());
 
-  // Health check
-  app.get("/api/health", (req, res) => {
-    res.json({ 
-      status: "ok", 
-      env: process.env.NODE_ENV,
-      resendConfigured: !!process.env.RESEND_API_KEY
-    });
-  });
-
-  // Admin Auth
-  app.post("/api/admin/login", (req, res) => {
-    const username = req.body.username?.trim();
-    const password = req.body.password?.trim();
-    
-    if (!username || !password) {
-      return res.status(400).json({ error: "Username and password are required" });
-    }
-
-    const admin = db.prepare('SELECT * FROM admins WHERE username = ?').get(username) as any;
-    
-    if (admin && bcrypt.compareSync(password, admin.password)) {
-      const token = jwt.sign({ id: admin.id, username: admin.username }, JWT_SECRET, { expiresIn: '24h' });
-      return res.json({ success: true, token });
-    }
-    
-    res.status(401).json({ error: "Invalid credentials" });
-  });
-
-  // Middleware to verify JWT
-  const authenticateAdmin = (req: any, res: any, next: any) => {
-    const token = req.headers.authorization?.split(' ')[1] || req.query.token;
-    if (!token) {
-      console.warn("Authentication failed: No token provided");
-      return res.status(401).json({ error: "Unauthorized" });
-    }
-    
-    try {
-      const decoded = jwt.verify(token, JWT_SECRET);
-      req.admin = decoded;
-      next();
-    } catch (err) {
-      console.error("Authentication failed: Invalid token", err instanceof Error ? err.message : err);
-      res.status(401).json({ error: "Invalid token" });
-    }
-  };
-
-  // Admin: Get Submissions
-  app.get("/api/admin/submissions", authenticateAdmin, (req, res) => {
-    const submissions = db.prepare('SELECT * FROM submissions ORDER BY createdAt DESC').all();
-    res.json({ success: true, submissions });
-  });
-
-  // Admin: Get Content
-  app.get("/api/admin/content", (req, res) => {
-    const content = db.prepare('SELECT * FROM content').all();
-    const contentMap = content.reduce((acc: any, curr: any) => {
-      acc[curr.key] = curr.value;
-      return acc;
-    }, {});
-    res.json({ success: true, content: contentMap });
-  });
-
-  // Admin: Update Content
-  app.post("/api/admin/content", authenticateAdmin, (req, res) => {
-    const { key, value } = req.body;
-    db.prepare('INSERT OR REPLACE INTO content (key, value) VALUES (?, ?)').run(key, value);
-    res.json({ success: true });
-  });
-
-  // Admin: Get Stats
-  app.get("/api/admin/stats", authenticateAdmin, (req, res) => {
-    const total = db.prepare('SELECT count(*) as count FROM submissions').get() as any;
-    const urgent = db.prepare('SELECT count(*) as count FROM submissions WHERE isUrgent = 1').get() as any;
-    const pending = db.prepare("SELECT count(*) as count FROM submissions WHERE status = 'pending'").get() as any;
-    const processed = db.prepare("SELECT count(*) as count FROM submissions WHERE status = 'processed'").get() as any;
-    
-    res.json({ 
-      success: true, 
-      stats: { 
-        total: total.count, 
-        urgent: urgent.count, 
-        pending: pending.count,
-        processed: processed.count
-      } 
-    });
-  });
-
-  // Admin: Update Submission Status
-  app.patch("/api/admin/submissions/:id/status", authenticateAdmin, (req, res) => {
-    const { id } = req.params;
-    const { status } = req.body;
-    db.prepare('UPDATE submissions SET status = ? WHERE id = ?').run(status, id);
-    res.json({ success: true });
-  });
-
-  // Admin: Delete Submission
-  app.delete("/api/admin/submissions/:id", authenticateAdmin, (req, res) => {
-    const { id } = req.params;
-    // Optionally delete file too
-    const sub = db.prepare('SELECT fileName FROM submissions WHERE id = ?').get(id) as any;
-    if (sub?.fileName) {
-      const filePath = path.join(UPLOADS_DIR, sub.fileName);
-      if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
-    }
-    db.prepare('DELETE FROM submissions WHERE id = ?').run(id);
-    res.json({ success: true });
-  });
-
-  // Admin: Download File
-  app.get("/api/admin/submissions/:id/file", authenticateAdmin, (req, res) => {
-    const { id } = req.params;
-    const sub = db.prepare('SELECT fileName, fileMimeType FROM submissions WHERE id = ?').get(id) as any;
-    
-    if (!sub || !sub.fileName) {
-      return res.status(404).json({ error: "File not found" });
-    }
-
-    const filePath = path.join(UPLOADS_DIR, sub.fileName);
-    if (!fs.existsSync(filePath)) {
-      return res.status(404).json({ error: "File not found on disk" });
-    }
-
-    const isPreview = req.query.preview === 'true';
-    res.setHeader('Content-Type', sub.fileMimeType || 'application/octet-stream');
-    if (!isPreview) {
-      res.setHeader('Content-Disposition', `attachment; filename="${sub.fileName}"`);
-    } else {
-      res.setHeader('Content-Disposition', 'inline');
-    }
-    fs.createReadStream(filePath).pipe(res);
-  });
-
-  // Test email route
-  app.get("/api/test-email", async (req, res) => {
-    try {
-      const apiKey = process.env.RESEND_API_KEY;
-      if (!apiKey) {
-        return res.status(500).json({ error: "RESEND_API_KEY not configured" });
-      }
-      const { data, error } = await resend.emails.send({
-        from: "WSE Sydney <onboarding@resend.dev>",
-        to: ["f250039@cfd.nu.edu.pk"],
-        subject: "Test Email from WSE Sydney",
-        html: "<p>This is a test email to verify Resend configuration.</p>"
-      });
-      if (error) {
-        return res.status(400).json({ error });
-      }
-      res.json({ success: true, data });
-    } catch (error) {
-      res.status(500).json({ error: error instanceof Error ? error.message : "Internal Server Error" });
-    }
-  });
-
-  // API Route to send BOQ request
-  app.post("/api/send-boq", (req, res, next) => {
-    console.log(`[${new Date().toISOString()}] Received POST /api/send-boq request`);
+  // Request logging
+  app.use((req, res, next) => {
+    console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
     next();
-  }, upload.array("files"), async (req, res) => {
-    console.log(`[${new Date().toISOString()}] Processing BOQ request body:`, JSON.stringify(req.body, null, 2));
-    const { fullName, companyName, address, notes, isUrgent } = req.body;
-    const files = req.files as Express.Multer.File[];
-    console.log(`[${new Date().toISOString()}] Files received:`, files?.map(f => ({ name: f.originalname, size: f.size })) || []);
+  });
 
+  // Serve static files from uploads
+  app.use("/uploads", express.static(UPLOADS_DIR));
+
+// API routes
+  app.get("/api/health", (req, res) => {
     try {
-      const apiKey = process.env.RESEND_API_KEY;
-      if (!apiKey) {
-        console.error("RESEND_API_KEY is missing in environment");
-        throw new Error("RESEND_API_KEY is not configured on the server");
-      }
-
-      console.log("Attempting to send email via Resend...");
-      const attachments = files?.map((file) => ({
-        filename: file.originalname,
-        content: file.buffer,
-      })) || [];
-
-      const { data, error } = await resend.emails.send({
-        from: "WSE Sydney <onboarding@resend.dev>",
-        to: ["f250039@cfd.nu.edu.pk"],
-        subject: `New BOQ Request: ${companyName} ${isUrgent === "true" ? "(URGENT)" : ""}`,
-        html: `
-          <h1>New BOQ Request Received</h1>
-          <p><strong>Full Name:</strong> ${fullName}</p>
-          <p><strong>Company Name:</strong> ${companyName}</p>
-          <p><strong>Project Address:</strong> ${address}</p>
-          <p><strong>Urgent:</strong> ${isUrgent === "true" ? "Yes" : "No"}</p>
-          <p><strong>Notes:</strong></p>
-          <p>${notes || "No additional notes provided."}</p>
-          <hr />
-          <p>This email was sent from the WSE Sydney Estimating Portal.</p>
-        `,
-        attachments,
+      // Test DB connection
+      db.prepare("SELECT 1").get();
+      res.json({ 
+        status: "ok", 
+        database: "connected",
+        env: process.env.NODE_ENV
       });
-
-      if (error) {
-        console.error("Resend API returned an error:", JSON.stringify(error, null, 2));
-        return res.status(400).json({ error });
-      }
-
-      console.log("Email sent successfully:", JSON.stringify(data, null, 2));
-      
-      // Save file to disk if exists
-      let savedFileName = null;
-      let savedMimeType = null;
-      if (files && files.length > 0) {
-        const file = files[0];
-        savedFileName = `${Date.now()}-${file.originalname}`;
-        savedMimeType = file.mimetype;
-        fs.writeFileSync(path.join(UPLOADS_DIR, savedFileName), file.buffer);
-      }
-
-      // Store in DB
-      db.prepare('INSERT INTO submissions (fullName, companyName, address, notes, isUrgent, fileName, fileMimeType) VALUES (?, ?, ?, ?, ?, ?, ?)')
-        .run(fullName, companyName, address, notes, isUrgent === "true" ? 1 : 0, savedFileName, savedMimeType);
-
-      res.status(200).json({ success: true, data });
-    } catch (error) {
-      console.error("Server error during BOQ processing:", error);
-      res.status(500).json({ error: error instanceof Error ? error.message : "Internal Server Error" });
+    } catch (error: any) {
+      res.status(500).json({ 
+        status: "error", 
+        database: "disconnected", 
+        error: error.message 
+      });
     }
   });
 
-  // Catch-all for API routes to prevent falling through to Vite
+  // Submission Routes
+  app.post("/api/submissions", (req, res, next) => {
+    upload.single("file")(req, res, (err) => {
+      if (err instanceof multer.MulterError) {
+        return res.status(400).json({ error: `Upload error: ${err.message}` });
+      } else if (err) {
+        return res.status(500).json({ error: `Unknown upload error: ${err.message}` });
+      }
+      next();
+    });
+  }, (req: any, res) => {
+    const { fullName, companyName, address, notes, isUrgent } = req.body;
+    const fileName = req.file ? req.file.filename : null;
+    const fileMimeType = req.file ? req.file.mimetype : null;
+    const userId = 0; // Anonymous submission
+
+    try {
+      const result = db.prepare(`
+        INSERT INTO submissions (userId, fullName, companyName, address, notes, isUrgent, fileName, fileMimeType)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      `).run(userId, fullName, companyName, address, notes, isUrgent === "true" ? 1 : 0, fileName, fileMimeType);
+      res.json({ id: result.lastInsertRowid });
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  });
+
+  app.get("/api/submissions", (req: any, res) => {
+    const submissions = db.prepare("SELECT * FROM submissions ORDER BY createdAt DESC").all();
+    res.json(submissions);
+  });
+
+  app.patch("/api/submissions/:id", (req, res) => {
+    const { status } = req.body;
+    const { id } = req.params;
+    try {
+      db.prepare("UPDATE submissions SET status = ? WHERE id = ?").run(status, id);
+      res.json({ success: true });
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  });
+
+  app.post("/api/submissions/:id/upload", upload.single("file"), (req, res) => {
+    const { id } = req.params;
+    const finalDocName = req.file ? req.file.filename : null;
+    const finalDocMimeType = req.file ? req.file.mimetype : null;
+
+    try {
+      db.prepare("UPDATE submissions SET finalDocName = ?, finalDocMimeType = ?, status = 'delivered' WHERE id = ?").run(finalDocName, finalDocMimeType, id);
+      res.json({ success: true, finalDocName });
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  });
+
+  app.delete("/api/submissions/:id", (req, res) => {
+    const { id } = req.params;
+    try {
+      db.prepare("DELETE FROM submissions WHERE id = ?").run(id);
+      res.json({ success: true });
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  });
+
+  // Content Routes
+  app.get("/api/content", (req, res) => {
+    const content = db.prepare("SELECT * FROM content").all();
+    res.json(content);
+  });
+
+  app.post("/api/content", (req, res) => {
+    const { key, value } = req.body;
+    db.prepare("INSERT OR REPLACE INTO content (key, value) VALUES (?, ?)").run(key, value);
+    res.json({ success: true });
+  });
+
   app.all("/api/*", (req, res) => {
-    console.log(`[${new Date().toISOString()}] API 404: ${req.method} ${req.url}`);
-    res.status(404).json({ error: `API route not found: ${req.method} ${req.url}` });
+    console.log(`API 404: ${req.method} ${req.url}`);
+    res.status(404).json({ error: `API route ${req.method} ${req.url} not found` });
+  });
+
+  // Global error handler
+  app.use((err: any, req: any, res: any, next: any) => {
+    console.error("Unhandled Server Error:", err);
+    res.status(err.status || 500).json({
+      error: err.message || "Internal Server Error",
+    });
   });
 
   // Vite middleware for development
-  if (process.env.NODE_ENV !== "production" && !process.env.VERCEL) {
+  if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: "spa",
@@ -281,17 +188,13 @@ async function startServer() {
     }
   }
 
-  if (process.env.NODE_ENV !== "production" || !process.env.VERCEL) {
-    app.listen(PORT, "0.0.0.0", () => {
-      console.log(`Server running on http://localhost:${PORT}`);
-    });
-  }
-}
-
-if (process.env.NODE_ENV !== "production" || !process.env.VERCEL) {
-  startServer().catch(err => {
-    console.error("Failed to start server:", err);
+  app.listen(PORT, "0.0.0.0", () => {
+    console.log(`Server running on http://localhost:${PORT}`);
   });
 }
+
+startServer().catch(err => {
+  console.error("Failed to start server:", err);
+});
 
 export default app;

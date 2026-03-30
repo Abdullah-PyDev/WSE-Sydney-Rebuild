@@ -7,7 +7,16 @@ const dbPath = path.join(process.cwd(), 'data.db');
 console.log(`[${new Date().toISOString()}] Initializing database at ${dbPath}`);
 
 // Ensure data directory exists if needed, but here it's just root
-const db = new Database(dbPath);
+let db: any;
+try {
+  db = new Database(dbPath);
+  console.log(`[${new Date().toISOString()}] Database connected successfully`);
+} catch (error: any) {
+  console.error(`[${new Date().toISOString()}] Database connection failed:`, error.message);
+  // Fallback to in-memory if file fails
+  db = new Database(':memory:');
+  console.log(`[${new Date().toISOString()}] Falling back to in-memory database`);
+}
 
 // Initialize tables
 db.exec(`
@@ -17,8 +26,18 @@ db.exec(`
     password TEXT
   );
 
+  CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    email TEXT UNIQUE,
+    password TEXT,
+    fullName TEXT,
+    role TEXT DEFAULT 'user',
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
+  );
+
   CREATE TABLE IF NOT EXISTS submissions (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
+    userId INTEGER,
     fullName TEXT,
     companyName TEXT,
     address TEXT,
@@ -27,7 +46,10 @@ db.exec(`
     fileName TEXT,
     fileMimeType TEXT,
     status TEXT DEFAULT 'pending',
-    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
+    finalDocName TEXT,
+    finalDocMimeType TEXT,
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY(userId) REFERENCES users(id)
   );
 
   CREATE TABLE IF NOT EXISTS content (

@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { useNavigate, Link } from 'react-router-dom';
 import { 
   CheckCircle2, 
   Zap, 
@@ -14,10 +15,14 @@ import {
   Mail,
   AlertCircle,
   X,
-  FileIcon
+  FileIcon,
+  User,
+  ArrowRight
 } from 'lucide-react';
+import { toast } from 'sonner';
 
 const RequestBOQ = () => {
+  const navigate = useNavigate();
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [dragActive, setDragActive] = useState(false);
@@ -27,46 +32,43 @@ const RequestBOQ = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    
     setIsSubmitting(true);
     setError(null);
 
     const formData = new FormData(e.currentTarget);
-    // Add files to formData
-    files.forEach(file => {
-      formData.append('files', file);
-    });
-    
-    // Explicitly set isUrgent as a string for the server
-    const urgentCheckbox = e.currentTarget.elements.namedItem('urgent') as HTMLInputElement;
-    formData.set('isUrgent', urgentCheckbox.checked.toString());
+    if (files.length > 0) {
+      formData.append('file', files[0]); // For now, handle single file as per server route
+    }
 
     try {
-      console.log('Submitting BOQ form data to /api/send-boq...');
-      const response = await fetch('/api/send-boq', {
+      const res = await fetch('/api/submissions', {
         method: 'POST',
-        body: formData, // Sending as FormData
+        body: formData
       });
-      console.log('Response received:', response.status, response.statusText);
 
-      if (!response.ok) {
-        const contentType = response.headers.get('content-type');
-        console.log('Response content-type:', contentType);
-        if (contentType && contentType.includes('application/json')) {
-          const result = await response.json();
-          console.error('JSON error response:', result);
-          throw new Error(result.error || 'Failed to send request');
-        } else {
-          const text = await response.text();
-          console.error('Non-JSON error response (first 200 chars):', text.substring(0, 200));
-          throw new Error(`Server error: ${response.status} ${response.statusText}. Please try again later.`);
+      if (!res.ok) {
+        const text = await res.text();
+        let errorMessage = `Server error (${res.status})`;
+        try {
+          const data = JSON.parse(text);
+          errorMessage = data.error || errorMessage;
+        } catch (e) {
+          // If not JSON, use the first 100 characters of the text
+          if (text.length > 0) {
+            errorMessage = text.substring(0, 100);
+          }
         }
+        throw new Error(errorMessage);
       }
 
+      const data = await res.json();
       setIsSubmitted(true);
       setFiles([]);
-    } catch (err) {
-      console.error('Submission error:', err);
-      setError(err instanceof Error ? err.message : 'An unexpected error occurred. Please try again.');
+      toast.success('BOQ Request submitted successfully!');
+    } catch (err: any) {
+      setError(err.message || 'Failed to submit request');
+      toast.error(err.message || 'Failed to submit request');
     } finally {
       setIsSubmitting(false);
     }
@@ -226,14 +228,23 @@ const RequestBOQ = () => {
                 </div>
                 <h2 className="text-xl md:text-2xl font-bold text-primary mb-2 font-headline">Submission Received</h2>
                 <p className="text-sm md:text-base text-on-surface-variant mb-6 md:mb-8 font-body">
-                  Your request has been logged. A project estimator will review your documents and contact you shortly.
+                  Your request has been logged. Our team will review it and get back to you within 24-48 hours.
                 </p>
-                <button 
-                  onClick={() => setIsSubmitted(false)}
-                  className="bg-primary text-white px-6 md:px-8 py-3 rounded-md font-bold hover:bg-primary-container transition-all font-headline text-sm md:text-base"
-                >
-                  Submit Another Request
-                </button>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <Link 
+                    to="/"
+                    className="bg-primary text-white px-6 md:px-8 py-3 rounded-md font-bold hover:bg-primary-container transition-all font-headline text-sm md:text-base flex items-center justify-center gap-2"
+                  >
+                    Return Home
+                    <ArrowRight size={18} />
+                  </Link>
+                  <button 
+                    onClick={() => setIsSubmitted(false)}
+                    className="bg-surface-container text-primary px-6 md:px-8 py-3 rounded-md font-bold hover:bg-surface-container-high transition-all font-headline text-sm md:text-base"
+                  >
+                    Submit Another
+                  </button>
+                </div>
               </div>
             ) : (
               <>
@@ -383,7 +394,7 @@ const RequestBOQ = () => {
                   </div>
 
                   <div className="flex items-center space-x-3 p-3 md:p-4 bg-surface-container-low rounded-lg border border-outline-variant">
-                    <input name="urgent" className="w-4 h-4 md:w-5 md:h-5 rounded text-primary border-outline-variant focus:ring-primary" id="urgent" type="checkbox"/>
+                    <input name="isUrgent" value="true" className="w-4 h-4 md:w-5 md:h-5 rounded text-primary border-outline-variant focus:ring-primary" id="urgent" type="checkbox"/>
                     <label className="text-xs md:text-sm font-bold text-primary font-headline" htmlFor="urgent">Mark as Urgent (Required within 24 hours)</label>
                   </div>
 

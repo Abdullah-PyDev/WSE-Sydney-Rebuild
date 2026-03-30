@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Link } from 'react-router-dom';
+import ReactMarkdown from 'react-markdown';
 import { 
   PencilRuler as ArchitectureIcon, 
   Landmark as AccountBalanceIcon, 
@@ -18,6 +19,31 @@ const Verified = ({ size, className }: { size?: number; className?: string }) =>
 const WaterDrop = ({ size, className }: { size?: number; className?: string }) => <WaterDropIcon size={size} className={className} />;
 
 const About = () => {
+  const [aboutText, setAboutText] = useState<string>(`
+Shoaib Saeed founded WSE Sydney with a singular vision: to eliminate the ambiguity that often exists between civil engineering design and the actual cost of execution. 
+
+With a background deeply rooted in major Sydney water infrastructure projects, Shoaib brings a rigorous analytical approach to every BOQ. His philosophy centers on "The Precision Monolith"—creating estimates that stand as unshakeable foundations for large-scale development projects.
+  `);
+
+  useEffect(() => {
+    const fetchContent = async () => {
+      try {
+        const res = await fetch('/api/content');
+        const data = await res.json();
+        const contentMap: Record<string, string> = {};
+        data.forEach((item: any) => {
+          contentMap[item.key] = item.value;
+        });
+        if (contentMap['about_text']) {
+          setAboutText(contentMap['about_text']);
+        }
+      } catch (err) {
+        console.error('Failed to fetch content', err);
+      }
+    };
+    fetchContent();
+  }, []);
+
   return (
     <main className="pt-24">
       <header className="pt-8 md:pt-12 pb-12 md:pb-20 px-4 md:px-8 max-w-7xl mx-auto">
@@ -96,13 +122,10 @@ const About = () => {
                   />
                 </div>
               </div>
-              <div className="space-y-4 md:space-y-6 text-on-surface-variant leading-relaxed text-base md:text-lg font-body">
-                <p>
-                  Shoaib Saeed founded WSE Sydney with a singular vision: to eliminate the ambiguity that often exists between civil engineering design and the actual cost of execution. 
-                </p>
-                <p>
-                  With a background deeply rooted in major Sydney water infrastructure projects, Shoaib brings a rigorous analytical approach to every BOQ. His philosophy centers on "The Precision Monolith"—creating estimates that stand as unshakeable foundations for large-scale development projects.
-                </p>
+              <div className="space-y-4 md:space-y-6 text-on-surface-variant leading-relaxed text-base md:text-lg font-body prose prose-slate max-w-none">
+                <ReactMarkdown>
+                  {aboutText}
+                </ReactMarkdown>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <Link to="/services/detail#water" className="bg-surface-container-lowest p-6 rounded-md shadow-sm hover:shadow-md transition-shadow group">

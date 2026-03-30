@@ -6,7 +6,6 @@ import {
   LayoutDashboard, 
   FileText, 
   Settings, 
-  LogOut, 
   ChevronRight, 
   Clock, 
   AlertCircle,
@@ -26,100 +25,39 @@ import {
   Type,
   Loader2,
   X,
-  Maximize2
+  Maximize2,
+  UploadCloud,
+  Home
 } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom';
 
-const MarkdownEditor = ({ 
-  label, 
-  value, 
-  onChange, 
-  onBlur,
-  placeholder,
-  isSaving = false
-}: { 
-  label: string; 
-  value: string; 
-  onChange: (val: string) => void;
-  onBlur: (val: string) => void;
-  placeholder?: string;
-  isSaving?: boolean;
-}) => {
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-
-  const insertText = (before: string, after: string = '') => {
-    const textarea = textareaRef.current;
-    if (!textarea) return;
-
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const text = textarea.value;
-    const selectedText = text.substring(start, end);
-    const newText = text.substring(0, start) + before + selectedText + after + text.substring(end);
-    
-    onChange(newText);
-    
-    // Reset focus and selection
-    setTimeout(() => {
-      textarea.focus();
-      textarea.setSelectionRange(start + before.length, end + before.length);
-    }, 0);
-  };
-
+const MarkdownEditor = ({ value, onChange, onSave, isSaving }: { value: string, onChange: (val: string) => void, onSave: () => void, isSaving: boolean }) => {
   return (
-    <div className="space-y-2">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <label className="block text-xs font-bold text-primary uppercase tracking-widest">{label}</label>
-          {isSaving && (
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="flex items-center gap-1 text-[10px] text-surface-tint font-bold uppercase tracking-wider"
-            >
-              <Loader2 size={10} className="animate-spin" />
-              Saving...
-            </motion.div>
-          )}
+    <div className="space-y-4">
+      <div className="flex items-center justify-between bg-surface-container-low p-2 rounded-t-xl border border-outline-variant">
+        <div className="flex items-center gap-1">
+          <button className="p-2 hover:bg-surface-container-high rounded text-on-surface-variant"><Bold size={16} /></button>
+          <button className="p-2 hover:bg-surface-container-high rounded text-on-surface-variant"><Italic size={16} /></button>
+          <button className="p-2 hover:bg-surface-container-high rounded text-on-surface-variant"><Type size={16} /></button>
         </div>
-        <div className="flex items-center gap-1 bg-surface-container-low rounded-lg p-1 border border-outline-variant/50">
-          <button 
-            type="button"
-            onClick={() => insertText('**', '**')}
-            className="p-1.5 hover:bg-white rounded transition-colors text-primary"
-            title="Bold"
-          >
-            <Bold size={14} />
-          </button>
-          <button 
-            type="button"
-            onClick={() => insertText('_', '_')}
-            className="p-1.5 hover:bg-white rounded transition-colors text-primary"
-            title="Italic"
-          >
-            <Italic size={14} />
-          </button>
-          <button 
-            type="button"
-            onClick={() => insertText('# ', '')}
-            className="p-1.5 hover:bg-white rounded transition-colors text-primary"
-            title="Heading"
-          >
-            <Type size={14} />
-          </button>
-        </div>
+        <button 
+          onClick={onSave}
+          disabled={isSaving}
+          className="flex items-center gap-2 bg-primary text-white px-4 py-1.5 rounded-lg text-xs font-bold hover:bg-primary/90 transition-all disabled:opacity-50"
+        >
+          {isSaving ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
+          Save Changes
+        </button>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 h-[400px]">
         <textarea 
-          ref={textareaRef}
-          className="w-full bg-surface-container-low border border-outline-variant rounded-xl px-4 py-3 text-sm font-body focus:outline-none focus:ring-2 focus:ring-primary/20 h-32 resize-none"
           value={value}
-          placeholder={placeholder}
-          onChange={e => onChange(e.target.value)}
-          onBlur={e => onBlur(e.target.value)}
+          onChange={(e) => onChange(e.target.value)}
+          className="w-full h-full p-4 bg-surface-container-lowest border border-outline-variant rounded-b-xl md:rounded-bl-xl md:rounded-br-none font-mono text-sm focus:outline-none focus:ring-2 focus:ring-primary/10 resize-none"
+          placeholder="Enter markdown content..."
         />
-        <div className="w-full bg-slate-50 border border-dashed border-outline-variant rounded-xl px-4 py-3 text-sm font-body h-32 overflow-y-auto prose prose-sm prose-slate max-w-none">
-          <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 border-b border-slate-200 pb-1">Preview</div>
-          <ReactMarkdown>{value || ""}</ReactMarkdown>
+        <div className="w-full h-full p-4 bg-white border border-outline-variant rounded-b-xl md:rounded-br-xl md:rounded-bl-none overflow-auto prose prose-sm max-w-none">
+          <ReactMarkdown>{value || '*Preview will appear here*'}</ReactMarkdown>
         </div>
       </div>
     </div>
@@ -127,128 +65,185 @@ const MarkdownEditor = ({
 };
 
 interface Submission {
-  id: number;
-  fullName: string;
-  companyName: string;
+  id: string;
+  user_id: string;
+  full_name: string;
+  company_name: string;
   address: string;
   notes: string;
-  isUrgent: number;
-  fileName: string | null;
-  fileMimeType: string | null;
-  status: 'pending' | 'processed';
-  createdAt: string;
+  is_urgent: boolean;
+  status: 'pending' | 'delivered' | 'approved';
+  created_at: string;
+  final_doc_path?: string;
+  files?: any[];
 }
 
-interface Stats {
-  total: number;
-  urgent: number;
-  pending: number;
-  processed: number;
-}
+const MOCK_SUBMISSIONS: Submission[] = [
+  {
+    id: 'req-1',
+    user_id: 'user-1',
+    full_name: 'John Doe',
+    company_name: 'Sydney Civil Group',
+    address: '123 George St, Sydney NSW 2000',
+    notes: 'Please prioritize this.',
+    is_urgent: false,
+    status: 'approved',
+    created_at: new Date(Date.now() - 86400000 * 2).toISOString(),
+    final_doc_path: 'mock-path-1',
+    files: [{ file_path: 'mock-file-1' }]
+  },
+  {
+    id: 'req-2',
+    user_id: 'user-1',
+    full_name: 'John Doe',
+    company_name: 'Metro Water Solutions',
+    address: '456 Pitt St, Sydney NSW 2000',
+    notes: 'Urgent request for next week.',
+    is_urgent: true,
+    status: 'delivered',
+    created_at: new Date(Date.now() - 86400000).toISOString(),
+    final_doc_path: 'mock-path-2',
+    files: [{ file_path: 'mock-file-2' }]
+  },
+  {
+    id: 'req-3',
+    user_id: 'user-2',
+    full_name: 'Jane Smith',
+    company_name: 'Urban Pipeworks',
+    address: '789 Macquarie St, Sydney NSW 2000',
+    notes: '',
+    is_urgent: false,
+    status: 'pending',
+    created_at: new Date().toISOString(),
+    files: [{ file_path: 'mock-file-3' }]
+  }
+];
+
+const MOCK_CONTENT: Record<string, string> = {
+  hero_title: '# Water and Sewer Estimating\n\nPrecision and expertise for your infrastructure projects.',
+  about_text: 'We provide comprehensive estimating services for water and sewer systems across Australia.'
+};
 
 const Admin = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'dashboard' | 'submissions' | 'content'>('dashboard');
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [content, setContent] = useState<Record<string, string>>({});
-  const [stats, setStats] = useState<Stats | null>(null);
+  const [stats, setStats] = useState({ total: 0, urgent: 0, pending: 0, processed: 0 });
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [token, setToken] = useState<string | null>(localStorage.getItem('admin_token'));
-  const [loginData, setLoginData] = useState({ username: '', password: '' });
   const [searchTerm, setSearchTerm] = useState('');
-  const [expandedRow, setExpandedRow] = useState<number | null>(null);
+  const [expandedRow, setExpandedRow] = useState<string | null>(null);
   const [savingKeys, setSavingKeys] = useState<Set<string>>(new Set());
-  const [deleteConfirmId, setDeleteConfirmId] = useState<number | null>(null);
-  const [previewSubmission, setPreviewSubmission] = useState<Submission | null>(null);
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+  const [uploadingId, setUploadingId] = useState<string | null>(null);
 
   useEffect(() => {
-    if (token) {
-      fetchData();
-    }
+    fetchData();
   }, [activeTab]);
 
   const fetchData = async () => {
     setLoading(true);
     try {
-      const headers = { Authorization: `Bearer ${token}` };
-      const [subRes, contentRes, statsRes] = await Promise.all([
-        fetch('/api/admin/submissions', { headers }),
-        fetch('/api/admin/content'),
-        fetch('/api/admin/stats', { headers })
-      ]);
+      if (activeTab === 'submissions' || activeTab === 'dashboard') {
+        const res = await fetch('/api/submissions');
+        const data = await res.json();
+        if (data.error) throw new Error(data.error);
 
-      if (subRes.status === 401) {
-        handleLogout();
-        return;
+        const mappedSubmissions = data.map((s: any) => ({
+          id: s.id.toString(),
+          user_id: s.userId.toString(),
+          full_name: s.fullName,
+          company_name: s.companyName,
+          address: s.address,
+          notes: s.notes,
+          is_urgent: s.isUrgent === 1,
+          status: s.status,
+          created_at: s.createdAt,
+          final_doc_path: s.finalDocName ? `/uploads/${s.finalDocName}` : undefined,
+          files: s.fileName ? [{ file_path: `/uploads/${s.fileName}` }] : []
+        }));
+
+        setSubmissions(mappedSubmissions);
+
+        const total = mappedSubmissions.length;
+        const urgent = mappedSubmissions.filter((s: any) => s.is_urgent).length;
+        const pending = mappedSubmissions.filter((s: any) => s.status === 'pending').length;
+        const processed = mappedSubmissions.filter((s: any) => s.status === 'delivered' || s.status === 'approved').length;
+        setStats({ total, urgent, pending, processed });
       }
 
-      const subData = await subRes.json();
-      const contentData = await contentRes.json();
-      const statsData = await statsRes.json();
-
-      if (subData.success) setSubmissions(subData.submissions);
-      if (contentData.success) setContent(contentData.content);
-      if (statsData.success) setStats(statsData.stats);
-    } catch (err) {
-      setError('Failed to fetch data');
+      if (activeTab === 'content') {
+        const res = await fetch('/api/content');
+        const data = await res.json();
+        const contentMap: Record<string, string> = {};
+        data.forEach((item: any) => {
+          contentMap[item.key] = item.value;
+        });
+        setContent(contentMap);
+      }
+    } catch (err: any) {
       toast.error('Failed to fetch data');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
+  const updateStatus = async (id: string, status: string) => {
     try {
-      const res = await fetch('/api/admin/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(loginData)
+      const res = await fetch(`/api/submissions/${id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ status })
       });
       const data = await res.json();
-      if (data.success) {
-        localStorage.setItem('admin_token', data.token);
-        setToken(data.token);
-        toast.success('Login successful');
-      } else {
-        setError(data.error || 'Login failed');
-        toast.error(data.error || 'Login failed');
-      }
-    } catch (err) {
-      setError('Connection error');
-      toast.error('Connection error');
+      if (data.error) throw new Error(data.error);
+
+      setSubmissions(prev => prev.map(s => s.id === id ? { ...s, status: status as any } : s));
+      toast.success(`Status updated to ${status}`);
+    } catch (err: any) {
+      toast.error('Failed to update status');
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('admin_token');
-    setToken(null);
-    setSubmissions([]);
-    toast.info('Signed out');
+  const handleFileUpload = async (requestId: string, file: File) => {
+    setUploadingId(requestId);
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const res = await fetch(`/api/submissions/${requestId}/upload`, {
+        method: 'POST',
+        body: formData
+      });
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+
+      setSubmissions(prev => prev.map(s => s.id === requestId ? { ...s, status: 'delivered', final_doc_path: `/uploads/${data.finalDocName}` } : s));
+      toast.success('Final document uploaded');
+    } catch (err: any) {
+      toast.error('Failed to upload file');
+    } finally {
+      setUploadingId(null);
+    }
   };
 
-  const updateContent = async (key: string, value: string) => {
-    if (content[key] === value) return; // Skip if no change
-    
+  const saveContent = async (key: string) => {
     setSavingKeys(prev => new Set(prev).add(key));
     try {
-      const res = await fetch('/api/admin/content', {
+      const res = await fetch('/api/content', {
         method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
+        headers: {
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ key, value })
+        body: JSON.stringify({ key, value: content[key] })
       });
-      if (res.ok) {
-        setContent(prev => ({ ...prev, [key]: value }));
-        toast.success(`Updated ${key.replace('_', ' ')}`);
-      } else {
-        toast.error(`Failed to update ${key.replace('_', ' ')}`);
-      }
-    } catch (err) {
-      toast.error('Failed to update content');
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+      toast.success(`${key} updated successfully`);
+    } catch (err: any) {
+      toast.error(`Failed to update ${key}`);
     } finally {
       setSavingKeys(prev => {
         const next = new Set(prev);
@@ -258,73 +253,25 @@ const Admin = () => {
     }
   };
 
-  const updateStatus = async (id: number, status: string) => {
+  const deleteSubmission = async (id: string) => {
     try {
-      const res = await fetch(`/api/admin/submissions/${id}/status`, {
-        method: 'PATCH',
-        headers: { 
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify({ status })
+      const res = await fetch(`/api/submissions/${id}`, {
+        method: 'DELETE'
       });
-      if (res.ok) {
-        setSubmissions(prev => prev.map(s => s.id === id ? { ...s, status: status as any } : s));
-        fetchData(); // Refresh stats
-        toast.success(`Status updated to ${status}`);
-      } else {
-        toast.error('Failed to update status');
-      }
-    } catch (err) {
-      toast.error('Failed to update status');
-    }
-  };
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
 
-  const deleteSubmission = async (id: number) => {
-    try {
-      const res = await fetch(`/api/admin/submissions/${id}`, {
-        method: 'DELETE',
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      if (res.ok) {
-        setSubmissions(prev => prev.filter(s => s.id !== id));
-        fetchData(); // Refresh stats
-        toast.success('Submission deleted');
-        setDeleteConfirmId(null);
-      } else {
-        toast.error('Failed to delete submission');
-      }
-    } catch (err) {
+      setSubmissions(prev => prev.filter(s => s.id !== id));
+      toast.success('Submission deleted');
+      setDeleteConfirmId(null);
+    } catch (err: any) {
       toast.error('Failed to delete submission');
     }
   };
 
-  const downloadFile = async (id: number, fileName: string) => {
-    try {
-      const res = await fetch(`/api/admin/submissions/${id}/file`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      if (res.ok) {
-        const blob = await res.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = fileName;
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-        toast.success('Download started');
-      } else {
-        toast.error('File not found');
-      }
-    } catch (err) {
-      toast.error('Failed to download file');
-    }
-  };
-
   const filteredSubmissions = submissions.filter(s => 
-    s.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    s.companyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    s.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    s.company_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     s.address.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -334,13 +281,13 @@ const Admin = () => {
     const headers = ['ID', 'Full Name', 'Company Name', 'Address', 'Notes', 'Urgent', 'Status', 'Date'];
     const rows = submissions.map(sub => [
       sub.id,
-      `"${sub.fullName.replace(/"/g, '""')}"`,
-      `"${sub.companyName.replace(/"/g, '""')}"`,
+      `"${sub.full_name.replace(/"/g, '""')}"`,
+      `"${sub.company_name.replace(/"/g, '""')}"`,
       `"${sub.address.replace(/"/g, '""')}"`,
       `"${sub.notes.replace(/"/g, '""')}"`,
-      sub.isUrgent ? 'Yes' : 'No',
+      sub.is_urgent ? 'Yes' : 'No',
       sub.status,
-      new Date(sub.createdAt).toLocaleString()
+      new Date(sub.created_at).toLocaleString()
     ]);
 
     const csvContent = [
@@ -359,64 +306,17 @@ const Admin = () => {
     document.body.removeChild(link);
   };
 
-  if (!token) {
+  if (loading && submissions.length === 0 && activeTab !== 'content') {
     return (
-      <div className="min-h-screen bg-surface-container-lowest flex items-center justify-center p-4">
-        <Toaster position="top-right" richColors />
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="bg-white p-8 rounded-3xl shadow-xl border border-outline-variant w-full max-w-md"
-        >
-          <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4 text-primary">
-              <LayoutDashboard size={32} />
-            </div>
-            <h1 className="text-2xl font-headline font-extrabold text-primary">Admin Access</h1>
-            <p className="text-on-surface-variant text-sm mt-2">Please sign in to manage your portal</p>
-          </div>
-
-          <form onSubmit={handleLogin} className="space-y-4">
-            <div>
-              <label className="block text-xs font-bold text-primary uppercase tracking-widest mb-2">Username</label>
-              <input 
-                type="text"
-                value={loginData.username}
-                onChange={e => setLoginData(prev => ({ ...prev, username: e.target.value }))}
-                className="w-full bg-surface-container-low border border-outline-variant rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-bold text-primary uppercase tracking-widest mb-2">Password</label>
-              <input 
-                type="password"
-                value={loginData.password}
-                onChange={e => setLoginData(prev => ({ ...prev, password: e.target.value }))}
-                className="w-full bg-surface-container-low border border-outline-variant rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
-                required
-              />
-            </div>
-            {error && (
-              <div className="bg-error-container text-error p-3 rounded-xl text-xs flex items-center gap-2">
-                <AlertCircle size={14} />
-                {error}
-              </div>
-            )}
-            <button 
-              type="submit"
-              className="w-full bg-primary text-white font-bold py-4 rounded-xl font-headline hover:scale-[1.02] transition-all shadow-lg shadow-primary/20"
-            >
-              Sign In
-            </button>
-          </form>
-        </motion.div>
+      <div className="min-h-screen bg-surface flex items-center justify-center">
+        <Loader2 className="w-12 h-12 text-primary animate-spin" />
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-surface-container-lowest flex">
+      <Toaster position="top-right" richColors />
       {/* Sidebar */}
       <aside className="w-64 bg-white border-r border-outline-variant flex flex-col fixed h-full">
         <div className="p-8 border-b border-outline-variant">
@@ -448,13 +348,13 @@ const Admin = () => {
         </nav>
 
         <div className="p-4 border-t border-outline-variant">
-          <button 
-            onClick={handleLogout}
-            className="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-error hover:bg-error-container/20 transition-all"
+          <Link 
+            to="/"
+            className="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-primary hover:bg-primary/5 transition-all"
           >
-            <LogOut size={20} />
-            <span className="font-headline font-bold text-sm">Sign Out</span>
-          </button>
+            <Home size={20} />
+            <span className="font-headline font-bold text-sm">Return Home</span>
+          </Link>
         </div>
       </aside>
 
@@ -493,7 +393,7 @@ const Admin = () => {
           )}
         </header>
 
-        {activeTab === 'dashboard' && stats && (
+        {activeTab === 'dashboard' && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
             <div className="bg-white p-6 rounded-3xl border border-outline-variant shadow-sm">
               <div className="flex items-center justify-between mb-4">
@@ -545,16 +445,15 @@ const Admin = () => {
                 <thead>
                   <tr className="bg-surface-container-low border-b border-outline-variant">
                     <th className="px-6 py-4 text-xs font-bold text-primary uppercase tracking-widest">Full Name</th>
-                    <th className="px-6 py-4 text-xs font-bold text-primary uppercase tracking-widest">Company</th>
+                    <th className="px-6 py-4 text-xs font-bold text-primary uppercase tracking-widest">Status</th>
                     <th className="px-6 py-4 text-xs font-bold text-primary uppercase tracking-widest">Date</th>
-                    <th className="px-6 py-4 text-xs font-bold text-primary uppercase tracking-widest text-center">Status</th>
                     <th className="px-6 py-4 text-xs font-bold text-primary uppercase tracking-widest text-right">Action</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-outline-variant">
                   {filteredSubmissions.length === 0 ? (
                     <tr>
-                      <td colSpan={5} className="px-6 py-20 text-center text-on-surface-variant font-body">
+                      <td colSpan={4} className="px-6 py-20 text-center text-on-surface-variant font-body">
                         No submissions found.
                       </td>
                     </tr>
@@ -564,129 +463,142 @@ const Admin = () => {
                         <motion.tr 
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
-                          onClick={() => setExpandedRow(expandedRow === sub.id ? null : sub.id)}
                           className={`hover:bg-surface-container-low/30 transition-colors cursor-pointer ${expandedRow === sub.id ? 'bg-surface-container-low/50' : ''}`}
+                          onClick={() => setExpandedRow(expandedRow === sub.id ? null : sub.id)}
                         >
-                          <td className="px-6 py-4 text-sm font-bold text-primary">{sub.fullName}</td>
-                          <td className="px-6 py-4 text-sm text-on-surface-variant font-body">{sub.companyName}</td>
-                          <td className="px-6 py-4 text-xs text-on-surface-variant font-mono">
-                            {new Date(sub.createdAt).toLocaleDateString('en-AU', { 
-                              day: '2-digit', 
-                              month: 'short', 
-                              year: 'numeric'
-                            })}
-                          </td>
-                          <td className="px-6 py-4 text-center">
-                            <div className="flex flex-col items-center gap-1">
-                              {sub.isUrgent === 1 && (
-                                <span className="inline-flex items-center gap-1 bg-error-container text-error text-[9px] font-black uppercase px-2 py-0.5 rounded-full tracking-tighter mb-1">
-                                  Urgent
-                                </span>
+                          <td className="px-6 py-4">
+                            <div className="flex items-center gap-2">
+                              <div className="font-headline font-bold text-primary text-sm">{sub.full_name}</div>
+                              {sub.is_urgent && (
+                                <span className="bg-error-container text-error text-[8px] font-black uppercase px-1.5 py-0.5 rounded tracking-tighter">Urgent</span>
                               )}
-                              <span className={`inline-flex items-center gap-1 text-[10px] font-black uppercase px-2.5 py-1 rounded-full tracking-tighter ${sub.status === 'processed' ? 'bg-emerald-100 text-emerald-700' : 'bg-primary/10 text-primary'}`}>
+                            </div>
+                            <div className="text-[10px] text-on-surface-variant font-body">{sub.company_name}</div>
+                          </td>
+                          <td className="px-6 py-4">
+                            <div className="flex items-center gap-1.5">
+                              {sub.status === 'pending' ? (
+                                <Clock size={12} className="text-surface-tint" />
+                              ) : sub.status === 'delivered' ? (
+                                <FileCheck size={12} className="text-emerald-500" />
+                              ) : (
+                                <CheckCircle2 size={12} className="text-emerald-500" />
+                              )}
+                              <span className={`text-[10px] font-bold uppercase tracking-wider ${
+                                sub.status === 'pending' ? 'text-surface-tint' : 'text-emerald-600'
+                              }`}>
                                 {sub.status}
                               </span>
                             </div>
                           </td>
+                          <td className="px-6 py-4 text-[10px] text-on-surface-variant font-mono">
+                            {new Date(sub.created_at).toLocaleDateString()}
+                          </td>
                           <td className="px-6 py-4 text-right">
                             <div className="flex items-center justify-end gap-2">
-                              {sub.fileName && (
-                                <button 
-                                  onClick={(e) => { e.stopPropagation(); downloadFile(sub.id, sub.fileName!); }}
-                                  className="p-2 text-surface-tint hover:bg-surface-tint/10 rounded-lg transition-all"
-                                  title="Download Document"
-                                >
-                                  <Download size={18} />
-                                </button>
-                              )}
+                              <button 
+                                onClick={(e) => { e.stopPropagation(); setExpandedRow(expandedRow === sub.id ? null : sub.id); }}
+                                className="p-2 hover:bg-surface-container-high rounded-lg transition-colors text-primary"
+                              >
+                                <Eye size={16} />
+                              </button>
                               <button 
                                 onClick={(e) => { e.stopPropagation(); setDeleteConfirmId(sub.id); }}
-                                className="p-2 text-error hover:bg-error-container/20 rounded-lg transition-all"
-                                title="Delete"
+                                className="p-2 hover:bg-error-container hover:text-error rounded-lg transition-colors text-on-surface-variant"
                               >
-                                <Trash2 size={18} />
+                                <Trash2 size={16} />
                               </button>
-                              <ChevronRight size={18} className={`text-on-surface-variant transition-transform ${expandedRow === sub.id ? 'rotate-90' : ''}`} />
                             </div>
                           </td>
                         </motion.tr>
                         <AnimatePresence>
                           {expandedRow === sub.id && (
                             <tr>
-                              <td colSpan={5} className="px-0 py-0 border-none">
+                              <td colSpan={4} className="px-4 pb-4">
                                 <motion.div 
                                   initial={{ height: 0, opacity: 0 }}
                                   animate={{ height: 'auto', opacity: 1 }}
                                   exit={{ height: 0, opacity: 0 }}
-                                  className="overflow-hidden bg-surface-container-lowest"
+                                  className="overflow-hidden"
                                 >
-                                  <div className="p-8 border-t border-outline-variant grid grid-cols-1 md:grid-cols-2 gap-8">
-                                    <div className="space-y-6">
+                                  <div className="bg-surface-container-low rounded-2xl p-6 border border-outline-variant/50 grid grid-cols-1 md:grid-cols-2 gap-8">
+                                    <div className="space-y-4">
                                       <div>
-                                        <h4 className="text-[10px] font-bold text-primary uppercase tracking-widest mb-2">Project Address</h4>
-                                        <p className="text-sm text-on-surface-variant font-body bg-surface-container-low p-4 rounded-xl border border-outline-variant/50">
-                                          {sub.address}
-                                        </p>
+                                        <label className="block text-[10px] font-bold text-primary uppercase tracking-widest mb-1">Project Address</label>
+                                        <p className="text-sm text-on-surface font-body">{sub.address}</p>
                                       </div>
                                       <div>
-                                        <h4 className="text-[10px] font-bold text-primary uppercase tracking-widest mb-2">Submission Notes</h4>
-                                        <p className="text-sm text-on-surface-variant font-body bg-surface-container-low p-4 rounded-xl border border-outline-variant/50 whitespace-pre-wrap">
-                                          {sub.notes || "No additional notes provided."}
-                                        </p>
+                                        <label className="block text-[10px] font-bold text-primary uppercase tracking-widest mb-1">Notes</label>
+                                        <p className="text-sm text-on-surface font-body italic">"{sub.notes || 'No notes provided'}"</p>
+                                      </div>
+                                      <div>
+                                        <label className="block text-[10px] font-bold text-primary uppercase tracking-widest mb-1">Attached Files</label>
+                                        <div className="flex flex-wrap gap-2 mt-2">
+                                          {sub.files?.map((file: any, idx: number) => (
+                                            <button 
+                                              key={idx}
+                                              onClick={(e) => {
+                                                e.stopPropagation();
+                                                if (file.file_path) {
+                                                  window.open(file.file_path, '_blank');
+                                                } else {
+                                                  toast.info('File path not available');
+                                                }
+                                              }}
+                                              className="flex items-center gap-2 bg-white border border-outline-variant px-3 py-1.5 rounded-lg text-xs font-bold text-primary hover:bg-primary hover:text-white transition-all"
+                                            >
+                                              <Download size={14} />
+                                              File {idx + 1}
+                                            </button>
+                                          ))}
+                                        </div>
                                       </div>
                                     </div>
                                     <div className="space-y-6">
                                       <div>
-                                        <h4 className="text-[10px] font-bold text-primary uppercase tracking-widest mb-2">Actions</h4>
+                                        <label className="block text-[10px] font-bold text-primary uppercase tracking-widest mb-3">Actions</label>
                                         <div className="flex flex-wrap gap-3">
-                                          {sub.status === 'pending' ? (
-                                            <button 
-                                              onClick={() => updateStatus(sub.id, 'processed')}
-                                              className="flex items-center gap-2 bg-emerald-600 text-white px-6 py-3 rounded-xl text-sm font-bold hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-600/20"
-                                            >
-                                              <CheckCircle size={18} />
-                                              Mark as Processed
-                                            </button>
-                                          ) : (
-                                            <button 
-                                              onClick={() => updateStatus(sub.id, 'pending')}
-                                              className="flex items-center gap-2 bg-surface-tint text-white px-6 py-3 rounded-xl text-sm font-bold hover:bg-surface-tint/90 transition-all shadow-lg shadow-surface-tint/20"
-                                            >
-                                              <Clock size={18} />
-                                              Revert to Pending
-                                            </button>
-                                          )}
-                                          {sub.fileName && (
-                                            <div className="flex gap-3">
-                                              <button 
-                                                onClick={() => downloadFile(sub.id, sub.fileName!)}
-                                                className="flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-xl text-sm font-bold hover:bg-primary/90 transition-all shadow-lg shadow-primary/20"
-                                              >
-                                                <Download size={18} />
-                                                Download
-                                              </button>
-                                              <button 
-                                                onClick={() => setPreviewSubmission(sub)}
-                                                className="flex items-center gap-2 bg-surface-container text-primary px-6 py-3 rounded-xl text-sm font-bold hover:bg-surface-container-high transition-all border border-outline-variant"
-                                              >
-                                                <Eye size={18} />
-                                                View
-                                              </button>
+                                          {sub.status === 'pending' && (
+                                            <div className="w-full space-y-3">
+                                              <label className="block text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Upload Final Document</label>
+                                              <div className="relative">
+                                                <input 
+                                                  type="file"
+                                                  id={`upload-${sub.id}`}
+                                                  className="hidden"
+                                                  onChange={(e) => {
+                                                    const file = e.target.files?.[0];
+                                                    if (file) handleFileUpload(sub.id, file);
+                                                  }}
+                                                />
+                                                <label 
+                                                  htmlFor={`upload-${sub.id}`}
+                                                  className="flex items-center justify-center gap-2 w-full bg-primary text-white py-3 rounded-xl font-headline font-bold uppercase tracking-widest text-xs cursor-pointer hover:scale-[1.02] transition-all shadow-lg shadow-primary/10"
+                                                >
+                                                  {uploadingId === sub.id ? (
+                                                    <Loader2 size={16} className="animate-spin" />
+                                                  ) : (
+                                                    <>
+                                                      <UploadCloud size={16} />
+                                                      Deliver Final BOQ
+                                                    </>
+                                                  )}
+                                                </label>
+                                              </div>
                                             </div>
                                           )}
-                                          <button 
-                                            onClick={() => setDeleteConfirmId(sub.id)}
-                                            className="flex items-center gap-2 bg-red-50 text-red-600 px-6 py-3 rounded-xl text-sm font-bold hover:bg-red-100 transition-all border border-red-100"
-                                          >
-                                            <Trash2 size={18} />
-                                            Delete
-                                          </button>
-                                        </div>
-                                      </div>
-                                      <div className="p-4 bg-surface-container-low rounded-2xl border border-outline-variant/30">
-                                        <div className="flex items-center gap-3 text-on-surface-variant">
-                                          <AlertCircle size={16} />
-                                          <p className="text-xs font-body">This submission was received via the public BOQ request form.</p>
+                                          {sub.status === 'delivered' && (
+                                            <div className="flex items-center gap-2 bg-emerald-50 text-emerald-700 px-4 py-2 rounded-xl border border-emerald-100 w-full">
+                                              <CheckCircle size={16} />
+                                              <span className="text-xs font-bold uppercase tracking-wider">Document Delivered - Awaiting User Approval</span>
+                                            </div>
+                                          )}
+                                          {sub.status === 'approved' && (
+                                            <div className="flex items-center gap-2 bg-emerald-100 text-emerald-800 px-4 py-2 rounded-xl border border-emerald-200 w-full">
+                                              <CheckCircle2 size={16} />
+                                              <span className="text-xs font-bold uppercase tracking-wider">Project Approved & Completed</span>
+                                            </div>
+                                          )}
                                         </div>
                                       </div>
                                     </div>
@@ -712,46 +624,26 @@ const Admin = () => {
               </h3>
               <div className="space-y-8">
                 <MarkdownEditor 
-                  label="Hero Headline"
-                  value={content['hero_headline'] || "Engineering Water Infrastructure with Precision."}
-                  onChange={val => setContent(prev => ({ ...prev, hero_headline: val }))}
-                  onBlur={val => updateContent('hero_headline', val)}
-                  isSaving={savingKeys.has('hero_headline')}
-                />
-                <MarkdownEditor 
-                  label="Hero Subheadline"
-                  value={content['hero_subheadline'] || "Sydney's premier specialist in water, sewer, and stormwater estimating. Delivering tender-ready BOQs for Tier 1 contractors and developers."}
-                  onChange={val => setContent(prev => ({ ...prev, hero_subheadline: val }))}
-                  onBlur={val => updateContent('hero_subheadline', val)}
-                  isSaving={savingKeys.has('hero_subheadline')}
+                  value={content['hero_title'] || ''} 
+                  onChange={(val) => setContent(prev => ({ ...prev, hero_title: val }))}
+                  onSave={() => saveContent('hero_title')}
+                  isSaving={savingKeys.has('hero_title')}
                 />
               </div>
             </div>
 
             <div className="bg-white border border-outline-variant rounded-3xl p-8">
               <h3 className="text-lg font-headline font-bold text-primary mb-6 flex items-center gap-2">
-                <AlertCircle size={20} className="text-surface-tint" />
-                Contact Info
+                <FileText size={20} className="text-surface-tint" />
+                About Section
               </h3>
-              <div className="space-y-6">
-                <div>
-                  <label className="block text-xs font-bold text-primary uppercase tracking-widest mb-2">Support Email</label>
-                  <input 
-                    type="email"
-                    className="w-full bg-surface-container-low border border-outline-variant rounded-xl px-4 py-3 text-sm font-body focus:outline-none focus:ring-2 focus:ring-primary/20"
-                    defaultValue={content['contact_email'] || "f250039@cfd.nu.edu.pk"}
-                    onBlur={e => updateContent('contact_email', e.target.value)}
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-primary uppercase tracking-widest mb-2">Office Address</label>
-                  <input 
-                    type="text"
-                    className="w-full bg-surface-container-low border border-outline-variant rounded-xl px-4 py-3 text-sm font-body focus:outline-none focus:ring-2 focus:ring-primary/20"
-                    defaultValue={content['office_address'] || "Level 24, 100 Mount Street, North Sydney NSW 2060"}
-                    onBlur={e => updateContent('office_address', e.target.value)}
-                  />
-                </div>
+              <div className="space-y-8">
+                <MarkdownEditor 
+                  value={content['about_text'] || ''} 
+                  onChange={(val) => setContent(prev => ({ ...prev, about_text: val }))}
+                  onSave={() => saveContent('about_text')}
+                  isSaving={savingKeys.has('about_text')}
+                />
               </div>
             </div>
           </div>
@@ -773,7 +665,7 @@ const Admin = () => {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative bg-white p-8 rounded-3xl shadow-2xl border border-outline-variant w-full max-sm"
+              className="relative bg-white p-8 rounded-3xl shadow-2xl border border-outline-variant w-full max-w-sm"
             >
               <div className="w-12 h-12 bg-error-container text-error rounded-2xl flex items-center justify-center mb-6">
                 <AlertTriangle size={24} />
@@ -798,125 +690,6 @@ const Admin = () => {
           </div>
         )}
       </AnimatePresence>
-
-      {/* Document Preview Modal */}
-      <AnimatePresence>
-        {previewSubmission && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8">
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setPreviewSubmission(null)}
-              className="absolute inset-0 bg-primary/40 backdrop-blur-md"
-            />
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.9, y: 40 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 40 }}
-              className="relative bg-white rounded-[2rem] shadow-2xl border border-outline-variant w-full h-full max-w-6xl flex flex-col overflow-hidden"
-            >
-              {/* Header */}
-              <div className="p-6 border-b border-outline-variant flex items-center justify-between bg-white">
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 bg-primary/5 rounded-xl flex items-center justify-center text-primary">
-                    <FileText size={20} />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-headline font-bold text-primary leading-tight">
-                      {previewSubmission.fileName}
-                    </h3>
-                    <p className="text-xs text-on-surface-variant font-body">
-                      Submitted by {previewSubmission.fullName} • {new Date(previewSubmission.createdAt).toLocaleDateString()}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <button 
-                    onClick={() => downloadFile(previewSubmission.id, previewSubmission.fileName!)}
-                    className="p-3 text-primary hover:bg-surface-container rounded-xl transition-all"
-                    title="Download"
-                  >
-                    <Download size={20} />
-                  </button>
-                  <a 
-                    href={`/api/admin/submissions/${previewSubmission.id}/file?token=${encodeURIComponent(token || '')}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-3 text-primary hover:bg-surface-container rounded-xl transition-all"
-                    title="Open in New Tab"
-                  >
-                    <Maximize2 size={20} />
-                  </a>
-                  <div className="w-px h-6 bg-outline-variant mx-2" />
-                  <button 
-                    onClick={() => setPreviewSubmission(null)}
-                    className="p-3 text-on-surface-variant hover:bg-error-container hover:text-error rounded-xl transition-all"
-                  >
-                    <X size={20} />
-                  </button>
-                </div>
-              </div>
-
-              {/* Content */}
-              <div className="flex-1 bg-surface-container-low relative">
-                {(() => {
-                  const mime = previewSubmission.fileMimeType || '';
-                  const fileName = previewSubmission.fileName || '';
-                  const ext = fileName.split('.').pop()?.toLowerCase();
-                  const isImage = mime.startsWith('image/') || ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext || '');
-                  const isPdf = mime.includes('pdf') || ext === 'pdf';
-                  const encodedToken = encodeURIComponent(token || '');
-                  const previewUrl = `/api/admin/submissions/${previewSubmission.id}/file?preview=true&token=${encodedToken}`;
-
-                  if (isImage) {
-                    return (
-                      <div className="absolute inset-0 flex items-center justify-center p-8">
-                        <img 
-                          src={previewUrl}
-                          alt={fileName || 'Preview'}
-                          className="max-w-full max-h-full object-contain rounded-lg shadow-lg"
-                          referrerPolicy="no-referrer"
-                        />
-                      </div>
-                    );
-                  }
-
-                  if (isPdf) {
-                    return (
-                      <iframe 
-                        src={previewUrl}
-                        className="w-full h-full border-none"
-                        title="PDF Preview"
-                      />
-                    );
-                  }
-
-                  return (
-                    <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center">
-                      <div className="w-20 h-20 bg-surface-container rounded-3xl flex items-center justify-center text-on-surface-variant mb-6">
-                        <FileText size={40} />
-                      </div>
-                      <h4 className="text-xl font-headline font-bold text-primary mb-2">No Preview Available</h4>
-                      <p className="text-on-surface-variant font-body max-w-md mb-8">
-                        This file type ({mime || 'unknown'}) cannot be previewed directly in the browser. Please download the file to view its contents.
-                      </p>
-                      <button 
-                        onClick={() => downloadFile(previewSubmission.id, previewSubmission.fileName!)}
-                        className="flex items-center gap-2 bg-primary text-white px-8 py-4 rounded-2xl font-bold hover:scale-105 transition-all shadow-xl shadow-primary/20"
-                      >
-                        <Download size={20} />
-                        Download File
-                      </button>
-                    </div>
-                  );
-                })()}
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
-      <Toaster position="top-right" richColors />
     </div>
   );
 };
