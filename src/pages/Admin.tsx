@@ -27,7 +27,8 @@ import {
   X,
   Maximize2,
   UploadCloud,
-  Home
+  Home,
+  ShieldCheck
 } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
 
@@ -126,11 +127,13 @@ const MOCK_CONTENT: Record<string, string> = {
 
 const Admin = () => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'submissions' | 'content'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'submissions' | 'content' | 'verifications'>('dashboard');
   const [submissions, setSubmissions] = useState<Submission[]>([]);
+  const [verifications, setVerifications] = useState<any[]>([]);
   const [content, setContent] = useState<Record<string, string>>({});
-  const [stats, setStats] = useState({ total: 0, urgent: 0, pending: 0, processed: 0 });
+  const [stats, setStats] = useState({ totalSubmissions: 0, totalVerifications: 0, pendingSubmissions: 0, urgentSubmissions: 0 });
   const [loading, setLoading] = useState(true);
+  const [authChecking, setAuthChecking] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [expandedRow, setExpandedRow] = useState<string | null>(null);
   const [savingKeys, setSavingKeys] = useState<Set<string>>(new Set());
@@ -138,20 +141,49 @@ const Admin = () => {
   const [uploadingId, setUploadingId] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchData();
-  }, [activeTab]);
+    checkAuth();
+  }, []);
+
+  useEffect(() => {
+    if (!authChecking) {
+      fetchData();
+    }
+  }, [activeTab, authChecking]);
+
+  const checkAuth = async () => {
+    try {
+      const res = await fetch('/api/admin/check');
+      if (!res.ok) throw new Error('Not authenticated');
+      setAuthChecking(false);
+    } catch (err) {
+      navigate('/admin/login');
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/admin/logout', { method: 'POST' });
+      navigate('/admin/login');
+    } catch (err) {
+      toast.error('Logout failed');
+    }
+  };
 
   const fetchData = async () => {
     setLoading(true);
     try {
-      if (activeTab === 'submissions' || activeTab === 'dashboard') {
-        const res = await fetch('/api/submissions');
+      if (activeTab === 'dashboard') {
+        const res = await fetch('/api/admin/stats');
         const data = await res.json();
         if (data.error) throw new Error(data.error);
+        setStats(data);
 
-        const mappedSubmissions = data.map((s: any) => ({
+        // Also fetch recent submissions for dashboard
+        const subRes = await fetch('/api/submissions');
+        const subData = await subRes.json();
+        setSubmissions(subData.map((s: any) => ({
           id: s.id.toString(),
-          user_id: s.userId.toString(),
+          user_id: s.userIdCookie,
           full_name: s.fullName,
           company_name: s.companyName,
           address: s.address,
@@ -161,15 +193,34 @@ const Admin = () => {
           created_at: s.createdAt,
           final_doc_path: s.finalDocName ? `/uploads/${s.finalDocName}` : undefined,
           files: s.fileName ? [{ file_path: `/uploads/${s.fileName}` }] : []
-        }));
+        })));
+      }
 
-        setSubmissions(mappedSubmissions);
+      if (activeTab === 'submissions') {
+        const res = await fetch('/api/submissions');
+        const data = await res.json();
+        if (data.error) throw new Error(data.error);
 
-        const total = mappedSubmissions.length;
-        const urgent = mappedSubmissions.filter((s: any) => s.is_urgent).length;
-        const pending = mappedSubmissions.filter((s: any) => s.status === 'pending').length;
-        const processed = mappedSubmissions.filter((s: any) => s.status === 'delivered' || s.status === 'approved').length;
-        setStats({ total, urgent, pending, processed });
+        setSubmissions(data.map((s: any) => ({
+          id: s.id.toString(),
+          user_id: s.userIdCookie,
+          full_name: s.fullName,
+          company_name: s.companyName,
+          address: s.address,
+          notes: s.notes,
+          is_urgent: s.isUrgent === 1,
+          status: s.status,
+          created_at: s.createdAt,
+          final_doc_path: s.finalDocName ? `/uploads/${s.finalDocName}` : undefined,
+          files: s.fileName ? [{ file_path: `/uploads/${s.fileName}` }] : []
+        })));
+      }
+
+      if (activeTab === 'verifications') {
+        const res = await fetch('/api/admin/verifications');
+        const data = await res.json();
+        if (data.error) throw new Error(data.error);
+        setVerifications(data);
       }
 
       if (activeTab === 'content') {
@@ -182,7 +233,9 @@ const Admin = () => {
         setContent(contentMap);
       }
     } catch (err: any) {
-      toast.error('Failed to fetch data');
+      if (err.message !== 'Not authenticated') {
+        toast.error('Failed to fetch data');
+      }
     } finally {
       setLoading(false);
     }
@@ -345,9 +398,16 @@ const Admin = () => {
             <Settings size={20} />
             <span className="font-headline font-bold text-sm">Content Editor</span>
           </button>
+          <button 
+            onClick={() => setActiveTab('verifications')}
+            className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all ${activeTab === 'verifications' ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-on-surface-variant hover:bg-surface-container-low'}`}
+          >
+            <ShieldCheck size={20} />
+            <span className="font-headline font-bold text-sm">Verifications</span>
+          </button>
         </nav>
 
-        <div className="p-4 border-t border-outline-variant">
+        <div className="p-4 border-t border-outline-variant space-y-2">
           <Link 
             to="/"
             className="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-primary hover:bg-primary/5 transition-all"
@@ -355,6 +415,13 @@ const Admin = () => {
             <Home size={20} />
             <span className="font-headline font-bold text-sm">Return Home</span>
           </Link>
+          <button 
+            onClick={handleLogout}
+            className="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-error hover:bg-error/5 transition-all"
+          >
+            <X size={20} />
+            <span className="font-headline font-bold text-sm">Logout</span>
+          </button>
         </div>
       </aside>
 
@@ -363,14 +430,14 @@ const Admin = () => {
         <header className="flex items-center justify-between mb-12">
           <div>
             <h1 className="text-3xl font-headline font-extrabold text-primary tracking-tighter">
-              {activeTab === 'dashboard' ? 'Overview' : activeTab === 'submissions' ? 'Project Submissions' : 'Website Content'}
+              {activeTab === 'dashboard' ? 'Overview' : activeTab === 'submissions' ? 'Project Submissions' : activeTab === 'content' ? 'Website Content' : 'Verified Users'}
             </h1>
             <p className="text-on-surface-variant text-sm mt-1">
-              {activeTab === 'dashboard' ? 'Real-time performance metrics' : activeTab === 'submissions' ? `Managing ${submissions.length} total requests` : 'Update website text and settings in real-time'}
+              {activeTab === 'dashboard' ? 'Real-time performance metrics' : activeTab === 'submissions' ? `Managing ${submissions.length} total requests` : activeTab === 'content' ? 'Update website text and settings in real-time' : `Viewing ${verifications.length} verified contacts`}
             </p>
           </div>
           
-          {activeTab === 'submissions' && (
+          {(activeTab === 'submissions' || activeTab === 'verifications') && (
             <div className="flex items-center gap-4">
               <button 
                 onClick={exportToCSV}
@@ -383,7 +450,7 @@ const Admin = () => {
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant" size={18} />
                 <input 
                   type="text"
-                  placeholder="Search projects..."
+                  placeholder="Search..."
                   value={searchTerm}
                   onChange={e => setSearchTerm(e.target.value)}
                   className="bg-white border border-outline-variant rounded-full pl-12 pr-6 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 w-64"
@@ -398,12 +465,22 @@ const Admin = () => {
             <div className="bg-white p-6 rounded-3xl border border-outline-variant shadow-sm">
               <div className="flex items-center justify-between mb-4">
                 <div className="p-3 bg-primary/5 text-primary rounded-2xl">
-                  <Users size={24} />
+                  <FileText size={24} />
                 </div>
-                <span className="text-xs font-bold text-on-surface-variant uppercase tracking-widest">Total</span>
+                <span className="text-xs font-bold text-on-surface-variant uppercase tracking-widest">Submissions</span>
               </div>
-              <h3 className="text-3xl font-headline font-black text-primary">{stats.total}</h3>
-              <p className="text-on-surface-variant text-xs mt-1">Total submissions</p>
+              <h3 className="text-3xl font-headline font-black text-primary">{stats.totalSubmissions}</h3>
+              <p className="text-on-surface-variant text-xs mt-1">Total project requests</p>
+            </div>
+            <div className="bg-white p-6 rounded-3xl border border-outline-variant shadow-sm">
+              <div className="flex items-center justify-between mb-4">
+                <div className="p-3 bg-surface-tint/10 text-surface-tint rounded-2xl">
+                  <ShieldCheck size={24} />
+                </div>
+                <span className="text-xs font-bold text-on-surface-variant uppercase tracking-widest">Verified</span>
+              </div>
+              <h3 className="text-3xl font-headline font-black text-surface-tint">{stats.totalVerifications}</h3>
+              <p className="text-on-surface-variant text-xs mt-1">Users unlocked tool</p>
             </div>
             <div className="bg-white p-6 rounded-3xl border border-outline-variant shadow-sm">
               <div className="flex items-center justify-between mb-4">
@@ -412,28 +489,80 @@ const Admin = () => {
                 </div>
                 <span className="text-xs font-bold text-on-surface-variant uppercase tracking-widest">Urgent</span>
               </div>
-              <h3 className="text-3xl font-headline font-black text-error">{stats.urgent}</h3>
+              <h3 className="text-3xl font-headline font-black text-error">{stats.urgentSubmissions}</h3>
               <p className="text-on-surface-variant text-xs mt-1">Requires immediate attention</p>
             </div>
             <div className="bg-white p-6 rounded-3xl border border-outline-variant shadow-sm">
               <div className="flex items-center justify-between mb-4">
-                <div className="p-3 bg-surface-tint/10 text-surface-tint rounded-2xl">
+                <div className="p-3 bg-emerald-100 text-emerald-700 rounded-2xl">
                   <Clock size={24} />
                 </div>
                 <span className="text-xs font-bold text-on-surface-variant uppercase tracking-widest">Pending</span>
               </div>
-              <h3 className="text-3xl font-headline font-black text-surface-tint">{stats.pending}</h3>
+              <h3 className="text-3xl font-headline font-black text-emerald-700">{stats.pendingSubmissions}</h3>
               <p className="text-on-surface-variant text-xs mt-1">Awaiting processing</p>
             </div>
-            <div className="bg-white p-6 rounded-3xl border border-outline-variant shadow-sm">
-              <div className="flex items-center justify-between mb-4">
-                <div className="p-3 bg-emerald-100 text-emerald-700 rounded-2xl">
-                  <FileCheck size={24} />
-                </div>
-                <span className="text-xs font-bold text-on-surface-variant uppercase tracking-widest">Processed</span>
+          </div>
+        )}
+
+        {activeTab === 'dashboard' && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+            <div className="bg-white border border-outline-variant rounded-3xl p-8 shadow-sm">
+              <h3 className="text-xl font-headline font-bold text-primary mb-6">Recent Submissions</h3>
+              <div className="space-y-4">
+                {submissions.slice(0, 5).map(sub => (
+                  <div key={sub.id} className="flex items-center justify-between p-4 bg-surface-container-low rounded-2xl border border-outline-variant/30">
+                    <div>
+                      <div className="font-bold text-sm text-primary">{sub.full_name}</div>
+                      <div className="text-[10px] text-on-surface-variant">{sub.company_name}</div>
+                    </div>
+                    <div className={`text-[10px] font-bold uppercase px-2 py-1 rounded-lg ${
+                      sub.status === 'pending' ? 'bg-surface-tint/10 text-surface-tint' : 'bg-emerald-100 text-emerald-700'
+                    }`}>
+                      {sub.status}
+                    </div>
+                  </div>
+                ))}
+                {submissions.length === 0 && <p className="text-center text-on-surface-variant py-8">No recent activity</p>}
               </div>
-              <h3 className="text-3xl font-headline font-black text-emerald-700">{stats.processed}</h3>
-              <p className="text-on-surface-variant text-xs mt-1">Successfully completed</p>
+              <button 
+                onClick={() => setActiveTab('submissions')}
+                className="w-full mt-6 py-3 text-xs font-bold text-primary hover:bg-primary/5 rounded-xl transition-all"
+              >
+                View All Submissions
+              </button>
+            </div>
+
+            <div className="bg-white border border-outline-variant rounded-3xl p-8 shadow-sm">
+              <h3 className="text-xl font-headline font-bold text-primary mb-6">User Statistics</h3>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="p-6 bg-surface-container-low rounded-2xl border border-outline-variant/30">
+                  <div className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-2">Conversion Rate</div>
+                  <div className="text-3xl font-headline font-black text-primary">
+                    {stats.totalSubmissions > 0 ? Math.round((stats.totalVerifications / stats.totalSubmissions) * 100) : 0}%
+                  </div>
+                  <p className="text-[10px] text-on-surface-variant mt-1">Submissions to Verifications</p>
+                </div>
+                <div className="p-6 bg-surface-container-low rounded-2xl border border-outline-variant/30">
+                  <div className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-2">Urgency Ratio</div>
+                  <div className="text-3xl font-headline font-black text-error">
+                    {stats.totalSubmissions > 0 ? Math.round((stats.urgentSubmissions / stats.totalSubmissions) * 100) : 0}%
+                  </div>
+                  <p className="text-[10px] text-on-surface-variant mt-1">Urgent vs Total requests</p>
+                </div>
+              </div>
+              <div className="mt-8 space-y-4">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-on-surface-variant">Total Verified Users</span>
+                  <span className="font-bold text-primary">{stats.totalVerifications}</span>
+                </div>
+                <div className="w-full bg-surface-container-low h-2 rounded-full overflow-hidden">
+                  <div 
+                    className="bg-surface-tint h-full transition-all duration-1000" 
+                    style={{ width: `${Math.min(100, (stats.totalVerifications / (stats.totalSubmissions || 1)) * 100)}%` }}
+                  />
+                </div>
+              </div>
             </div>
           </div>
         )}
@@ -609,6 +738,57 @@ const Admin = () => {
                           )}
                         </AnimatePresence>
                       </React.Fragment>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        ) : activeTab === 'verifications' ? (
+          <div className="bg-white border border-outline-variant rounded-3xl overflow-hidden shadow-sm">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-surface-container-low border-b border-outline-variant">
+                    <th className="px-6 py-4 text-xs font-bold text-primary uppercase tracking-widest">Name</th>
+                    <th className="px-6 py-4 text-xs font-bold text-primary uppercase tracking-widest">Contact Info</th>
+                    <th className="px-6 py-4 text-xs font-bold text-primary uppercase tracking-widest">Company</th>
+                    <th className="px-6 py-4 text-xs font-bold text-primary uppercase tracking-widest">Date</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-outline-variant">
+                  {verifications.filter(v => 
+                    v.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    v.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    v.company?.toLowerCase().includes(searchTerm.toLowerCase())
+                  ).length === 0 ? (
+                    <tr>
+                      <td colSpan={4} className="px-6 py-20 text-center text-on-surface-variant font-body">
+                        No verified users found.
+                      </td>
+                    </tr>
+                  ) : (
+                    verifications.filter(v => 
+                      v.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                      v.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                      v.company?.toLowerCase().includes(searchTerm.toLowerCase())
+                    ).map(v => (
+                      <tr key={v.id} className="hover:bg-surface-container-low/30 transition-colors">
+                        <td className="px-6 py-4">
+                          <div className="font-headline font-bold text-primary text-sm">{v.name}</div>
+                          <div className="text-[10px] text-on-surface-variant font-mono">{v.userIdCookie}</div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="text-sm text-on-surface font-body">{v.email}</div>
+                          <div className="text-xs text-on-surface-variant font-body">{v.phone}</div>
+                        </td>
+                        <td className="px-6 py-4 text-sm text-on-surface font-body">
+                          {v.company || 'N/A'}
+                        </td>
+                        <td className="px-6 py-4 text-[10px] text-on-surface-variant font-mono">
+                          {new Date(v.createdAt).toLocaleDateString()}
+                        </td>
+                      </tr>
                     ))
                   )}
                 </tbody>

@@ -12,8 +12,11 @@ import {
   TrendingUp,
   DollarSign,
   Ruler,
-  Layers
+  Layers,
+  ShieldAlert,
+  Lock
 } from 'lucide-react';
+import ContactUnlockForm from './ContactUnlockForm';
 
 interface EstimateResult {
   low: number;
@@ -26,6 +29,8 @@ interface EstimateResult {
   };
 }
 
+import { apiFetch } from '../lib/api';
+
 const QuickEstimator = () => {
   const [step, setStep] = useState(1);
   const [serviceType, setServiceType] = useState<'water' | 'sewer' | 'stormwater'>('water');
@@ -35,6 +40,7 @@ const QuickEstimator = () => {
   const [depth, setDepth] = useState(1.5);
   const [groundType, setGroundType] = useState('standard');
   const [result, setResult] = useState<EstimateResult | null>(null);
+  const [needsVerification, setNeedsVerification] = useState(false);
 
   const materials = {
     water: ['PVC-O', 'DICL', 'MSCL', 'PE'],
@@ -57,13 +63,39 @@ const QuickEstimator = () => {
   ];
 
   useEffect(() => {
+    checkStatus();
+  }, [step]);
+
+  useEffect(() => {
     // Reset material when service type changes
     setMaterial(materials[serviceType][0]);
     // Reset diameter to a sensible default for the service
     setDiameter(diameters[serviceType][0]);
+    checkStatus();
   }, [serviceType]);
 
-  const calculateEstimate = () => {
+  const checkStatus = async () => {
+    try {
+      const res = await apiFetch('/api/submission-status');
+      const data = await res.json();
+      console.log('Submission status:', data);
+      setNeedsVerification(data.needsVerification);
+      return data;
+    } catch (err) {
+      console.error('Failed to check status:', err);
+      return null;
+    }
+  };
+
+  const calculateEstimate = async () => {
+    // Re-check status just before calculating to be sure
+    const status = await checkStatus();
+    
+    if (status?.needsVerification) {
+      console.log('Verification needed, blocking calculation');
+      return;
+    }
+
     // Base rates per meter (highly simplified for ROM)
     let baseRate = 0;
     if (serviceType === 'water') baseRate = 250;
@@ -100,6 +132,30 @@ const QuickEstimator = () => {
 
     setResult(estimate);
     setStep(3);
+
+    // Record the estimate in the backend (increment count)
+    console.log('Quick Estimator: Recording submission...');
+    try {
+      const response = await apiFetch('/api/submissions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          fullName: 'Quick Estimate User',
+          companyName: 'N/A',
+          address: 'N/A',
+          notes: `Quick Estimate: ${serviceType}, ${material}, ${diameter}mm, ${length}m, ${depth}m, ${groundType}`,
+          isUrgent: 'false'
+        })
+      });
+      console.log('Quick Estimator: Submission response status:', response.status);
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Quick Estimator: Submission failed:', errorData);
+      }
+      checkStatus();
+    } catch (err) {
+      console.error('Quick Estimator: Failed to record estimate:', err);
+    }
   };
 
   const formatCurrency = (value: number) => {
@@ -138,7 +194,7 @@ const QuickEstimator = () => {
         />
       </div>
 
-      <div className="p-6 md:p-8 lg:p-12">
+      <div className="p-6 md:p-8 lg:p-12 relative">
         <AnimatePresence mode="wait">
           {step === 1 && (
             <motion.div 
@@ -146,7 +202,7 @@ const QuickEstimator = () => {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
-              className="space-y-8"
+              className={`space-y-8 ${needsVerification ? 'filter blur-md pointer-events-none opacity-40' : ''}`}
             >
               <div>
                 <label className="text-[10px] font-bold text-primary uppercase tracking-widest mb-4 block font-headline">Select Infrastructure Type</label>
@@ -213,7 +269,7 @@ const QuickEstimator = () => {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
-              className="space-y-8"
+              className={`space-y-8 ${needsVerification ? 'filter blur-md pointer-events-none opacity-40' : ''}`}
             >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-4">
@@ -300,6 +356,14 @@ const QuickEstimator = () => {
               animate={{ opacity: 1, scale: 1 }}
               className="space-y-8"
             >
+              {needsVerification && (
+                <div className="bg-amber-50 border border-amber-200 p-4 rounded-xl flex items-center gap-3 mb-6">
+                  <Lock className="text-amber-600 w-5 h-5 flex-shrink-0" />
+                  <p className="text-xs text-amber-900 font-medium">
+                    This is your last free estimate. Please verify your details to unlock unlimited access.
+                  </p>
+                </div>
+              )}
               <div className="text-center">
                 <div className="inline-flex items-center space-x-2 text-emerald-600 bg-emerald-50 px-4 py-2 rounded-full mb-6">
                   <CheckCircle2 size={18} />
@@ -369,7 +433,10 @@ const QuickEstimator = () => {
 
               <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4">
                 <button 
-                  onClick={() => setStep(1)}
+                  onClick={() => {
+                    setStep(1);
+                    checkStatus();
+                  }}
                   className="px-8 py-4 rounded-xl font-bold font-headline text-primary border border-outline-variant hover:bg-surface-container-low transition-all"
                 >
                   New Estimate
@@ -381,6 +448,39 @@ const QuickEstimator = () => {
                   <span>Get Detailed Quote</span>
                   <ArrowRight size={18} />
                 </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Lock Overlay */}
+        <AnimatePresence>
+          {needsVerification && step !== 3 && (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 z-20 flex items-center justify-center p-4 md:p-8"
+            >
+              <div className="max-w-xl w-full bg-white/90 backdrop-blur-sm p-1 rounded-3xl shadow-2xl border border-outline-variant">
+                <div className="text-center pt-8 pb-4">
+                  <div className="w-16 h-16 bg-amber-50 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-4 border border-amber-100">
+                    <Lock className="w-8 h-8" />
+                  </div>
+                  <h2 className="text-2xl font-bold text-primary mb-2 font-headline tracking-tight">Estimator Tool Locked</h2>
+                  <p className="text-on-surface-variant font-body max-w-md mx-auto text-sm px-6">
+                    You've reached the limit for free anonymous estimates. Please complete the form below to unlock the tool and continue your project planning.
+                  </p>
+                </div>
+                <ContactUnlockForm 
+                  onVerified={() => {
+                    console.log('QuickEstimator: Verification complete, proceeding with calculation');
+                    setNeedsVerification(false);
+                    calculateEstimate();
+                  }}
+                  title="Unlock Professional Estimator"
+                  description="Provide your details to unlock unlimited access to our ROM estimating tools."
+                />
               </div>
             </motion.div>
           )}

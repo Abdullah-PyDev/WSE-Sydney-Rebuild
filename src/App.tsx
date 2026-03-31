@@ -15,10 +15,12 @@ import RequestBOQ from './pages/RequestBOQ';
 import Estimator from './pages/Estimator';
 import ProjectDetail from './pages/ProjectDetail';
 import Admin from './pages/Admin';
+import AdminLogin from './pages/AdminLogin';
 import ChatBot from './components/ChatBot';
 import ScrollToTop from './components/ScrollToTop';
 import CustomCursor from './components/CustomCursor';
 import { AlertCircle } from 'lucide-react';
+import { Toaster } from 'sonner';
 
 function AppContent() {
   const location = useLocation();
@@ -39,6 +41,7 @@ function AppContent() {
           <Route path="/estimator" element={<Estimator />} />
           <Route path="/projects/:id" element={<ProjectDetail />} />
           <Route path="/admin" element={<Admin />} />
+          <Route path="/admin/login" element={<AdminLogin />} />
         </Routes>
       </div>
       {!isAdminPage && (
@@ -55,6 +58,7 @@ function AppContent() {
 export default function App() {
   return (
     <Router>
+      <Toaster position="top-right" expand={true} richColors />
       <ScrollToTop />
       <CustomCursor />
       <AppContent />

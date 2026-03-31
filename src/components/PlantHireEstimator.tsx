@@ -9,8 +9,11 @@ import {
   DollarSign, 
   ArrowRight,
   Info,
-  CheckCircle2
+  CheckCircle2,
+  ShieldAlert,
+  Lock
 } from 'lucide-react';
+import ContactUnlockForm from './ContactUnlockForm';
 
 interface PlantItem {
   type: string;
@@ -98,21 +101,79 @@ const PLANT_DATA: PlantItem[] = [
 const OPERATOR_RATE = 81.05;
 const FUEL_PRICE = 3.25;
 
+import { apiFetch } from '../lib/api';
+
 const PlantHireEstimator = () => {
   const [selectedType, setSelectedType] = useState<string>('Excavator');
   const [selectedSize, setSelectedSize] = useState<string>('');
   const [hours, setHours] = useState<number>(8);
   const [showResult, setShowResult] = useState(false);
+  const [needsVerification, setNeedsVerification] = useState(false);
 
   const plantTypes = Array.from(new Set(PLANT_DATA.map(p => p.type)));
   const sizesForType = PLANT_DATA.filter(p => p.type === selectedType);
+
+  React.useEffect(() => {
+    checkStatus();
+  }, [showResult]);
 
   // Initialize size when type changes
   React.useEffect(() => {
     if (sizesForType.length > 0) {
       setSelectedSize(sizesForType[0].size);
     }
+    checkStatus();
   }, [selectedType]);
+
+  const checkStatus = async () => {
+    try {
+      const res = await apiFetch('/api/submission-status');
+      const data = await res.json();
+      console.log('Plant Hire status:', data);
+      setNeedsVerification(data.needsVerification);
+      return data;
+    } catch (err) {
+      console.error('Failed to check status:', err);
+      return null;
+    }
+  };
+
+  const handleCalculate = async () => {
+    // Re-check status just before calculating to be sure
+    const status = await checkStatus();
+    
+    if (status?.needsVerification) {
+      console.log('Plant Hire: Verification needed, blocking calculation');
+      setShowResult(false);
+      return;
+    }
+
+    setShowResult(true);
+
+    // Record the estimate in the backend (increment count)
+    console.log('Plant Hire: Recording submission...');
+    try {
+      const response = await apiFetch('/api/submissions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          fullName: 'Plant Hire Estimate User',
+          companyName: 'N/A',
+          address: 'N/A',
+          notes: `Plant Hire Estimate: ${selectedType}, ${selectedSize}, ${hours}h`,
+          isUrgent: 'false'
+        })
+      });
+      console.log('Plant Hire: Submission response status:', response.status);
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Plant Hire: Submission failed:', errorData);
+      }
+      checkStatus();
+    } catch (err) {
+      console.error('Plant Hire: Failed to record estimate:', err);
+    }
+  };
 
   const calculateWetHire = () => {
     const plant = PLANT_DATA.find(p => p.type === selectedType && p.size === selectedSize);
@@ -154,136 +215,179 @@ const PlantHireEstimator = () => {
         </div>
       </div>
 
-      <div className="p-6 md:p-8 lg:p-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-          {/* Inputs */}
-          <div className="space-y-6">
-            <div>
-              <label className="text-[10px] font-bold text-primary uppercase tracking-widest mb-2 block font-headline">Select Plant Type</label>
-              <select 
-                value={selectedType}
-                onChange={(e) => setSelectedType(e.target.value)}
-                className="w-full bg-surface-container-low border border-outline-variant rounded-xl p-4 text-sm font-body focus:ring-2 focus:ring-surface-tint outline-none"
-              >
-                {plantTypes.map(t => (
-                  <option key={t} value={t}>{t}</option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="text-[10px] font-bold text-primary uppercase tracking-widest mb-2 block font-headline">Select Size / Capacity</label>
-              <select 
-                value={selectedSize}
-                onChange={(e) => setSelectedSize(e.target.value)}
-                className="w-full bg-surface-container-low border border-outline-variant rounded-xl p-4 text-sm font-body focus:ring-2 focus:ring-surface-tint outline-none"
-              >
-                {sizesForType.map(s => (
-                  <option key={s.size} value={s.size}>{s.size}</option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="text-[10px] font-bold text-primary uppercase tracking-widest mb-2 block font-headline">Hire Duration (Hours)</label>
-              <div className="flex items-center space-x-4">
-                <input 
-                  type="range" 
-                  min="1" 
-                  max="24" 
-                  step="1"
-                  value={hours}
-                  onChange={(e) => setHours(Number(e.target.value))}
-                  className="flex-grow h-2 bg-surface-container-low rounded-lg appearance-none cursor-pointer accent-surface-tint"
-                />
-                <span className="text-xl font-bold text-surface-tint font-headline w-12">{hours}h</span>
-              </div>
-            </div>
-
-            <button 
-              onClick={() => setShowResult(true)}
-              className="w-full bg-primary text-white px-8 py-4 rounded-xl font-bold font-headline flex items-center justify-center space-x-2 hover:scale-[1.02] transition-all shadow-lg shadow-primary/20"
-            >
-              <span>Calculate Wet Hire Rate</span>
-              <Calculator size={18} />
-            </button>
-          </div>
-
-          {/* Rate Components */}
-          <div className="bg-surface-container-low p-6 rounded-2xl border border-outline-variant flex flex-col justify-center">
-            <h4 className="text-[10px] font-bold text-primary uppercase tracking-widest mb-6 font-headline flex items-center gap-2">
-              <Info size={14} />
-              Current Rate Parameters
-            </h4>
-            <div className="space-y-4">
-              <div className="flex justify-between items-center">
-                <div className="flex items-center gap-2">
-                  <User size={14} className="text-on-surface-variant" />
-                  <span className="text-sm text-on-surface-variant font-body">Operator Rate</span>
+      <div className="p-6 md:p-8 lg:p-12 relative">
+        <div className={needsVerification && !showResult ? "filter blur-md pointer-events-none opacity-40 transition-all duration-500" : "transition-all duration-500"}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+            {/* Inputs */}
+            <div className="space-y-6">
+                <div>
+                  <label className="text-[10px] font-bold text-primary uppercase tracking-widest mb-2 block font-headline">Select Plant Type</label>
+                  <select 
+                    value={selectedType}
+                    onChange={(e) => setSelectedType(e.target.value)}
+                    className="w-full bg-surface-container-low border border-outline-variant rounded-xl p-4 text-sm font-body focus:ring-2 focus:ring-surface-tint outline-none"
+                  >
+                    {plantTypes.map(t => (
+                      <option key={t} value={t}>{t}</option>
+                    ))}
+                  </select>
                 </div>
-                <span className="text-sm font-bold text-primary font-headline">{formatCurrency(OPERATOR_RATE)}/hr</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <div className="flex items-center gap-2">
-                  <Fuel size={14} className="text-on-surface-variant" />
-                  <span className="text-sm text-on-surface-variant font-body">Fuel Price</span>
+
+                <div>
+                  <label className="text-[10px] font-bold text-primary uppercase tracking-widest mb-2 block font-headline">Select Size / Capacity</label>
+                  <select 
+                    value={selectedSize}
+                    onChange={(e) => setSelectedSize(e.target.value)}
+                    className="w-full bg-surface-container-low border border-outline-variant rounded-xl p-4 text-sm font-body focus:ring-2 focus:ring-surface-tint outline-none"
+                  >
+                    {sizesForType.map(s => (
+                      <option key={s.size} value={s.size}>{s.size}</option>
+                    ))}
+                  </select>
                 </div>
-                <span className="text-sm font-bold text-primary font-headline">{formatCurrency(FUEL_PRICE)}/L</span>
+
+                <div>
+                  <label className="text-[10px] font-bold text-primary uppercase tracking-widest mb-2 block font-headline">Hire Duration (Hours)</label>
+                  <div className="flex items-center space-x-4">
+                    <input 
+                      type="range" 
+                      min="1" 
+                      max="24" 
+                      step="1"
+                      value={hours}
+                      onChange={(e) => setHours(Number(e.target.value))}
+                      className="flex-grow h-2 bg-surface-container-low rounded-lg appearance-none cursor-pointer accent-surface-tint"
+                    />
+                    <span className="text-xl font-bold text-surface-tint font-headline w-12">{hours}h</span>
+                  </div>
+                </div>
+
+                <button 
+                  onClick={handleCalculate}
+                  className="w-full bg-primary text-white px-8 py-4 rounded-xl font-bold font-headline flex items-center justify-center space-x-2 hover:scale-[1.02] transition-all shadow-lg shadow-primary/20"
+                >
+                  <span>Calculate Wet Hire Rate</span>
+                  <Calculator size={18} />
+                </button>
               </div>
-              <div className="pt-4 border-t border-outline-variant">
-                <p className="text-[10px] text-on-surface-variant font-body italic">
-                  *Rates are updated based on March 2026 market data.
-                </p>
+
+              {/* Rate Components */}
+              <div className="bg-surface-container-low p-6 rounded-2xl border border-outline-variant flex flex-col justify-center">
+                <h4 className="text-[10px] font-bold text-primary uppercase tracking-widest mb-6 font-headline flex items-center gap-2">
+                  <Info size={14} />
+                  Current Rate Parameters
+                </h4>
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <div className="flex items-center gap-2">
+                      <User size={14} className="text-on-surface-variant" />
+                      <span className="text-sm text-on-surface-variant font-body">Operator Rate</span>
+                    </div>
+                    <span className="text-sm font-bold text-primary font-headline">{formatCurrency(OPERATOR_RATE)}/hr</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <div className="flex items-center gap-2">
+                      <Fuel size={14} className="text-on-surface-variant" />
+                      <span className="text-sm text-on-surface-variant font-body">Fuel Price</span>
+                    </div>
+                    <span className="text-sm font-bold text-primary font-headline">{formatCurrency(FUEL_PRICE)}/L</span>
+                  </div>
+                  <div className="pt-4 border-t border-outline-variant">
+                    <p className="text-[10px] text-on-surface-variant font-body italic">
+                      *Rates are updated based on March 2026 market data.
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
+
+            {/* Results */}
+            <AnimatePresence>
+              {showResult && (
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mt-8 pt-8 border-t border-outline-variant"
+                >
+                  {needsVerification && (
+                    <div className="bg-amber-50 border border-amber-200 p-4 rounded-xl flex items-center gap-3 mb-6">
+                      <Lock className="text-amber-600 w-5 h-5 flex-shrink-0" />
+                      <p className="text-xs text-amber-900 font-medium">
+                        This is your last free estimate. Please verify your details to unlock unlimited access.
+                      </p>
+                    </div>
+                  )}
+                  <div className="text-center mb-8">
+                    <div className="inline-flex items-center space-x-2 text-emerald-600 bg-emerald-50 px-4 py-2 rounded-full mb-4">
+                      <CheckCircle2 size={18} />
+                      <span className="text-xs font-bold uppercase tracking-widest font-headline">Calculation Complete</span>
+                    </div>
+                    <h3 className="text-sm font-bold text-on-surface-variant uppercase tracking-[0.2em] font-headline mb-2">Estimated Wet Hire Rate</h3>
+                    <div className="text-4xl md:text-6xl font-black text-primary font-headline tracking-tighter">
+                      {formatCurrency(wetHireRate)}<span className="text-xl md:text-2xl text-on-surface-variant">/hr</span>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="bg-primary/5 p-6 rounded-2xl border border-primary/10">
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="text-sm font-bold text-primary font-headline">Total Cost ({hours} hours)</span>
+                        <span className="text-2xl font-black text-primary font-headline">{formatCurrency(totalCost)}</span>
+                      </div>
+                      <p className="text-xs text-on-surface-variant font-body">
+                        Includes operator, fuel, and plant net cost.
+                      </p>
+                    </div>
+
+                    <div className="flex items-center justify-center">
+                      <button 
+                        onClick={() => window.location.href = '/request'}
+                        className="w-full bg-surface-tint text-white px-8 py-4 rounded-xl font-bold font-headline flex items-center justify-center space-x-2 hover:scale-[1.05] transition-all shadow-lg shadow-surface-tint/20"
+                      >
+                        <span>Request Official Quote</span>
+                        <ArrowRight size={18} />
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </div>
 
-        {/* Results */}
+        {/* Lock Overlay */}
         <AnimatePresence>
-          {showResult && (
+          {needsVerification && !showResult && (
             <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mt-8 pt-8 border-t border-outline-variant"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 z-20 flex items-center justify-center p-4 md:p-8"
             >
-              <div className="text-center mb-8">
-                <div className="inline-flex items-center space-x-2 text-emerald-600 bg-emerald-50 px-4 py-2 rounded-full mb-4">
-                  <CheckCircle2 size={18} />
-                  <span className="text-xs font-bold uppercase tracking-widest font-headline">Calculation Complete</span>
-                </div>
-                <h3 className="text-sm font-bold text-on-surface-variant uppercase tracking-[0.2em] font-headline mb-2">Estimated Wet Hire Rate</h3>
-                <div className="text-4xl md:text-6xl font-black text-primary font-headline tracking-tighter">
-                  {formatCurrency(wetHireRate)}<span className="text-xl md:text-2xl text-on-surface-variant">/hr</span>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-primary/5 p-6 rounded-2xl border border-primary/10">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="text-sm font-bold text-primary font-headline">Total Cost ({hours} hours)</span>
-                    <span className="text-2xl font-black text-primary font-headline">{formatCurrency(totalCost)}</span>
+              <div className="max-w-xl w-full bg-white/90 backdrop-blur-sm p-1 rounded-3xl shadow-2xl border border-outline-variant">
+                <div className="text-center pt-8 pb-4">
+                  <div className="w-16 h-16 bg-amber-50 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-4 border border-amber-100">
+                    <Lock className="w-8 h-8" />
                   </div>
-                  <p className="text-xs text-on-surface-variant font-body">
-                    Includes operator, fuel, and plant net cost.
+                  <h2 className="text-2xl font-bold text-primary mb-2 font-headline tracking-tight">Estimator Tool Locked</h2>
+                  <p className="text-on-surface-variant font-body max-w-md mx-auto text-sm px-6">
+                    You've reached the limit for free anonymous estimates. Please complete the form below to unlock the tool and continue your project planning.
                   </p>
                 </div>
-
-                <div className="flex items-center justify-center">
-                  <button 
-                    onClick={() => window.location.href = '/request'}
-                    className="w-full bg-surface-tint text-white px-8 py-4 rounded-xl font-bold font-headline flex items-center justify-center space-x-2 hover:scale-[1.05] transition-all shadow-lg shadow-surface-tint/20"
-                  >
-                    <span>Request Official Quote</span>
-                    <ArrowRight size={18} />
-                  </button>
-                </div>
+                <ContactUnlockForm 
+                  onVerified={() => {
+                    console.log('PlantHireEstimator: Verification complete, proceeding with calculation');
+                    setNeedsVerification(false);
+                    handleCalculate();
+                  }}
+                  title="Unlock Plant Hire Estimator"
+                  description="Provide your details to unlock unlimited access to our wet hire cost estimating tools."
+                />
               </div>
             </motion.div>
           )}
         </AnimatePresence>
       </div>
-    </div>
   );
 };
 

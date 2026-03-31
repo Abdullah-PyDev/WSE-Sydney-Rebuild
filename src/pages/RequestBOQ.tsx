@@ -17,9 +17,13 @@ import {
   X,
   FileIcon,
   User,
-  ArrowRight
+  ArrowRight,
+  ShieldAlert
 } from 'lucide-react';
 import { toast } from 'sonner';
+import ContactUnlockForm from '../components/ContactUnlockForm';
+
+import { apiFetch } from '../lib/api';
 
 const RequestBOQ = () => {
   const navigate = useNavigate();
@@ -28,7 +32,22 @@ const RequestBOQ = () => {
   const [dragActive, setDragActive] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [files, setFiles] = useState<File[]>([]);
+  const [needsVerification, setNeedsVerification] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  React.useEffect(() => {
+    checkStatus();
+  }, []);
+
+  const checkStatus = async () => {
+    try {
+      const res = await apiFetch('/api/submission-status');
+      const data = await res.json();
+      setNeedsVerification(data.needsVerification);
+    } catch (err) {
+      console.error('Failed to check status:', err);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -42,10 +61,15 @@ const RequestBOQ = () => {
     }
 
     try {
-      const res = await fetch('/api/submissions', {
+      const res = await apiFetch('/api/submissions', {
         method: 'POST',
         body: formData
       });
+
+      if (res.status === 403) {
+        setNeedsVerification(true);
+        throw new Error('Verification required after 1 estimate.');
+      }
 
       if (!res.ok) {
         const text = await res.text();
@@ -221,7 +245,23 @@ const RequestBOQ = () => {
             className="bg-surface-container-lowest p-6 md:p-8 lg:p-12 rounded-2xl shadow-xl border border-outline-variant relative overflow-hidden"
           >
             <div className="absolute top-0 left-0 w-full h-1 bg-primary"></div>
-            {isSubmitted ? (
+            {needsVerification ? (
+              <div className="py-4">
+                <div className="text-center mb-8">
+                  <div className="w-20 h-20 bg-amber-50 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <ShieldAlert className="w-12 h-12" />
+                  </div>
+                  <h2 className="text-2xl font-bold text-primary mb-2 font-headline">Verification Required</h2>
+                  <p className="text-on-surface-variant font-body">
+                    You have already requested one estimate. To prevent spam and ensure quality service, we require a quick verification for subsequent requests.
+                  </p>
+                </div>
+                <ContactUnlockForm onVerified={() => {
+                  setNeedsVerification(false);
+                  checkStatus();
+                }} />
+              </div>
+            ) : isSubmitted ? (
               <div className="text-center py-8 md:py-12">
                 <div className="w-16 h-16 md:w-20 md:h-20 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 md:mb-6">
                   <CheckCircle2 className="w-8 h-8 md:w-12 md:h-12" />
