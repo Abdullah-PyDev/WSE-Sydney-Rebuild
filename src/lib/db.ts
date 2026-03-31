@@ -38,7 +38,6 @@ db.exec(`
   CREATE TABLE IF NOT EXISTS submissions (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     userId INTEGER,
-    userIdCookie TEXT,
     fullName TEXT,
     companyName TEXT,
     address TEXT,
@@ -53,67 +52,11 @@ db.exec(`
     FOREIGN KEY(userId) REFERENCES users(id)
   );
 
-  CREATE TABLE IF NOT EXISTS verification (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    userIdCookie TEXT UNIQUE,
-    name TEXT,
-    email TEXT,
-    phone TEXT,
-    company TEXT,
-    verificationCode TEXT,
-    isVerified BOOLEAN DEFAULT 0,
-    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
-  );
-
   CREATE TABLE IF NOT EXISTS content (
     key TEXT PRIMARY KEY,
     value TEXT
   );
 `);
-
-// Migration: Ensure all required columns exist in 'verification' and handle legacy 'verifications' table
-try {
-  // 1. Ensure 'verification' table has all required columns first
-  const columns = db.prepare("PRAGMA table_info(verification)").all();
-  const columnNames = columns.map((col: any) => col.name);
-  
-  const requiredColumns = ['name', 'email', 'phone', 'company', 'isVerified', 'verificationCode'];
-  requiredColumns.forEach(col => {
-    if (!columnNames.includes(col)) {
-      console.log(`Migration: Adding "${col}" column to "verification" table`);
-      const type = col === 'isVerified' ? 'BOOLEAN DEFAULT 0' : 'TEXT';
-      db.exec(`ALTER TABLE verification ADD COLUMN ${col} ${type}`);
-    }
-  });
-
-  // 2. Check if legacy table exists and migrate data carefully
-  const legacyTable = db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='verifications'").get();
-  if (legacyTable) {
-    console.log('Migration: Found legacy "verifications" table, migrating data to "verification"');
-    
-    // Check columns in legacy table to avoid "no such column" errors during migration
-    const legacyColumns = db.prepare("PRAGMA table_info(verifications)").all();
-    const legacyColumnNames = legacyColumns.map((col: any) => col.name);
-    
-    // Build a safe SELECT statement
-    const selectFields = ['userIdCookie', 'name', 'email', 'phone', 'company', 'isVerified', 'createdAt']
-      .map(field => legacyColumnNames.includes(field) ? field : `NULL as ${field}`)
-      .join(', ');
-
-    try {
-      db.exec(`INSERT OR IGNORE INTO verification (userIdCookie, name, email, phone, company, isVerified, createdAt) 
-               SELECT ${selectFields} FROM verifications`);
-      console.log('Migration: Data moved successfully');
-      
-      // Optionally drop legacy table after successful migration
-      // db.exec("DROP TABLE verifications");
-    } catch (moveError) {
-      console.error('Migration: Error moving data:', moveError);
-    }
-  }
-} catch (error) {
-  console.error('Migration failed for "verification" table:', error);
-}
 
 // Seed admin if not exists
 const adminCount = db.prepare('SELECT count(*) as count FROM admins').get() as { count: number };
