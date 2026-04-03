@@ -7,7 +7,6 @@ import cors from "cors";
 import multer from "multer";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-import db from "./src/lib/db.ts";
 
 dotenv.config();
 
@@ -63,99 +62,31 @@ async function startServer() {
 
 // API routes
   app.get("/api/health", (req, res) => {
-    try {
-      // Test DB connection
-      db.prepare("SELECT 1").get();
-      res.json({ 
-        status: "ok", 
-        database: "connected",
-        env: process.env.NODE_ENV
-      });
-    } catch (error: any) {
-      res.status(500).json({ 
-        status: "error", 
-        database: "disconnected", 
-        error: error.message 
-      });
-    }
-  });
-
-  // Submission Routes
-  app.post("/api/submissions", (req, res, next) => {
-    upload.single("file")(req, res, (err) => {
-      if (err instanceof multer.MulterError) {
-        return res.status(400).json({ error: `Upload error: ${err.message}` });
-      } else if (err) {
-        return res.status(500).json({ error: `Unknown upload error: ${err.message}` });
-      }
-      next();
+    res.json({ 
+      status: "ok", 
+      env: process.env.NODE_ENV
     });
-  }, (req: any, res) => {
-    const { fullName, companyName, address, notes, isUrgent } = req.body;
-    const fileName = req.file ? req.file.filename : null;
-    const fileMimeType = req.file ? req.file.mimetype : null;
-    const userId = 0; // Anonymous submission
-
-    try {
-      const result = db.prepare(`
-        INSERT INTO submissions (userId, fullName, companyName, address, notes, isUrgent, fileName, fileMimeType)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-      `).run(userId, fullName, companyName, address, notes, isUrgent === "true" ? 1 : 0, fileName, fileMimeType);
-      res.json({ id: result.lastInsertRowid });
-    } catch (error: any) {
-      res.status(400).json({ error: error.message });
-    }
   });
 
-  app.get("/api/submissions", (req: any, res) => {
-    const submissions = db.prepare("SELECT * FROM submissions ORDER BY createdAt DESC").all();
-    res.json(submissions);
-  });
+  app.post("/api/boq-request", upload.single('file'), (req, res) => {
+    const { name, email, phone, projectType, description } = req.body;
+    const file = req.file;
 
-  app.patch("/api/submissions/:id", (req, res) => {
-    const { status } = req.body;
-    const { id } = req.params;
-    try {
-      db.prepare("UPDATE submissions SET status = ? WHERE id = ?").run(status, id);
-      res.json({ success: true });
-    } catch (error: any) {
-      res.status(400).json({ error: error.message });
-    }
-  });
+    console.log(`[${new Date().toISOString()}] New BOQ Request:`, {
+      name,
+      email,
+      phone,
+      projectType,
+      description,
+      file: file ? file.filename : 'No file'
+    });
 
-  app.post("/api/submissions/:id/upload", upload.single("file"), (req, res) => {
-    const { id } = req.params;
-    const finalDocName = req.file ? req.file.filename : null;
-    const finalDocMimeType = req.file ? req.file.mimetype : null;
-
-    try {
-      db.prepare("UPDATE submissions SET finalDocName = ?, finalDocMimeType = ?, status = 'delivered' WHERE id = ?").run(finalDocName, finalDocMimeType, id);
-      res.json({ success: true, finalDocName });
-    } catch (error: any) {
-      res.status(400).json({ error: error.message });
-    }
-  });
-
-  app.delete("/api/submissions/:id", (req, res) => {
-    const { id } = req.params;
-    try {
-      db.prepare("DELETE FROM submissions WHERE id = ?").run(id);
-      res.json({ success: true });
-    } catch (error: any) {
-      res.status(400).json({ error: error.message });
-    }
-  });
-
-  // Content Routes
-  app.get("/api/content", (req, res) => {
-    const content = db.prepare("SELECT * FROM content").all();
-    res.json(content);
-  });
-
-  app.post("/api/content", (req, res) => {
-    const { key, value } = req.body;
-    db.prepare("INSERT OR REPLACE INTO content (key, value) VALUES (?, ?)").run(key, value);
-    res.json({ success: true });
+    // In a real app, we would save this to a database or send an email
+    // For now, we'll just return success
+    res.status(200).json({ 
+      message: "BOQ request received successfully",
+      requestId: Date.now()
+    });
   });
 
   app.all("/api/*", (req, res) => {

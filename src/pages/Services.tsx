@@ -216,26 +216,7 @@ const Services = () => {
   });
 
   useEffect(() => {
-    const fetchContent = async () => {
-      try {
-        const res = await fetch('/api/content');
-        const data = await res.json();
-        const contentMap: Record<string, string> = {};
-        data.forEach((item: any) => {
-          contentMap[item.key] = item.value;
-        });
-        if (Object.keys(contentMap).length > 0) {
-          setDynamicContent(prev => ({
-            ...prev,
-            'hero_headline': contentMap['hero_title'] || prev['hero_headline'],
-            'hero_subheadline': contentMap['hero_subheadline'] || prev['hero_subheadline']
-          }));
-        }
-      } catch (err) {
-        console.error('Failed to fetch content', err);
-      }
-    };
-    fetchContent();
+    // Content fetching removed as database is no longer used
   }, []);
 
   const handleMouseMove = (e: React.MouseEvent) => {
@@ -324,8 +305,8 @@ const Services = () => {
               </ReactMarkdown>
             </motion.div>
             <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4 pt-4">
-              <Link to="/request" className="bg-blue-400 text-primary px-8 py-4 rounded-md font-bold text-base hover:bg-blue-300 transition-all shadow-xl shadow-black/20 font-body text-center">
-                Request a BOQ
+              <Link to="/services/detail" className="bg-blue-400 text-primary px-8 py-4 rounded-md font-bold text-base hover:bg-blue-300 transition-all shadow-xl shadow-black/20 font-body text-center">
+                Our Services
               </Link>
               <Link to="/estimator" className="bg-white/10 backdrop-blur-sm border border-white/20 text-white px-8 py-4 rounded-md font-bold text-base hover:bg-white/20 transition-all font-body flex items-center justify-center gap-2">
                 <Calculator size={18} />
@@ -802,9 +783,9 @@ const Services = () => {
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-32 -mt-32 blur-3xl"></div>
           <div className="relative z-10">
             <h2 className="font-headline text-2xl md:text-5xl font-extrabold text-white mb-6 md:mb-8">Ready to secure your project's accuracy?</h2>
-            <p className="text-blue-100 text-base md:text-lg mb-8 md:mb-12 max-w-2xl mx-auto opacity-80 font-body">Download our rate card or request a Bill of Quantities today for a 48h guaranteed response.</p>
+            <p className="text-blue-100 text-base md:text-lg mb-8 md:mb-12 max-w-2xl mx-auto opacity-80 font-body">Download our rate card or explore our services today for guaranteed accuracy.</p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center font-body">
-              <Link to="/request" className="bg-white text-primary px-8 md:px-10 py-3 md:py-4 rounded-md font-bold text-sm md:text-base hover:bg-blue-100 transition-all">Request a BOQ</Link>
+              <Link to="/services/detail" className="bg-white text-primary px-8 md:px-10 py-3 md:py-4 rounded-md font-bold text-sm md:text-base hover:bg-blue-100 transition-all">View Services</Link>
               <Link to="/about" className="border border-white/30 text-white px-8 md:px-10 py-3 md:py-4 rounded-md font-bold text-sm md:text-base hover:bg-white/10 transition-all flex items-center justify-center">Download Rate Card</Link>
             </div>
           </div>

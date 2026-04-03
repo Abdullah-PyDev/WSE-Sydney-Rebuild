@@ -103,16 +103,9 @@ const FAQ = () => {
             <div className="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-outline-variant">
               <HelpCircle className="text-surface-tint mb-4 md:mb-6 w-8 h-8 md:w-10 md:h-10" />
               <h3 className="font-headline font-bold text-xl md:text-2xl text-primary mb-4">Still have questions?</h3>
-              <p className="text-on-surface-variant text-sm md:text-base font-body mb-6 md:mb-8">
-                If you can't find the answer you're looking for, please feel free to reach out to our team directly.
+              <p className="text-on-surface-variant text-sm md:text-base font-body">
+                If you can't find the answer you're looking for, please feel free to reach out to our team directly at info@wsesydney.com.au.
               </p>
-              <Link 
-                to="/request" 
-                className="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-full font-body font-bold hover:bg-surface-tint transition-colors w-full justify-center text-sm md:text-base"
-              >
-                <MessageSquare size={18} />
-                Contact Support
-              </Link>
             </div>
 
             <div className="grid grid-cols-1 gap-4">
@@ -173,14 +166,8 @@ const FAQ = () => {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link 
-              to="/request" 
-              className="bg-primary text-white px-10 py-4 rounded-full font-headline font-bold text-base md:text-lg hover:bg-surface-tint transition-all shadow-xl text-center"
-            >
-              Request a BOQ
-            </Link>
-            <Link 
               to="/services" 
-              className="border border-primary/20 text-primary px-10 py-4 rounded-full font-headline font-bold text-base md:text-lg hover:bg-primary/5 transition-all text-center"
+              className="bg-primary text-white px-10 py-4 rounded-full font-headline font-bold text-base md:text-lg hover:bg-surface-tint transition-all shadow-xl text-center"
             >
               Our Services
             </Link>

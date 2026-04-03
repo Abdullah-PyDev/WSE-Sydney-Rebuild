@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { Link } from 'react-router-dom';
 import { 
   Calculator, 
   Truck, 
@@ -9,8 +10,11 @@ import {
   DollarSign, 
   ArrowRight,
   Info,
-  CheckCircle2
+  CheckCircle2,
+  Lock,
+  Unlock
 } from 'lucide-react';
+import ContactUnlockForm from './ContactUnlockForm';
 
 interface PlantItem {
   type: string;
@@ -103,6 +107,8 @@ const PlantHireEstimator = () => {
   const [selectedSize, setSelectedSize] = useState<string>('');
   const [hours, setHours] = useState<number>(8);
   const [showResult, setShowResult] = useState(false);
+  const [isUnlocked, setIsUnlocked] = useState(false);
+  const [showUnlockForm, setShowUnlockForm] = useState(false);
 
   const plantTypes = Array.from(new Set(PLANT_DATA.map(p => p.type)));
   const sizesForType = PLANT_DATA.filter(p => p.type === selectedType);
@@ -258,8 +264,8 @@ const PlantHireEstimator = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-primary/5 p-6 rounded-2xl border border-primary/10">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative">
+                <div className={`bg-primary/5 p-6 rounded-2xl border border-primary/10 transition-all duration-500 ${!isUnlocked ? 'blur-sm select-none pointer-events-none' : ''}`}>
                   <div className="flex justify-between items-center mb-2">
                     <span className="text-sm font-bold text-primary font-headline">Total Cost ({hours} hours)</span>
                     <span className="text-2xl font-black text-primary font-headline">{formatCurrency(totalCost)}</span>
@@ -269,20 +275,46 @@ const PlantHireEstimator = () => {
                   </p>
                 </div>
 
+                {!isUnlocked && (
+                  <div className="absolute inset-0 flex items-center justify-center z-10">
+                    <div className="bg-white/90 backdrop-blur-md p-4 rounded-xl border border-primary/20 shadow-xl text-center">
+                      <button 
+                        onClick={() => setShowUnlockForm(true)}
+                        className="bg-primary text-white px-6 py-2 rounded-lg font-bold font-headline flex items-center justify-center space-x-2 hover:scale-105 transition-all text-xs"
+                      >
+                        <Lock size={14} />
+                        <span>Unlock Rates</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
+
                 <div className="flex items-center justify-center">
-                  <button 
-                    onClick={() => window.location.href = '/request'}
+                  <Link 
+                    to="/about"
                     className="w-full bg-surface-tint text-white px-8 py-4 rounded-xl font-bold font-headline flex items-center justify-center space-x-2 hover:scale-[1.05] transition-all shadow-lg shadow-surface-tint/20"
                   >
-                    <span>Request Official Quote</span>
+                    <span>Contact Our Team</span>
                     <ArrowRight size={18} />
-                  </button>
+                  </Link>
                 </div>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
       </div>
+
+      <AnimatePresence>
+        {showUnlockForm && (
+          <ContactUnlockForm 
+            onClose={() => {
+              setShowUnlockForm(false);
+              setIsUnlocked(true);
+            }} 
+            projectType="PlantHire"
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 };

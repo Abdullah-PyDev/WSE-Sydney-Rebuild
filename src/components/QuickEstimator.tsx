@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { Link } from 'react-router-dom';
 import { 
   Calculator, 
   ArrowRight, 
@@ -12,8 +13,11 @@ import {
   TrendingUp,
   DollarSign,
   Ruler,
-  Layers
+  Layers,
+  Lock,
+  Unlock
 } from 'lucide-react';
+import ContactUnlockForm from './ContactUnlockForm';
 
 interface EstimateResult {
   low: number;
@@ -35,6 +39,8 @@ const QuickEstimator = () => {
   const [depth, setDepth] = useState(1.5);
   const [groundType, setGroundType] = useState('standard');
   const [result, setResult] = useState<EstimateResult | null>(null);
+  const [isUnlocked, setIsUnlocked] = useState(false);
+  const [showUnlockForm, setShowUnlockForm] = useState(false);
 
   const materials = {
     water: ['PVC-O', 'DICL', 'MSCL', 'PE'],
@@ -320,8 +326,8 @@ const QuickEstimator = () => {
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="bg-surface-container-low p-8 rounded-2xl border border-outline-variant">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 relative">
+                <div className={`bg-surface-container-low p-8 rounded-2xl border border-outline-variant transition-all duration-500 ${!isUnlocked ? 'blur-sm select-none pointer-events-none' : ''}`}>
                   <h4 className="text-[10px] font-bold text-primary uppercase tracking-widest mb-6 font-headline flex items-center gap-2">
                     <DollarSign size={14} />
                     Estimated Cost Breakdown
@@ -343,6 +349,27 @@ const QuickEstimator = () => {
                     ))}
                   </div>
                 </div>
+
+                {!isUnlocked && (
+                  <div className="absolute inset-0 flex items-center justify-center z-10">
+                    <div className="bg-white/90 backdrop-blur-md p-8 rounded-2xl border border-primary/20 shadow-2xl text-center max-w-xs">
+                      <div className="w-12 h-12 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                        <Lock size={24} />
+                      </div>
+                      <h4 className="text-lg font-bold text-primary mb-2">Detailed Breakdown Locked</h4>
+                      <p className="text-xs text-on-surface-variant mb-6 font-body">
+                        Unlock the full cost breakdown and receive a professional BOQ by providing your project details.
+                      </p>
+                      <button 
+                        onClick={() => setShowUnlockForm(true)}
+                        className="w-full bg-primary text-white py-3 rounded-xl font-bold font-headline flex items-center justify-center space-x-2 hover:scale-105 transition-all"
+                      >
+                        <Unlock size={16} />
+                        <span>Unlock Full BOQ</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
 
                 <div className="flex flex-col justify-center space-y-6">
                   <div className="bg-amber-50 border border-amber-100 p-6 rounded-2xl flex items-start gap-4">
@@ -374,18 +401,30 @@ const QuickEstimator = () => {
                 >
                   New Estimate
                 </button>
-                <button 
-                  onClick={() => window.location.href = '/request'}
+                <Link 
+                  to="/services"
                   className="bg-primary text-white px-10 py-4 rounded-xl font-bold font-headline flex items-center justify-center space-x-2 hover:scale-105 transition-all shadow-lg shadow-primary/20"
                 >
-                  <span>Get Detailed Quote</span>
+                  <span>Explore Our Services</span>
                   <ArrowRight size={18} />
-                </button>
+                </Link>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
       </div>
+
+      <AnimatePresence>
+        {showUnlockForm && (
+          <ContactUnlockForm 
+            onClose={() => {
+              setShowUnlockForm(false);
+              setIsUnlocked(true); // Unlock after closing form (assuming success)
+            }} 
+            projectType="Infrastructure"
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 };

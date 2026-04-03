@@ -11,22 +11,16 @@ import ServicesDetail from './pages/ServicesDetail';
 import Locations from './pages/Locations';
 import About from './pages/About';
 import FAQ from './pages/FAQ';
-import RequestBOQ from './pages/RequestBOQ';
 import Estimator from './pages/Estimator';
 import ProjectDetail from './pages/ProjectDetail';
-import Admin from './pages/Admin';
 import ChatBot from './components/ChatBot';
 import ScrollToTop from './components/ScrollToTop';
 import CustomCursor from './components/CustomCursor';
-import { AlertCircle } from 'lucide-react';
 
 function AppContent() {
-  const location = useLocation();
-  const isAdminPage = location.pathname.startsWith('/admin');
-
   return (
     <div className="min-h-screen flex flex-col">
-      {!isAdminPage && <Header />}
+      <Header />
       <div className="flex-grow">
         <Routes>
           <Route path="/" element={<Navigate to="/services" replace />} />
@@ -35,19 +29,13 @@ function AppContent() {
           <Route path="/locations" element={<Locations />} />
           <Route path="/about" element={<About />} />
           <Route path="/faq" element={<FAQ />} />
-          <Route path="/request" element={<RequestBOQ />} />
           <Route path="/estimator" element={<Estimator />} />
           <Route path="/projects/:id" element={<ProjectDetail />} />
-          <Route path="/admin" element={<Admin />} />
         </Routes>
       </div>
-      {!isAdminPage && (
-        <>
-          <div className="bg-slate-100 h-[1px] w-full"></div>
-          <Footer />
-          <ChatBot />
-        </>
-      )}
+      <div className="bg-slate-100 h-[1px] w-full"></div>
+      <Footer />
+      <ChatBot />
     </div>
   );
 }
