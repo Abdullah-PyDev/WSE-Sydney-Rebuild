@@ -26,7 +26,22 @@ With a background deeply rooted in major Sydney water infrastructure projects, S
   `);
 
   useEffect(() => {
-    // Content fetching removed as database is no longer used
+    const fetchContent = async () => {
+      try {
+        const res = await fetch('/api/content');
+        const data = await res.json();
+        const contentMap: Record<string, string> = {};
+        data.forEach((item: any) => {
+          contentMap[item.key] = item.value;
+        });
+        if (contentMap['about_text']) {
+          setAboutText(contentMap['about_text']);
+        }
+      } catch (err) {
+        console.error('Failed to fetch content', err);
+      }
+    };
+    fetchContent();
   }, []);
 
   return (
@@ -120,7 +135,7 @@ With a background deeply rooted in major Sydney water infrastructure projects, S
                   <div className="font-headline font-bold text-primary">Technical Depth</div>
                   <div className="text-xs text-on-surface-variant mt-1 font-body">Specializing in Sydney Water standards and compliance.</div>
                 </Link>
-                <Link to="/services" className="bg-surface-container-lowest p-6 rounded-md shadow-sm hover:shadow-md transition-shadow group">
+                <Link to="/request" className="bg-surface-container-lowest p-6 rounded-md shadow-sm hover:shadow-md transition-shadow group">
                   <div className="text-surface-tint mb-4 flex justify-center lg:justify-start group-hover:scale-110 transition-transform">
                     <AccountBalance size={24} />
                   </div>
@@ -171,7 +186,7 @@ With a background deeply rooted in major Sydney water infrastructure projects, S
             </div>
           </Link>
           <Link 
-            to="/services"
+            to="/request"
             className="bg-primary p-6 md:p-8 rounded-xl flex flex-col justify-between text-white hover:bg-primary-container transition-colors group"
           >
             <WaterDrop className="text-white mb-6 md:mb-8 group-hover:animate-pulse" size={32} />
@@ -210,7 +225,8 @@ With a background deeply rooted in major Sydney water infrastructure projects, S
           <h2 className="font-headline text-3xl md:text-5xl font-extrabold mb-6">Ready to engineer your next project?</h2>
           <p className="text-white/70 text-lg mb-10 font-body">Join the Tier 1 contractors who trust WSE Sydney for precision infrastructure estimating.</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/services" className="bg-white text-primary px-10 py-4 rounded-md font-bold hover:bg-blue-50 transition-all shadow-xl shadow-black/20">View Our Services</Link>
+            <Link to="/request" className="bg-white text-primary px-10 py-4 rounded-md font-bold hover:bg-blue-50 transition-all shadow-xl shadow-black/20">Request a BOQ</Link>
+            <Link to="/services" className="border border-white/30 text-white px-10 py-4 rounded-md font-bold hover:bg-white/10 transition-all">View Our Services</Link>
           </div>
         </div>
       </section>

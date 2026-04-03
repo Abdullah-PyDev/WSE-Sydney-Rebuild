@@ -378,7 +378,7 @@ const ServicesDetail = () => {
         <div className="max-w-4xl mx-auto text-center font-body">
           <h2 className="text-3xl md:text-4xl font-headline font-extrabold text-[#001D3D] mb-8 md:mb-12">Ready for an engineered estimate?</h2>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/estimator" className="bg-[#001D3D] text-white px-8 md:px-10 py-3 md:py-4 rounded-md font-bold hover:bg-[#002B2B] transition-all text-center">Try Quick Estimator</Link>
+            <Link to="/request" className="bg-[#001D3D] text-white px-8 md:px-10 py-3 md:py-4 rounded-md font-bold hover:bg-[#002B2B] transition-all text-center">Submit Tender Documents</Link>
             <a 
               href="/sample-boq.pdf" 
               download 

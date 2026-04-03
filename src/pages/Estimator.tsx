@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Link } from 'react-router-dom';
 import QuickEstimator from '../components/QuickEstimator';
 import PlantHireEstimator from '../components/PlantHireEstimator';
 import { 
@@ -162,13 +161,13 @@ const Estimator = () => {
                 </div>
               ))}
             </div>
-            <Link 
-              to="/services"
+            <button 
+              onClick={() => window.location.href = '/request'}
               className="w-full bg-primary text-white font-bold py-4 rounded-xl font-headline flex items-center justify-center space-x-2 hover:scale-[1.02] transition-all shadow-lg shadow-primary/20 text-sm md:text-base"
             >
               <FileText size={18} />
-              <span>View Detailed Services</span>
-            </Link>
+              <span>Request Full BOQ Estimate</span>
+            </button>
           </div>
         </div>
       </section>
@@ -189,19 +188,18 @@ const Estimator = () => {
             Upload your technical drawings and receive a comprehensive, tender-ready estimate within 24-48 hours.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-6">
-            <Link 
-              to="/services"
+            <button 
+              onClick={() => window.location.href = '/request'}
               className="w-full sm:w-auto bg-white text-primary px-10 py-4 rounded-xl font-bold font-headline hover:scale-105 transition-all shadow-xl"
             >
-              Explore Our Services
-            </Link>
-            <a 
-              href="/sample-boq.pdf" 
-              download
+              Upload Drawings Now
+            </button>
+            <button 
+              onClick={() => window.location.href = '/request'}
               className="text-white font-bold font-headline hover:underline"
             >
               View Sample BOQ
-            </a>
+            </button>
           </div>
         </div>
       </section>

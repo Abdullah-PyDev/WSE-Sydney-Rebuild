@@ -1,242 +1,148 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { 
-  X, 
-  Send, 
-  Upload, 
-  CheckCircle2, 
-  AlertCircle, 
-  User, 
-  Mail, 
-  Phone, 
-  FileText,
-  Loader2
-} from 'lucide-react';
-import { submitBOQRequest } from '../lib/api';
+import { motion } from 'motion/react';
+import { Mail, Phone, ShieldCheck, Loader2, User, Building2 } from 'lucide-react';
+import { toast } from 'sonner';
+
+import { apiFetch } from '../lib/api';
 
 interface ContactUnlockFormProps {
-  onClose: () => void;
-  projectType?: string;
+  onVerified: () => void;
+  title?: string;
+  description?: string;
 }
 
-const ContactUnlockForm: React.FC<ContactUnlockFormProps> = ({ onClose, projectType = 'Infrastructure' }) => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    description: '',
-    projectType: projectType
-  });
-  const [file, setFile] = useState<File | null>(null);
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
-  const [errorMessage, setErrorMessage] = useState('');
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setFile(e.target.files[0]);
-    }
-  };
+const ContactUnlockForm: React.FC<ContactUnlockFormProps> = ({ 
+  onVerified, 
+  title = "Unlock Estimator Tool",
+  description = "To continue using our professional estimating tools, please provide your contact details. This helps us ensure we provide the most relevant data for your project."
+}) => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [company, setCompany] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setStatus('loading');
-    setErrorMessage('');
+    setIsSubmitting(true);
 
     try {
-      await submitBOQRequest({
-        ...formData,
-        file: file || undefined
+      console.log('Submitting verification for:', { name, email, phone, company });
+      const res = await apiFetch('/api/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, phone, company })
       });
-      setStatus('success');
-      setTimeout(() => {
-        onClose();
-      }, 3000);
+
+      console.log('Verification response status:', res.status);
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({ error: 'Unknown error' }));
+        throw new Error(errorData.error || 'Submission failed');
+      }
+
+      toast.success('Thank you! The estimator is now unlocked.');
+      console.log('Verification successful, calling onVerified');
+      onVerified();
     } catch (error: any) {
-      console.error('Submission error:', error);
-      setStatus('error');
-      setErrorMessage(error.message || 'Something went wrong. Please try again.');
+      console.error('Verification error:', error);
+      toast.error(error.message || 'Failed to submit');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
-    <motion.div 
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[100] bg-primary/80 backdrop-blur-sm flex items-center justify-center p-4"
-      onClick={onClose}
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="bg-surface-container-low rounded-2xl border border-outline-variant p-8 max-w-lg mx-auto shadow-xl"
     >
-      <motion.div 
-        initial={{ scale: 0.9, y: 20 }}
-        animate={{ scale: 1, y: 0 }}
-        exit={{ scale: 0.9, y: 20 }}
-        className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden relative"
-        onClick={e => e.stopPropagation()}
-      >
-        <button 
-          onClick={onClose}
-          className="absolute top-4 right-4 text-slate-400 hover:text-primary transition-colors"
-        >
-          <X size={24} />
-        </button>
+      <div className="w-16 h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto mb-6">
+        <ShieldCheck size={32} />
+      </div>
 
-        <div className="p-8">
-          <div className="mb-8">
-            <h2 className="text-2xl font-headline font-extrabold text-primary mb-2">Unlock Professional BOQ</h2>
-            <p className="text-on-surface-variant text-sm font-body">
-              Provide your details and upload project drawings to receive a tender-ready estimate within 24-48 hours.
-            </p>
+      <h2 className="text-2xl font-bold text-center text-primary mb-2 font-headline">{title}</h2>
+      <p className="text-center text-on-surface-variant text-sm mb-8 font-body">
+        {description}
+      </p>
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-1">
+            <label className="text-[10px] font-bold text-primary uppercase tracking-widest font-headline">Full Name</label>
+            <div className="relative">
+              <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+              <input
+                required
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full bg-surface-container-lowest border border-outline-variant rounded-xl p-3 pl-10 text-sm focus:ring-2 focus:ring-primary outline-none transition-all font-body"
+                placeholder="John Doe"
+              />
+            </div>
           </div>
 
-          <AnimatePresence mode="wait">
-            {status === 'success' ? (
-              <motion.div 
-                key="success"
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="py-12 text-center"
-              >
-                <div className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <CheckCircle2 size={40} />
-                </div>
-                <h3 className="text-xl font-bold text-primary mb-2">Request Received!</h3>
-                <p className="text-on-surface-variant text-sm">
-                  Our estimating team will review your drawings and contact you shortly.
-                </p>
-              </motion.div>
-            ) : (
-              <motion.form 
-                key="form"
-                onSubmit={handleSubmit}
-                className="space-y-4"
-              >
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-primary uppercase tracking-widest block">Full Name</label>
-                    <div className="relative">
-                      <User className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
-                      <input 
-                        required
-                        type="text"
-                        name="name"
-                        value={formData.name}
-                        onChange={handleInputChange}
-                        placeholder="John Doe"
-                        className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-primary outline-none transition-all"
-                      />
-                    </div>
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-primary uppercase tracking-widest block">Email Address</label>
-                    <div className="relative">
-                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
-                      <input 
-                        required
-                        type="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleInputChange}
-                        placeholder="john@company.com"
-                        className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-primary outline-none transition-all"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-primary uppercase tracking-widest block">Phone Number</label>
-                    <div className="relative">
-                      <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
-                      <input 
-                        required
-                        type="tel"
-                        name="phone"
-                        value={formData.phone}
-                        onChange={handleInputChange}
-                        placeholder="0400 000 000"
-                        className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-primary outline-none transition-all"
-                      />
-                    </div>
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-primary uppercase tracking-widest block">Project Type</label>
-                    <select 
-                      name="projectType"
-                      value={formData.projectType}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-primary outline-none transition-all"
-                    >
-                      <option value="Infrastructure">Infrastructure ROM</option>
-                      <option value="PlantHire">Plant Hire Rates</option>
-                      <option value="Custom">Custom BOQ Request</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div className="space-y-1">
-                  <label className="text-[10px] font-bold text-primary uppercase tracking-widest block">Project Description</label>
-                  <div className="relative">
-                    <FileText className="absolute left-3 top-3 text-slate-400" size={16} />
-                    <textarea 
-                      required
-                      name="description"
-                      value={formData.description}
-                      onChange={handleInputChange}
-                      placeholder="Briefly describe your project requirements..."
-                      rows={3}
-                      className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-primary outline-none transition-all resize-none"
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-1">
-                  <label className="text-[10px] font-bold text-primary uppercase tracking-widest block">Upload Drawings (Optional)</label>
-                  <label className="flex flex-col items-center justify-center w-full h-24 border-2 border-dashed border-slate-200 rounded-xl bg-slate-50 hover:bg-slate-100 transition-colors cursor-pointer">
-                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                      <Upload className="w-6 h-6 text-slate-400 mb-2" />
-                      <p className="text-xs text-slate-500">
-                        {file ? <span className="text-primary font-bold">{file.name}</span> : 'Click to upload PDF or DWG'}
-                      </p>
-                    </div>
-                    <input type="file" className="hidden" onChange={handleFileChange} accept=".pdf,.dwg,.zip" />
-                  </label>
-                </div>
-
-                {status === 'error' && (
-                  <div className="flex items-center gap-2 text-red-600 bg-red-50 p-3 rounded-lg text-xs">
-                    <AlertCircle size={14} />
-                    <span>{errorMessage}</span>
-                  </div>
-                )}
-
-                <button 
-                  type="submit"
-                  disabled={status === 'loading'}
-                  className="w-full bg-primary text-white py-4 rounded-xl font-bold font-headline flex items-center justify-center space-x-2 hover:scale-[1.02] transition-all shadow-lg shadow-primary/20 disabled:opacity-70 disabled:hover:scale-100"
-                >
-                  {status === 'loading' ? (
-                    <>
-                      <Loader2 size={18} className="animate-spin" />
-                      <span>Submitting...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Send size={18} />
-                      <span>Submit Request</span>
-                    </>
-                  )}
-                </button>
-              </motion.form>
-            )}
-          </AnimatePresence>
+          <div className="space-y-1">
+            <label className="text-[10px] font-bold text-primary uppercase tracking-widest font-headline">Company (Optional)</label>
+            <div className="relative">
+              <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+              <input
+                type="text"
+                value={company}
+                onChange={(e) => setCompany(e.target.value)}
+                className="w-full bg-surface-container-lowest border border-outline-variant rounded-xl p-3 pl-10 text-sm focus:ring-2 focus:ring-primary outline-none transition-all font-body"
+                placeholder="Acme Corp"
+              />
+            </div>
+          </div>
         </div>
-      </motion.div>
+
+        <div className="space-y-1">
+          <label className="text-[10px] font-bold text-primary uppercase tracking-widest font-headline">Email Address</label>
+          <div className="relative">
+            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+            <input
+              required
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full bg-surface-container-lowest border border-outline-variant rounded-xl p-3 pl-10 text-sm focus:ring-2 focus:ring-primary outline-none transition-all font-body"
+              placeholder="john@example.com"
+            />
+          </div>
+        </div>
+
+        <div className="space-y-1">
+          <label className="text-[10px] font-bold text-primary uppercase tracking-widest font-headline">Phone Number</label>
+          <div className="relative">
+            <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+            <input
+              required
+              type="tel"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              className="w-full bg-surface-container-lowest border border-outline-variant rounded-xl p-3 pl-10 text-sm focus:ring-2 focus:ring-primary outline-none transition-all font-body"
+              placeholder="+61 400 000 000"
+            />
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="w-full bg-primary text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 flex items-center justify-center gap-2 font-headline uppercase tracking-widest text-xs mt-6"
+        >
+          {isSubmitting ? (
+            <>
+              <Loader2 className="animate-spin" size={18} />
+              Unlocking...
+            </>
+          ) : (
+            'Unlock Estimator Now'
+          )}
+        </button>
+      </form>
     </motion.div>
   );
 };

@@ -214,13 +214,13 @@ const ProjectDetail = () => {
               <div className="bg-slate-50 p-8 rounded-2xl border border-slate-100 sticky top-32">
                 <h3 className="text-xl font-bold text-slate-900 mb-6">Need a similar estimate?</h3>
                 <p className="text-slate-600 text-sm mb-8">
-                  Try our Quick Estimator for an instant Rough Order of Magnitude (ROM) cost for your next infrastructure project.
+                  Our team of Sydney Water accredited estimators can provide a detailed BOQ for your next infrastructure project within 48 hours.
                 </p>
-                <Link to="/estimator" className="block w-full bg-slate-900 text-white text-center py-4 rounded-lg font-bold hover:bg-slate-800 transition-all shadow-lg shadow-slate-900/20 mb-4">
-                  Try Quick Estimator
+                <Link to="/request" className="block w-full bg-slate-900 text-white text-center py-4 rounded-lg font-bold hover:bg-slate-800 transition-all shadow-lg shadow-slate-900/20 mb-4">
+                  Request a BOQ
                 </Link>
                 <Link to="/about" className="block w-full border border-slate-200 text-slate-900 text-center py-4 rounded-lg font-bold hover:bg-white transition-all">
-                  Contact Our Team
+                  Download Capability Statement
                 </Link>
               </div>
             </div>
