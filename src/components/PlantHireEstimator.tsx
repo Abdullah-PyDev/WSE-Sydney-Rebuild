@@ -109,6 +109,7 @@ const PlantHireEstimator = () => {
   const [hours, setHours] = useState<number>(8);
   const [showResult, setShowResult] = useState(false);
   const [needsVerification, setNeedsVerification] = useState(false);
+  const [usageInfo, setUsageInfo] = useState<{ usageCount: number, usageLimit: number, isUnlocked: boolean } | null>(null);
 
   const plantTypes = Array.from(new Set(PLANT_DATA.map(p => p.type)));
   const sizesForType = PLANT_DATA.filter(p => p.type === selectedType);
@@ -127,10 +128,11 @@ const PlantHireEstimator = () => {
 
   const checkStatus = async () => {
     try {
-      const res = await apiFetch('/api/submission-status');
+      const res = await apiFetch('/api/check-limit');
       const data = await res.json();
-      console.log('Plant Hire status:', data);
-      setNeedsVerification(data.needsVerification);
+      console.log('Usage status:', data);
+      setUsageInfo(data);
+      setNeedsVerification(data.limitReached && !data.isUnlocked);
       return data;
     } catch (err) {
       console.error('Failed to check status:', err);
@@ -142,8 +144,9 @@ const PlantHireEstimator = () => {
     // Re-check status just before calculating to be sure
     const status = await checkStatus();
     
-    if (status?.needsVerification) {
-      console.log('Plant Hire: Verification needed, blocking calculation');
+    if (status?.limitReached && !status?.isUnlocked) {
+      console.log('Plant Hire: Limit reached, blocking calculation');
+      setNeedsVerification(true);
       setShowResult(false);
       return;
     }
@@ -151,27 +154,20 @@ const PlantHireEstimator = () => {
     setShowResult(true);
 
     // Record the estimate in the backend (increment count)
-    console.log('Plant Hire: Recording submission...');
+    console.log('Plant Hire: Tracking usage...');
     try {
-      const response = await apiFetch('/api/submissions', {
+      const response = await apiFetch('/api/track-usage', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          fullName: 'Plant Hire Estimate User',
-          companyName: 'N/A',
-          address: 'N/A',
-          notes: `Plant Hire Estimate: ${selectedType}, ${selectedSize}, ${hours}h`,
-          isUrgent: 'false'
-        })
+        headers: { 'Content-Type': 'application/json' }
       });
-      console.log('Plant Hire: Submission response status:', response.status);
+      console.log('Plant Hire: Track usage response status:', response.status);
       if (!response.ok) {
         const errorData = await response.json();
-        console.error('Plant Hire: Submission failed:', errorData);
+        console.error('Plant Hire: Track usage failed:', errorData);
       }
       checkStatus();
     } catch (err) {
-      console.error('Plant Hire: Failed to record estimate:', err);
+      console.error('Plant Hire: Failed to track usage:', err);
     }
   };
 
@@ -209,9 +205,26 @@ const PlantHireEstimator = () => {
             <span className="text-[9px] md:text-[10px] font-bold uppercase tracking-widest">Plant Hire Estimator v2.0</span>
           </div>
           <h2 className="text-2xl md:text-3xl font-extrabold font-headline tracking-tighter">Wet Hire Cost Estimator</h2>
-          <p className="text-white/70 text-xs md:text-sm mt-2 font-body max-w-md">
-            Calculate accurate wet hire rates based on current operator and fuel costs.
-          </p>
+          <div className="flex items-center justify-between mt-2">
+            <p className="text-white/70 text-xs md:text-sm mt-2 font-body max-w-md">
+              Calculate accurate wet hire rates based on current operator and fuel costs.
+            </p>
+            {usageInfo && !usageInfo.isUnlocked && (
+              <div className="bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-lg border border-white/10 flex items-center gap-2">
+                <div className="flex gap-1">
+                  {[...Array(usageInfo.usageLimit)].map((_, i) => (
+                    <div 
+                      key={i} 
+                      className={`w-1.5 h-1.5 rounded-full ${i < usageInfo.usageCount ? 'bg-white/30' : 'bg-white'}`}
+                    />
+                  ))}
+                </div>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-white">
+                  {Math.max(0, usageInfo.usageLimit - usageInfo.usageCount)} Free Uses Left
+                </span>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 

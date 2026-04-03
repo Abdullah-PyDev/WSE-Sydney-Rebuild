@@ -1,30 +1,32 @@
+export interface BOQRequest {
+  name: string;
+  email: string;
+  phone: string;
+  projectType: string;
+  description: string;
+  file?: File;
+}
 
-export const getUserId = () => {
-  return localStorage.getItem('x-user-id');
-};
+export const submitBOQRequest = async (data: BOQRequest) => {
+  const formData = new FormData();
+  formData.append('name', data.name);
+  formData.append('email', data.email);
+  formData.append('phone', data.phone);
+  formData.append('projectType', data.projectType);
+  formData.append('description', data.description);
+  if (data.file) {
+    formData.append('file', data.file);
+  }
 
-export const setUserId = (id: string) => {
-  if (id) {
-    localStorage.setItem('x-user-id', id);
-  }
-};
+  const response = await fetch('/api/boq-request', {
+    method: 'POST',
+    body: formData,
+  });
 
-export const apiFetch = async (url: string, options: RequestInit = {}) => {
-  const userId = getUserId();
-  const headers = new Headers(options.headers || {});
-  
-  console.log(`[${new Date().toISOString()}] apiFetch calling: ${url}`, { userId, method: options.method || 'GET' });
-  
-  if (userId) {
-    headers.set('x-user-id', userId);
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error || 'Failed to submit BOQ request');
   }
-  
-  const response = await fetch(url, { ...options, headers, credentials: 'include' });
-  
-  const newUserId = response.headers.get('x-user-id');
-  if (newUserId) {
-    setUserId(newUserId);
-  }
-  
-  return response;
+
+  return response.json();
 };

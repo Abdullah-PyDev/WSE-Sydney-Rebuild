@@ -338,6 +338,110 @@ async function startServer() {
     res.json({ success: true });
   });
 
+  // Usage Limiting & Lead Capture Routes
+  const USAGE_LIMIT = 3;
+
+  app.get("/api/check-limit", (req: any, res) => {
+    const sessionToken = req.user_id_cookie;
+    const ipAddress = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+
+    try {
+      // Find or create session
+      let session = db.prepare("SELECT * FROM user_sessions WHERE session_token = ?").get(sessionToken);
+      
+      if (!session) {
+        // Try to find by IP if session token is new but IP is same (optional, but good for security)
+        session = db.prepare("SELECT * FROM user_sessions WHERE ip_address = ? ORDER BY last_used DESC LIMIT 1").get(ipAddress);
+        
+        if (!session) {
+          const result = db.prepare("INSERT INTO user_sessions (ip_address, session_token) VALUES (?, ?)").run(ipAddress, sessionToken);
+          session = db.prepare("SELECT * FROM user_sessions WHERE id = ?").get(result.lastInsertRowid);
+        } else {
+          // Link new session token to existing IP session if needed, or just use the IP session
+          db.prepare("UPDATE user_sessions SET session_token = ?, last_used = CURRENT_TIMESTAMP WHERE id = ?").run(sessionToken, session.id);
+        }
+      }
+
+      const usageCount = session.usage_count;
+      const limitReached = usageCount >= USAGE_LIMIT && !session.is_blocked; // is_blocked is 0 if not yet "unlocked" by lead
+
+      res.json({
+        usageCount,
+        usageLimit: USAGE_LIMIT,
+        limitReached: usageCount >= USAGE_LIMIT,
+        isUnlocked: session.is_blocked === 1 // We use is_blocked as "is_verified/unlocked" in this context
+      });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.post("/api/track-usage", (req: any, res) => {
+    const sessionToken = req.user_id_cookie;
+    
+    try {
+      const session = db.prepare("SELECT * FROM user_sessions WHERE session_token = ?").get(sessionToken);
+      if (!session) {
+        return res.status(404).json({ error: "Session not found" });
+      }
+
+      if (session.usage_count >= USAGE_LIMIT && session.is_blocked === 0) {
+        return res.status(403).json({ error: "Usage limit reached. Lead capture required." });
+      }
+
+      db.prepare("UPDATE user_sessions SET usage_count = usage_count + 1, last_used = CURRENT_TIMESTAMP WHERE id = ?").run(session.id);
+      
+      const updatedSession = db.prepare("SELECT usage_count FROM user_sessions WHERE id = ?").get(session.id);
+      res.json({ success: true, usageCount: updatedSession.usage_count });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.post("/api/submit-lead", async (req: any, res) => {
+    const { name, email, phone } = req.body;
+    const sessionToken = req.user_id_cookie;
+
+    if (!name || !email) {
+      return res.status(400).json({ error: "Name and email are required." });
+    }
+
+    try {
+      const session = db.prepare("SELECT * FROM user_sessions WHERE session_token = ?").get(sessionToken);
+      if (!session) {
+        return res.status(404).json({ error: "Session not found" });
+      }
+
+      // Store lead
+      db.prepare("INSERT INTO leads (session_id, name, email, phone) VALUES (?, ?, ?, ?)").run(session.id, name, email, phone);
+
+      // Unlock session (we use is_blocked=1 to mean "unlocked/verified")
+      db.prepare("UPDATE user_sessions SET is_blocked = 1, last_used = CURRENT_TIMESTAMP WHERE id = ?").run(session.id);
+
+      // Optional: Send email notification
+      if (process.env.RESEND_API_KEY) {
+        try {
+          await resend.emails.send({
+            from: "leads@resend.dev",
+            to: process.env.ADMIN_EMAIL || "admin@example.com",
+            subject: "New Lead Captured from Estimator",
+            html: `<h3>New Lead</h3>
+                   <p><strong>Name:</strong> ${name}</p>
+                   <p><strong>Email:</strong> ${email}</p>
+                   <p><strong>Phone:</strong> ${phone || 'N/A'}</p>
+                   <p><strong>Session ID:</strong> ${session.id}</p>`
+          });
+        } catch (e) {
+          console.error("Failed to send lead email:", e);
+        }
+      }
+
+      res.json({ success: true, message: "Lead captured and estimator unlocked." });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
   app.all("/api/*", (req, res) => {
     console.log(`API 404: ${req.method} ${req.url}`);
     res.status(404).json({ error: `API route ${req.method} ${req.url} not found` });

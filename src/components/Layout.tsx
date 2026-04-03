@@ -56,26 +56,10 @@ export const Header = () => {
               </Link>
             </Magnetic>
           ))}
-
-          <Magnetic strength={0.2}>
-            <Link
-              to="/request"
-              data-cursor-label="GO"
-              className="bg-primary text-white px-6 py-2.5 rounded-md font-bold text-sm hover:bg-primary-container transition-all active:scale-95 duration-150 block"
-            >
-              Request a BOQ
-            </Link>
-          </Magnetic>
         </div>
 
         {/* Mobile Menu Toggle */}
         <div className="md:hidden flex items-center gap-4">
-          <Link
-            to="/request"
-            className="bg-primary text-white px-4 py-2 rounded-md font-bold text-xs hover:bg-primary-container transition-all active:scale-95 duration-150"
-          >
-            BOQ
-          </Link>
           <button 
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className="p-2 text-primary hover:bg-slate-100 rounded-full transition-colors"
@@ -131,16 +115,6 @@ export const Header = () => {
                     </Link>
                   </motion.div>
                 ))}
-
-                <div className="pt-8 border-t border-slate-100 space-y-4">
-                  <Link
-                    to="/request"
-                    onClick={() => setIsMenuOpen(false)}
-                    className="w-full bg-primary text-white py-4 rounded-xl font-bold text-center block shadow-lg shadow-primary/20"
-                  >
-                    Request a BOQ
-                  </Link>
-                </div>
               </div>
               <div className="p-8 bg-surface-container-low/95 backdrop-blur-sm space-y-5 border-t border-primary/10">
                 <div className="flex items-center gap-3 text-slate-500">
@@ -209,7 +183,6 @@ export const Footer = () => {
             <li><Link to="/locations" className="hover:text-white transition-colors">Locations</Link></li>
             <li><Link to="/about" className="hover:text-white transition-colors">About WSE</Link></li>
             <li><Link to="/faq" className="hover:text-white transition-colors">FAQ</Link></li>
-            <li><Link to="/request" className="text-surface-tint font-bold hover:text-white transition-colors flex items-center gap-1">Request a BOQ <ArrowUpRight size={14} /></Link></li>
           </ul>
         </div>
 

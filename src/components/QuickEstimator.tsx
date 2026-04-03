@@ -41,6 +41,7 @@ const QuickEstimator = () => {
   const [groundType, setGroundType] = useState('standard');
   const [result, setResult] = useState<EstimateResult | null>(null);
   const [needsVerification, setNeedsVerification] = useState(false);
+  const [usageInfo, setUsageInfo] = useState<{ usageCount: number, usageLimit: number, isUnlocked: boolean } | null>(null);
 
   const materials = {
     water: ['PVC-O', 'DICL', 'MSCL', 'PE'],
@@ -76,10 +77,11 @@ const QuickEstimator = () => {
 
   const checkStatus = async () => {
     try {
-      const res = await apiFetch('/api/submission-status');
+      const res = await apiFetch('/api/check-limit');
       const data = await res.json();
-      console.log('Submission status:', data);
-      setNeedsVerification(data.needsVerification);
+      console.log('Usage status:', data);
+      setUsageInfo(data);
+      setNeedsVerification(data.limitReached && !data.isUnlocked);
       return data;
     } catch (err) {
       console.error('Failed to check status:', err);
@@ -91,8 +93,9 @@ const QuickEstimator = () => {
     // Re-check status just before calculating to be sure
     const status = await checkStatus();
     
-    if (status?.needsVerification) {
-      console.log('Verification needed, blocking calculation');
+    if (status?.limitReached && !status?.isUnlocked) {
+      console.log('Limit reached, blocking calculation');
+      setNeedsVerification(true);
       return;
     }
 
@@ -134,27 +137,20 @@ const QuickEstimator = () => {
     setStep(3);
 
     // Record the estimate in the backend (increment count)
-    console.log('Quick Estimator: Recording submission...');
+    console.log('Quick Estimator: Tracking usage...');
     try {
-      const response = await apiFetch('/api/submissions', {
+      const response = await apiFetch('/api/track-usage', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          fullName: 'Quick Estimate User',
-          companyName: 'N/A',
-          address: 'N/A',
-          notes: `Quick Estimate: ${serviceType}, ${material}, ${diameter}mm, ${length}m, ${depth}m, ${groundType}`,
-          isUrgent: 'false'
-        })
+        headers: { 'Content-Type': 'application/json' }
       });
-      console.log('Quick Estimator: Submission response status:', response.status);
+      console.log('Quick Estimator: Track usage response status:', response.status);
       if (!response.ok) {
         const errorData = await response.json();
-        console.error('Quick Estimator: Submission failed:', errorData);
+        console.error('Quick Estimator: Track usage failed:', errorData);
       }
       checkStatus();
     } catch (err) {
-      console.error('Quick Estimator: Failed to record estimate:', err);
+      console.error('Quick Estimator: Failed to track usage:', err);
     }
   };
 
@@ -179,9 +175,26 @@ const QuickEstimator = () => {
             <span className="text-[9px] md:text-[10px] font-bold uppercase tracking-widest">ROM Estimator v1.2</span>
           </div>
           <h2 className="text-2xl md:text-3xl font-extrabold font-headline tracking-tighter">Quick Project Estimator</h2>
-          <p className="text-white/70 text-xs md:text-sm mt-2 font-body max-w-md">
-            Get an instant Rough Order of Magnitude (ROM) estimate for your Sydney infrastructure project.
-          </p>
+          <div className="flex items-center justify-between mt-2">
+            <p className="text-white/70 text-xs md:text-sm font-body max-w-md">
+              Get an instant Rough Order of Magnitude (ROM) estimate for your Sydney infrastructure project.
+            </p>
+            {usageInfo && !usageInfo.isUnlocked && (
+              <div className="bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-lg border border-white/10 flex items-center gap-2">
+                <div className="flex gap-1">
+                  {[...Array(usageInfo.usageLimit)].map((_, i) => (
+                    <div 
+                      key={i} 
+                      className={`w-1.5 h-1.5 rounded-full ${i < usageInfo.usageCount ? 'bg-white/30' : 'bg-white'}`}
+                    />
+                  ))}
+                </div>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-white">
+                  {Math.max(0, usageInfo.usageLimit - usageInfo.usageCount)} Free Uses Left
+                </span>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 

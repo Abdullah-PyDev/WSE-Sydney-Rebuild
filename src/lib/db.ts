@@ -68,6 +68,25 @@ db.exec(`
     key TEXT PRIMARY KEY,
     value TEXT
   );
+
+  CREATE TABLE IF NOT EXISTS user_sessions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    ip_address TEXT,
+    session_token TEXT UNIQUE,
+    usage_count INTEGER DEFAULT 0,
+    last_used DATETIME DEFAULT CURRENT_TIMESTAMP,
+    is_blocked BOOLEAN DEFAULT 0
+  );
+
+  CREATE TABLE IF NOT EXISTS leads (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    session_id INTEGER,
+    name TEXT,
+    email TEXT,
+    phone TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY(session_id) REFERENCES user_sessions(id)
+  );
 `);
 
 // Migration: Ensure all required columns exist in 'verification' and handle legacy 'verifications' table

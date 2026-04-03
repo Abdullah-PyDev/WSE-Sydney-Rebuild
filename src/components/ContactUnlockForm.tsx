@@ -27,21 +27,21 @@ const ContactUnlockForm: React.FC<ContactUnlockFormProps> = ({
     setIsSubmitting(true);
 
     try {
-      console.log('Submitting verification for:', { name, email, phone, company });
-      const res = await apiFetch('/api/verify', {
+      console.log('Submitting lead for:', { name, email, phone, company });
+      const res = await apiFetch('/api/submit-lead', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, phone, company })
       });
 
-      console.log('Verification response status:', res.status);
+      console.log('Lead submission response status:', res.status);
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({ error: 'Unknown error' }));
         throw new Error(errorData.error || 'Submission failed');
       }
 
       toast.success('Thank you! The estimator is now unlocked.');
-      console.log('Verification successful, calling onVerified');
+      console.log('Lead submission successful, calling onVerified');
       onVerified();
     } catch (error: any) {
       console.error('Verification error:', error);
