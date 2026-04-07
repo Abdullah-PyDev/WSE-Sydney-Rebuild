@@ -87,6 +87,21 @@ db.exec(`
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY(session_id) REFERENCES user_sessions(id)
   );
+
+  CREATE TABLE IF NOT EXISTS boq_requests (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    session_id INTEGER,
+    name TEXT,
+    email TEXT,
+    phone TEXT,
+    project_type TEXT,
+    description TEXT,
+    file_name TEXT,
+    file_path TEXT,
+    status TEXT DEFAULT 'pending',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY(session_id) REFERENCES user_sessions(id)
+  );
 `);
 
 // Migration: Ensure all required columns exist in 'verification' and handle legacy 'verifications' table

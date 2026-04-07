@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import QuickEstimator from '../components/QuickEstimator';
 import PlantHireEstimator from '../components/PlantHireEstimator';
 import { 
@@ -16,10 +16,12 @@ import {
 } from 'lucide-react';
 
 const Estimator = () => {
+  const location = useLocation();
+  const isEmbed = new URLSearchParams(location.search).get('embed') === 'true';
   const [activeTab, setActiveTab] = useState<'infrastructure' | 'plant'>('infrastructure');
 
   return (
-    <main className="pt-24 md:pt-28 pb-12 md:pb-20 px-4 md:px-6 max-w-7xl mx-auto">
+    <main className={`${isEmbed ? 'pt-8' : 'pt-24 md:pt-28'} pb-12 md:pb-20 px-4 md:px-6 max-w-7xl mx-auto`}>
       {/* Hero Section */}
       <section className="text-center mb-12 md:mb-16">
         <motion.div 
@@ -167,7 +169,7 @@ const Estimator = () => {
               className="w-full bg-primary text-white font-bold py-4 rounded-xl font-headline flex items-center justify-center space-x-2 hover:scale-[1.02] transition-all shadow-lg shadow-primary/20 text-sm md:text-base"
             >
               <FileText size={18} />
-              <span>View Detailed Services</span>
+              <span>Request Full BOQ Estimate</span>
             </Link>
           </div>
         </div>
@@ -193,7 +195,7 @@ const Estimator = () => {
               to="/services"
               className="w-full sm:w-auto bg-white text-primary px-10 py-4 rounded-xl font-bold font-headline hover:scale-105 transition-all shadow-xl"
             >
-              Explore Our Services
+              Our Services
             </Link>
             <a 
               href="/sample-boq.pdf" 

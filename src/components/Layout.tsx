@@ -7,11 +7,15 @@ import Magnetic from './Magnetic';
 
 export const Header = () => {
   const location = useLocation();
+  const isEmbed = new URLSearchParams(location.search).get('embed') === 'true';
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   
+  if (isEmbed) return null;
+
   const navLinks = [
     { name: 'Services', path: '/services' },
     { name: 'Estimator', path: '/estimator' },
+    { name: 'BOQ', path: '/boq' },
     { name: 'Locations', path: '/locations' },
     { name: 'About Us', path: '/about' },
     { name: 'FAQ', path: '/faq' },
@@ -137,6 +141,11 @@ export const Header = () => {
 };
 
 export const Footer = () => {
+  const location = useLocation();
+  const isEmbed = new URLSearchParams(location.search).get('embed') === 'true';
+
+  if (isEmbed) return null;
+
   return (
     <footer className="w-full bg-primary text-white/70 pt-20 pb-10 border-t border-white/10">
       <div className="max-w-7xl mx-auto px-8 grid grid-cols-1 md:grid-cols-12 gap-12 mb-16">
@@ -180,6 +189,8 @@ export const Footer = () => {
           <ul className="space-y-4 text-sm font-body">
             <li><Link to="/" className="hover:text-white transition-colors">Home</Link></li>
             <li><Link to="/services" className="hover:text-white transition-colors">Our Services</Link></li>
+            <li><Link to="/estimator" className="hover:text-white transition-colors">Estimator</Link></li>
+            <li><Link to="/boq" className="hover:text-white transition-colors font-bold text-surface-tint">BOQ</Link></li>
             <li><Link to="/locations" className="hover:text-white transition-colors">Locations</Link></li>
             <li><Link to="/about" className="hover:text-white transition-colors">About WSE</Link></li>
             <li><Link to="/faq" className="hover:text-white transition-colors">FAQ</Link></li>

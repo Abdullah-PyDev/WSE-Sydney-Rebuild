@@ -442,6 +442,53 @@ async function startServer() {
     }
   });
 
+  app.post("/api/boq-request", upload.single("file"), async (req: any, res) => {
+    const { name, email, phone, projectType, description } = req.body;
+    const sessionToken = req.user_id_cookie;
+    const file = req.file;
+
+    if (!name || !email || !file) {
+      return res.status(400).json({ error: "Name, email, and drawings are required." });
+    }
+
+    try {
+      const session = db.prepare("SELECT * FROM user_sessions WHERE session_token = ?").get(sessionToken);
+      if (!session) {
+        return res.status(404).json({ error: "Session not found" });
+      }
+
+      // Store BOQ request
+      db.prepare(`
+        INSERT INTO boq_requests (session_id, name, email, phone, project_type, description, file_name, file_path) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      `).run(session.id, name, email, phone, projectType, description, file.originalname, file.path);
+
+      // Optional: Send email notification
+      if (process.env.RESEND_API_KEY) {
+        try {
+          await resend.emails.send({
+            from: "boq@resend.dev",
+            to: process.env.ADMIN_EMAIL || "admin@example.com",
+            subject: `New BOQ Request: ${projectType}`,
+            html: `<h3>New BOQ Request</h3>
+                   <p><strong>Name:</strong> ${name}</p>
+                   <p><strong>Email:</strong> ${email}</p>
+                   <p><strong>Phone:</strong> ${phone}</p>
+                   <p><strong>Project Type:</strong> ${projectType}</p>
+                   <p><strong>Description:</strong> ${description}</p>
+                   <p><strong>File:</strong> ${file.originalname}</p>`
+          });
+        } catch (e) {
+          console.error("Failed to send BOQ email:", e);
+        }
+      }
+
+      res.json({ success: true, message: "BOQ request submitted successfully." });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
   app.all("/api/*", (req, res) => {
     console.log(`API 404: ${req.method} ${req.url}`);
     res.status(404).json({ error: `API route ${req.method} ${req.url} not found` });

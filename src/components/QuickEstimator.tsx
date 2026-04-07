@@ -455,10 +455,10 @@ const QuickEstimator = () => {
                   New Estimate
                 </button>
                 <button 
-                  onClick={() => window.location.href = '/request'}
+                  onClick={() => window.location.href = '/services'}
                   className="bg-primary text-white px-10 py-4 rounded-xl font-bold font-headline flex items-center justify-center space-x-2 hover:scale-105 transition-all shadow-lg shadow-primary/20"
                 >
-                  <span>Get Detailed Quote</span>
+                  <span>Our Services</span>
                   <ArrowRight size={18} />
                 </button>
               </div>

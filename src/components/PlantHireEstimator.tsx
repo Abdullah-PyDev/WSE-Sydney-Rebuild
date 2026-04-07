@@ -354,10 +354,10 @@ const PlantHireEstimator = () => {
 
                     <div className="flex items-center justify-center">
                       <button 
-                        onClick={() => window.location.href = '/request'}
+                        onClick={() => window.location.href = '/services'}
                         className="w-full bg-surface-tint text-white px-8 py-4 rounded-xl font-bold font-headline flex items-center justify-center space-x-2 hover:scale-[1.05] transition-all shadow-lg shadow-surface-tint/20"
                       >
-                        <span>Request Official Quote</span>
+                        <span>Our Services</span>
                         <ArrowRight size={18} />
                       </button>
                     </div>

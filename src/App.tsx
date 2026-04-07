@@ -12,14 +12,19 @@ import Locations from './pages/Locations';
 import About from './pages/About';
 import FAQ from './pages/FAQ';
 import Estimator from './pages/Estimator';
+import RequestBOQ from './pages/RequestBOQ';
 import ProjectDetail from './pages/ProjectDetail';
 import ChatBot from './components/ChatBot';
 import ScrollToTop from './components/ScrollToTop';
 import CustomCursor from './components/CustomCursor';
 
 function AppContent() {
+  const location = useLocation();
+  const isEmbed = new URLSearchParams(location.search).get('embed') === 'true';
+
   return (
     <div className="min-h-screen flex flex-col">
+      {!isEmbed && <CustomCursor />}
       <Header />
       <div className="flex-grow">
         <Routes>
@@ -30,12 +35,13 @@ function AppContent() {
           <Route path="/about" element={<About />} />
           <Route path="/faq" element={<FAQ />} />
           <Route path="/estimator" element={<Estimator />} />
+          <Route path="/boq" element={<RequestBOQ />} />
           <Route path="/projects/:id" element={<ProjectDetail />} />
         </Routes>
       </div>
-      <div className="bg-slate-100 h-[1px] w-full"></div>
+      {!isEmbed && <div className="bg-slate-100 h-[1px] w-full"></div>}
       <Footer />
-      <ChatBot />
+      {!isEmbed && <ChatBot />}
     </div>
   );
 }
@@ -44,7 +50,6 @@ export default function App() {
   return (
     <Router>
       <ScrollToTop />
-      <CustomCursor />
       <AppContent />
     </Router>
   );
